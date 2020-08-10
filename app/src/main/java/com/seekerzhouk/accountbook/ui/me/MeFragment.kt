@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.seekerzhouk.accountbook.R
 
 class MeFragment : Fragment() {
@@ -20,9 +19,9 @@ class MeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         meViewModel =
-            ViewModelProviders.of(this).get(MeViewModel::class.java)
+            ViewModelProvider(this).get(MeViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_me, container, false)
-        meViewModel.text.observe(this, Observer {
+        meViewModel.text.observe(requireActivity(), Observer {
         })
         return root
     }

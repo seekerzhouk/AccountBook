@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#E2A96D</color>
-    <color name="colorPrimaryDark">#BA7D41</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#64A7D3</color>
+    <color name="colorPrimaryDark">#64A7D3</color>
+    <color name="colorAccent">#64A7D3</color>
 
-    <color name="ic_launcher_background">#E2A96D</color>
+    <color name="ic_launcher_background">#64A7D3</color>
+
+    <color name="search_view_bg">#EDEAEA</color>
+
+    <color name="histogram_line">#FEEED8</color>
+    <color name="histogram">#E2A96D</color>
+
+    <color name="collapsing">#64A7D3</color>
+
+    <!-- start   pieView的颜色-->
+    <color name="pie_view_0">#F1A49F</color>
+    <color name="pie_view_1">#A2E6DF</color>
+    <color name="pie_view_2">#E898B4</color>
+    <color name="pie_view_3">#DECA8D</color>
+    <color name="pie_view_4">#8792CD</color>
+    <color name="pie_view_5">#80C883</color>
+    <color name="pie_view_6">#C885D3</color>
+    <color name="pie_view_7">#69A9C6</color>
+    <color name="pie_view_8">#DCB67E</color>
+    <!-- end   pieView的颜色-->
 </resources>

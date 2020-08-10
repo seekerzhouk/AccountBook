@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/app_bar_search"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:title="Search"
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/second_spinner"
+        android:title="spinner"
+        app:actionViewClass="android.widget.Spinner"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/all_records"
+        android:title="所有" />
+    <item
+        android:id="@+id/income_records"
+        android:title="收入" />
+    <item
+        android:id="@+id/expend_records"
+        android:title="支出" />
+</menu>
