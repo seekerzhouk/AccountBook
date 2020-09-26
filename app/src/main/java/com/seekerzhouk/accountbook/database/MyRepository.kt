@@ -21,7 +21,10 @@ class MyRepository(context: Context) {
 
     private val expendSectorDao =
         ExpendSectorsDatabase.getDatabase(context.applicationContext).getRecordDao()
-    private val pillarDao = PillarDatabase.getDatabase(context.applicationContext).getPillarDao()
+    private val expendPillarDao =
+        ExpendPillarDatabase.getDatabase(context.applicationContext).getPillarDao()
+    private val incomePillarDao =
+        IncomePillarDatabase.getDatabase(context.applicationContext).getPillarDao()
 
     init {
         if (!SharedPreferencesUtil.getOnceInsert(context)) {
@@ -35,10 +38,15 @@ class MyRepository(context: Context) {
             }
             InsertExpendTask(expendSectorDao).execute(*arrExpends)
 
-            val arrPillars = Array(12) {
-                Pillar((it + 1).toString().plus("月"), 55F)
+            val arrExpendPillars = Array(12) {
+                ExpendPillar((it + 1).toString().plus("月"), 0F)
             }
-            InsertPillarsTask(pillarDao).execute(*arrPillars)
+            InsertExpendPillarsTask(expendPillarDao).execute(*arrExpendPillars)
+
+            val arrIncomePillars = Array(12) {
+                IncomePillar((it + 1).toString().plus("月"), 0F)
+            }
+            InsertIncomePillarsTask(incomePillarDao).execute(*arrIncomePillars)
 
             SharedPreferencesUtil.saveOnceInsert(context, true)
         }
@@ -48,22 +56,22 @@ class MyRepository(context: Context) {
         // 先插入record
         InsertRecordsAsyncTask(recordDao).execute(*records)
         // 再插入sector
+        val date = if (records[0].date.substring(5, 6) == "0") {
+            records[0].date.substring(6, 7)
+        } else {
+            records[0].date.substring(5, 7)
+        }
         if (records[0].incomeOrExpend == "收入") {
             Log.i("00000", "插入IncomeSector")
             val sector = IncomeSector(records[0].secondType, records[0].money)
             IncomeUpdateTask(incomeSectorDao).execute(sector)
-
-            val date = if (records[0].date.substring(5, 6) == "0") {
-                records[0].date.substring(6, 7)
-            } else {
-                records[0].date.substring(5, 7)
-            }
-            val pillar = Pillar(date.plus("月"), records[0].money.toFloat())
-            Log.i("HistogramView002", date.plus("月"))
-            PillarUpdateTask(pillarDao).execute(pillar)
+            val pillar = IncomePillar(date.plus("月"), records[0].money.toFloat())
+            IncomePillarUpdateTask(incomePillarDao).execute(pillar)
         } else {
             val sector = ExpendSector(records[0].secondType, records[0].money)
             ExpendUpdateTask(expendSectorDao).execute(sector)
+            val pillar = ExpendPillar(date.plus("月"), records[0].money.toFloat())
+            ExpendPillarUpdateTask(expendPillarDao).execute(pillar)
         }
     }
 
@@ -129,8 +137,12 @@ class MyRepository(context: Context) {
         return expendSectorDao.getExpendSectors()
     }
 
-    fun getPillars(): LiveData<List<Pillar>> {
-        return pillarDao.getPillars()
+    fun getExpendPillars(): LiveData<List<ExpendPillar>> {
+        return expendPillarDao.getExpendPillars()
+    }
+
+    fun getIncomePillars(): LiveData<List<IncomePillar>> {
+        return incomePillarDao.getIncomePillars()
     }
 
     class InsertRecordsAsyncTask(private val recordDao: RecordDao) :
@@ -168,16 +180,31 @@ class MyRepository(context: Context) {
         }
     }
 
-    class InsertPillarsTask(private val pillarDao: PillarDao) : AsyncTask<Pillar, Unit, Unit>() {
-        override fun doInBackground(vararg params: Pillar) {
-            pillarDao.insertPillar(*params)
+    class InsertExpendPillarsTask(private val expendPillarDao: ExpendPillarDao) :
+        AsyncTask<ExpendPillar, Unit, Unit>() {
+        override fun doInBackground(vararg params: ExpendPillar) {
+            expendPillarDao.insertExpendPillar(*params)
         }
     }
 
-    class PillarUpdateTask(private val pillarDao: PillarDao) : AsyncTask<Pillar, Unit, Unit>() {
-        override fun doInBackground(vararg params: Pillar) {
-            pillarDao.updatePillar(params[0].date, params[0].moneySum)
+    class ExpendPillarUpdateTask(private val expendPillarDao: ExpendPillarDao) :
+        AsyncTask<ExpendPillar, Unit, Unit>() {
+        override fun doInBackground(vararg params: ExpendPillar) {
+            expendPillarDao.updateExpendPillar(params[0].date, params[0].moneySum)
         }
+    }
 
+    class InsertIncomePillarsTask(private val incomePillarDao: IncomePillarDao) :
+        AsyncTask<IncomePillar, Unit, Unit>() {
+        override fun doInBackground(vararg params: IncomePillar) {
+            incomePillarDao.insertIncomePillar(*params)
+        }
+    }
+
+    class IncomePillarUpdateTask(private val incomePillarDao: IncomePillarDao) :
+        AsyncTask<IncomePillar, Unit, Unit>() {
+        override fun doInBackground(vararg params: IncomePillar) {
+            incomePillarDao.updateIncomePillar(params[0].date, params[0].moneySum)
+        }
     }
 }

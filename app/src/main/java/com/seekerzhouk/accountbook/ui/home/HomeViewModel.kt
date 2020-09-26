@@ -6,7 +6,8 @@ import androidx.lifecycle.LiveData
 import com.seekerzhouk.accountbook.database.MyRepository
 import com.seekerzhouk.accountbook.database.home.ExpendSector
 import com.seekerzhouk.accountbook.database.home.IncomeSector
-import com.seekerzhouk.accountbook.database.home.Pillar
+import com.seekerzhouk.accountbook.database.home.ExpendPillar
+import com.seekerzhouk.accountbook.database.home.IncomePillar
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -37,8 +38,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         return myRepository.getExpendSectors()
     }
 
-    fun getPillars(): LiveData<List<Pillar>>{
-        return myRepository.getPillars()
+    fun getExpendPillars(): LiveData<List<ExpendPillar>>{
+        return myRepository.getExpendPillars()
+    }
+
+    fun getIncomePillars(): LiveData<List<IncomePillar>> {
+        return myRepository.getIncomePillars()
     }
 
 }

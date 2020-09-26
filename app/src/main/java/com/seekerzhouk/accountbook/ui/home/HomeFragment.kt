@@ -1,7 +1,6 @@
 package com.seekerzhouk.accountbook.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.seekerzhouk.accountbook.R
-import com.seekerzhouk.accountbook.database.home.Pillar
-import com.seekerzhouk.accountbook.database.home.Sector
 
 class HomeFragment : Fragment() {
 
@@ -39,9 +36,14 @@ class HomeFragment : Fragment() {
             pieViewExpend.sectorList = it
         })
 
-        val histogramView: HistogramView = root.findViewById(R.id.histogram_view_expend_monthly)
-        homeViewModel.getPillars().observe(requireActivity(), Observer {
-            histogramView.pillarList = it
+        val expendHistogram: HistogramView = root.findViewById(R.id.histogram_view_expend_monthly)
+        homeViewModel.getExpendPillars().observe(requireActivity(), Observer {
+            expendHistogram.pillarList = it
+        })
+
+        val incomeHistogram: HistogramView = root.findViewById(R.id.histogram_view_income_monthly)
+        homeViewModel.getIncomePillars().observe(requireActivity(), Observer {
+            incomeHistogram.pillarList = it
         })
 
         scrollView = root.findViewById(R.id.horizontalScrollView_expend_monthly)

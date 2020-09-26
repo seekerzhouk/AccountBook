@@ -5,22 +5,22 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(version = 1, entities = [Pillar::class])
-abstract class PillarDatabase : RoomDatabase() {
-    abstract fun getPillarDao(): PillarDao
+@Database(version = 1, entities = [ExpendPillar::class])
+abstract class ExpendPillarDatabase : RoomDatabase() {
+    abstract fun getPillarDao(): ExpendPillarDao
 
     companion object {
-        private var instance: PillarDatabase? = null
+        private var instance: ExpendPillarDatabase? = null
 
         @Synchronized
-        fun getDatabase(context: Context): PillarDatabase {
+        fun getDatabase(context: Context): ExpendPillarDatabase {
             instance?.let {
                 return it
             }
             return Room.databaseBuilder(
                 context.applicationContext,
-                PillarDatabase::class.java,
-                "home_pillars"
+                ExpendPillarDatabase::class.java,
+                "expend_pillars"
             ).build().also {
                 instance = it
             }

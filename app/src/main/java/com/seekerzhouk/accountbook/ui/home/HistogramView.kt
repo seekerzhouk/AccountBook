@@ -75,21 +75,18 @@ class HistogramView : View {
             average = sum / pillarList.size
             invalidate()
             Log.i(TAG, "set()" + pillarList.size.toString())
-            Log.i(TAG, "set()$pillarList")
+            Log.i(TAG, "set() $pillarList")
         }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-
         mWidth = w.toFloat()
         mHeight = h.toFloat()
-        perLineOff = (mHeight / (lineCount + 1)).toInt()
-        moneyPerY = (maxMoney / (mHeight * 4 / (lineCount + 1)))
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        var measuredWidth = histogramWidth * (pillarList.size * 2 + 1)
+        var measuredWidth = histogramWidth * 25
         var measuredHeight = histogramWidth * 9
         measuredWidth = resolveSize(measuredWidth, widthMeasureSpec)
         measuredHeight = resolveSize(measuredHeight, heightMeasureSpec)
@@ -101,6 +98,12 @@ class HistogramView : View {
         if (canvas == null) {
             return
         }
+        if (pillarList.isEmpty()) {
+            return
+        }
+        perLineOff = (mHeight / (lineCount + 1)).toInt()
+        moneyPerY = (maxMoney / (mHeight * 4 / (lineCount + 1)))
+
         histogramPaint.strokeWidth = histogramWidth.toFloat()
         canvas.translate(0F, perLineOff * lineCount.toFloat())
         canvas.save()
