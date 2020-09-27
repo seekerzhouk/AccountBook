@@ -3,5 +3,5 @@
     <string name="title_home">Home</string>
     <string name="title_details">Details</string>
     <string name="title_me">Me</string>
-
+    <string name="exit_app">3秒内再点一次退出应用</string>
 </resources>

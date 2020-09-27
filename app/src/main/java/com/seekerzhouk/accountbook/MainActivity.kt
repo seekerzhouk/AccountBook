@@ -1,6 +1,9 @@
 package com.seekerzhouk.accountbook
 
 import android.os.Bundle
+import android.os.SystemClock
+import android.view.Gravity
+import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -10,6 +13,7 @@ import androidx.navigation.ui.setupWithNavController
 
 class MainActivity : AppCompatActivity() {
 
+    private var lastPressedTime: Long = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -28,4 +32,15 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
     }
 
+    override fun onBackPressed() {
+        val curTime = SystemClock.uptimeMillis()
+        if (curTime - lastPressedTime < 3_000) {
+            finish()
+        } else {
+            Toast.makeText(this, R.string.exit_app, Toast.LENGTH_SHORT).also {
+                it.setGravity(Gravity.CENTER, 0, 0)
+            }.show()
+        }
+        lastPressedTime = SystemClock.uptimeMillis()
+    }
 }
