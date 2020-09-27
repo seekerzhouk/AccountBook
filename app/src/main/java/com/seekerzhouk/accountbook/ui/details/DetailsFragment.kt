@@ -113,6 +113,9 @@ class DetailsFragment : Fragment() {
                 return true
             }
         })
+        search_view.setOnClickListener {
+            search_view.isIconified = false
+        }
     }
 
     //设置first_type_spinner
