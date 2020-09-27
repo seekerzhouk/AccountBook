@@ -129,19 +129,11 @@ class PieView : View {
             val x2 = (r + aLength) * cos(Math.toRadians(lineAngle.toDouble())).toFloat()
             val y2 = (r + aLength) * sin(Math.toRadians(lineAngle.toDouble())).toFloat()
             // 第二段引线终点
-            var x3: Float
+            val x3: Float = if (x1 > 0) (x2 + aLength) else (x2 - aLength)
             val y3: Float = y2
             // 文字的起点
-            var textX: Float
-            val textY: Float = y3
-            if (x1 > 0) {
-                x3 = x2 + aLength
-                textX = x2 + 10
-            } else {
-                x3 = x2 - aLength
-                textX = x3
-            }
-
+            val textX: Float = if (x1 > 0) (x2 + 10) else x3
+            val textY: Float = if (y3 > 0) y3 else (y3 - 40)
             // 画扇形
             canvas?.save()
             canvas?.translate(
@@ -171,7 +163,7 @@ class PieView : View {
                     .setIncludePad(true)
                     .build()
             }
-            canvas?.translate(textX, textY - 35)
+            canvas?.translate(textX, textY)
             staticLayout.draw(canvas)
             canvas?.restore()
 
