@@ -1,5 +1,9 @@
 package com.seekerzhouk.accountbook.ui.me
 
+import android.app.Activity
+import android.content.Intent
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +12,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.seekerzhouk.accountbook.R
+import com.seekerzhouk.accountbook.SetBackgroundActivity
+import com.seekerzhouk.accountbook.utils.SDCardHelper
+import kotlinx.android.synthetic.main.activity_set_background.*
+import kotlinx.android.synthetic.main.fragment_me.*
+
 
 class MeFragment : Fragment() {
 
     private lateinit var meViewModel: MeViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,4 +35,21 @@ class MeFragment : Fragment() {
         })
         return root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        toolbar_imageView.setOnClickListener {
+            startActivity(Intent(requireActivity(), SetBackgroundActivity::class.java))
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        SDCardHelper.loadBitmapFromSDCard(requireContext().externalCacheDir?.absolutePath + "/background_pic.png")
+            ?.let {
+                toolbar_imageView.setImageBitmap(it)
+            }
+    }
+
+
 }

@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#64A7D3</color>
     <color name="colorAccent">#64A7D3</color>
 
+    <color name="blackBackground">#000000</color>
+
     <color name="ic_launcher_background">#64A7D3</color>
 
     <color name="search_view_bg">#EDEAEA</color>
