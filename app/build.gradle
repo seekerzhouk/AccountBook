@@ -16,8 +16,29 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    // 增加自动签名的内容
+    signingConfigs {
+        config {
+            // 加载local.properties文件
+            Properties properties = new Properties()
+            InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream() ;
+            properties.load( inputStream )
+
+            keyAlias properties.getProperty('keyAlias')
+            keyPassword properties.getProperty('keyPassword')
+            storeFile file(properties.getProperty('storeFile'))
+            storePassword properties.getProperty('storePassword')
+        }
+    }
     buildTypes {
+        debug {
+            // 增加签名设置
+            signingConfig signingConfigs.config
+        }
         release {
+            // 增加签名设置
+            signingConfig signingConfigs.config
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -47,4 +68,11 @@ dependencies {
     //Room
     implementation "androidx.room:room-runtime:2.2.5"
     kapt "androidx.room:room-compiler:2.2.5"
+
+    // Coroutine
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
+
+    // LeanCloud
+    implementation 'cn.leancloud:storage-android:6.5.12'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 }
