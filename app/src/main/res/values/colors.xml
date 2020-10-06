@@ -14,6 +14,9 @@
     <color name="histogram">#E2A96D</color>
 
     <color name="collapsing">#64A7D3</color>
+    <color name="btn_login_normal">#82C3EE</color>
+    <color name="btn_login_pressed">#5C8EB0</color>
+    <color name="text_sign_up">#4D80A2</color>
 
     <!-- start   pieView的颜色-->
     <color name="pie_view_0">#F1A49F</color>

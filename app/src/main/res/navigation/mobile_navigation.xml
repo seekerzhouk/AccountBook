@@ -21,5 +21,38 @@
         android:id="@+id/navigation_me"
         android:name="com.seekerzhouk.accountbook.ui.me.MeFragment"
         android:label="@string/title_me"
-        tools:layout="@layout/fragment_me" />
+        tools:layout="@layout/fragment_me" >
+        <action
+            android:id="@+id/action_navigation_me_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/slide_from_rignt"
+            app:exitAnim="@anim/slide_to_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.seekerzhouk.accountbook.ui.me.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment"
+            app:enterAnim="@anim/slide_from_rignt"
+            app:exitAnim="@anim/slide_to_left" />
+        <action
+            android:id="@+id/action_loginFragment_to_navigation_me"
+            app:destination="@id/navigation_me"
+            app:enterAnim="@anim/slide_from_left"
+            app:exitAnim="@anim/slide_to_rignt" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.seekerzhouk.accountbook.ui.me.SignUpFragment"
+        android:label="fragment_sign_up"
+        tools:layout="@layout/fragment_sign_up" >
+        <action
+            android:id="@+id/action_signUpFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/slide_from_left"
+            app:exitAnim="@anim/slide_to_rignt" />
+    </fragment>
 </navigation>
