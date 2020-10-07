@@ -1,13 +1,26 @@
 package com.seekerzhouk.accountbook.ui.me
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.*
+import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
 
-class MeViewModel : ViewModel() {
+class MeViewModel(application: Application, private val handle: SavedStateHandle) :
+    AndroidViewModel(application) {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is me Fragment"
+    private val key = SharedPreferencesUtil.IS_LOGIN_KEY
+
+    init {
+        load()
     }
-    val text: LiveData<String> = _text
+
+    private fun load() {
+        handle.set(key, SharedPreferencesUtil.getIsLogin(getApplication()))
+    }
+
+    fun isLogin(): LiveData<Boolean> = handle.getLiveData(key)
+
+    fun saveLogin(isLogin: Boolean) {
+        handle.set(key, isLogin)
+        SharedPreferencesUtil.saveIsLogin(getApplication(), isLogin)
+    }
 }

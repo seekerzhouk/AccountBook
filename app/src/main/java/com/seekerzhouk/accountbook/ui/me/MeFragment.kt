@@ -6,19 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.SetBackgroundActivity
 import com.seekerzhouk.accountbook.utils.SDCardHelper
 import kotlinx.android.synthetic.main.fragment_me.*
-import kotlinx.android.synthetic.main.fragment_me_login.*
 
 
 class MeFragment : Fragment() {
 
-    private lateinit var meViewModel: MeViewModel
+    private val meViewModel: MeViewModel by viewModels()
 
     private var isLogin = false
 
@@ -27,29 +26,32 @@ class MeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        meViewModel =
-            ViewModelProvider(this).get(MeViewModel::class.java)
-        val root = if (isLogin) {
-            inflater.inflate(R.layout.fragment_me, container, false)
-        } else {
-            inflater.inflate(R.layout.fragment_me_login, container, false)
-        }
-        meViewModel.text.observe(requireActivity(), Observer {
-        })
-        return root
+        return inflater.inflate(R.layout.fragment_me, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (!isLogin) {
-            textViewClickToLogin.setOnClickListener {
-                findNavController().navigate(R.id.action_navigation_me_to_loginFragment)
+        meViewModel.isLogin().observe(requireActivity(), Observer {
+            isLogin = it
+            if (!isLogin) {
+                clickToLoginLayout.visibility = View.VISIBLE
+                appBarLayout.visibility = View.GONE
+                nestedScrollView.visibility = View.GONE
+                textViewClickToLogin.setOnClickListener {
+                    findNavController().navigate(R.id.action_navigation_me_to_loginFragment)
+                }
+                return@Observer
             }
-            return
-        }
-        toolbar_imageView.setOnClickListener {
-            startActivity(Intent(requireActivity(), SetBackgroundActivity::class.java))
-        }
+            clickToLoginLayout.visibility = View.GONE
+            toolbar_imageView.setOnClickListener {
+                startActivity(Intent(requireActivity(), SetBackgroundActivity::class.java))
+            }
+
+            cl_logout.setOnClickListener {
+                meViewModel.saveLogin(false)
+            }
+        })
+
     }
 
     override fun onResume() {

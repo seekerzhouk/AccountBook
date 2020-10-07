@@ -1,17 +1,26 @@
 package com.seekerzhouk.accountbook.ui.me
 
 import android.os.Bundle
-import android.view.KeyEvent
+import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import cn.leancloud.AVUser
 import com.seekerzhouk.accountbook.R
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
 
+    private val meViewModel: MeViewModel by viewModels()
+
+    private val TAG = "SignUpFragment"
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,10 +44,55 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         buttonLogin.setOnClickListener {
+            if (loginUserName.text.isEmpty()) {
+                Toast.makeText(context, R.string.user_name_cannot_be_null, Toast.LENGTH_SHORT)
+                    .also {
+                        it.setGravity(Gravity.CENTER, 0, 0)
+                    }.show()
+                return@setOnClickListener
+            }
+            if (loginPassword.text.isEmpty()) {
+                Toast.makeText(context, R.string.password_cannot_be_null, Toast.LENGTH_SHORT)
+                    .also {
+                        it.setGravity(Gravity.CENTER, 0, 0)
+                    }.show()
+                return@setOnClickListener
+            }
 
+            lifecycleScope.launch(Dispatchers.IO) {
+                login(loginUserName.text.trim().toString(), loginPassword.text.trim().toString())
+            }
         }
+
         textViewSignUp.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
         }
+    }
+
+    private fun login(user: String, password: String) {
+        AVUser.logIn(user, password).subscribe(object : Observer<AVUser> {
+            override fun onSubscribe(d: Disposable) {
+                Log.i(TAG, "onSubscribe")
+            }
+
+            override fun onNext(t: AVUser) {
+                Log.i(TAG, "登陆成功")
+            }
+
+            override fun onError(e: Throwable) {
+                Log.i(TAG, "onError")
+            }
+
+            override fun onComplete() {
+                meViewModel.saveLogin(true)
+                Toast.makeText(context, R.string.successfully_login, Toast.LENGTH_SHORT)
+                    .also { toast ->
+                        toast.setGravity(Gravity.CENTER, 0, 0)
+                    }.show()
+                findNavController().navigate(R.id.action_loginFragment_to_navigation_me)
+                Log.i(TAG, "onComplete")
+            }
+
+        })
     }
 }
