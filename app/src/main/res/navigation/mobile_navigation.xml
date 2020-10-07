@@ -25,8 +25,8 @@
         <action
             android:id="@+id/action_navigation_me_to_loginFragment"
             app:destination="@id/loginFragment"
-            app:enterAnim="@anim/slide_from_rignt"
-            app:exitAnim="@anim/slide_to_left" />
+            app:enterAnim="@anim/slide_right_in"
+            app:exitAnim="@anim/slide_left_out" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -36,13 +36,13 @@
         <action
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment"
-            app:enterAnim="@anim/slide_from_rignt"
-            app:exitAnim="@anim/slide_to_left" />
+            app:enterAnim="@anim/slide_right_in"
+            app:exitAnim="@anim/slide_left_out" />
         <action
             android:id="@+id/action_loginFragment_to_navigation_me"
             app:destination="@id/navigation_me"
-            app:enterAnim="@anim/slide_from_left"
-            app:exitAnim="@anim/slide_to_rignt" />
+            app:enterAnim="@anim/slide_left_in"
+            app:exitAnim="@anim/slide_right_out" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -52,7 +52,7 @@
         <action
             android:id="@+id/action_signUpFragment_to_loginFragment"
             app:destination="@id/loginFragment"
-            app:enterAnim="@anim/slide_from_left"
-            app:exitAnim="@anim/slide_to_rignt" />
+            app:enterAnim="@anim/slide_left_in"
+            app:exitAnim="@anim/slide_right_out" />
     </fragment>
 </navigation>
