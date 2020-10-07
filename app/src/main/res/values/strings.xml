@@ -6,4 +6,6 @@
     <string name="exit_app">3秒内再点一次退出应用</string>
     <string name="background">背景</string>
     <string name="change_background">更换背景</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
