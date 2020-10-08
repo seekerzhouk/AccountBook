@@ -1,15 +1,16 @@
 package com.seekerzhouk.accountbook.database
 
 import android.content.Context
-import android.os.AsyncTask
 import android.util.Log
 import androidx.lifecycle.LiveData
 import com.seekerzhouk.accountbook.database.details.Record
-import com.seekerzhouk.accountbook.database.details.RecordDao
 import com.seekerzhouk.accountbook.database.details.RecordsDatabase
 import com.seekerzhouk.accountbook.database.home.*
 import com.seekerzhouk.accountbook.utils.ConsumptionUtil
 import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MyRepository(context: Context) {
 
@@ -31,31 +32,38 @@ class MyRepository(context: Context) {
             val arrIncomes = Array(ConsumptionUtil.incomeTypeList.size - 1) {
                 IncomeSector(ConsumptionUtil.incomeTypeList[it + 1], 0.0)
             }
-            InsertIncomeTask(incomeSectorDao).execute(*arrIncomes)
-
             val arrExpends = Array(ConsumptionUtil.expendTypeList.size - 1) {
                 ExpendSector(ConsumptionUtil.expendTypeList[it + 1], 0.0)
             }
-            InsertExpendTask(expendSectorDao).execute(*arrExpends)
-
             val arrExpendPillars = Array(12) {
                 ExpendPillar((it + 1).toString().plus("月"), 0F)
             }
-            InsertExpendPillarsTask(expendPillarDao).execute(*arrExpendPillars)
-
             val arrIncomePillars = Array(12) {
                 IncomePillar((it + 1).toString().plus("月"), 0F)
             }
-            InsertIncomePillarsTask(incomePillarDao).execute(*arrIncomePillars)
-
+            CoroutineScope(Dispatchers.IO).launch {
+                launch {
+                    incomeSectorDao.insertIncomeSectors(*arrIncomes)
+                }
+                launch {
+                    expendSectorDao.insertExpendSectors(*arrExpends)
+                }
+                launch {
+                    expendPillarDao.insertExpendPillar(*arrExpendPillars)
+                }
+                launch {
+                    incomePillarDao.insertIncomePillar(*arrIncomePillars)
+                }
+            }
             SharedPreferencesUtil.saveOnceInsert(context, true)
         }
     }
 
     fun insertRecords(vararg records: Record) {
         // 先插入record
-        InsertRecordsAsyncTask(recordDao).execute(*records)
-        // 再插入sector
+        recordDao.insertRecords(*records)
+
+        // 再插入sector和 pillar
         val date = if (records[0].date.substring(5, 6) == "0") {
             records[0].date.substring(6, 7)
         } else {
@@ -64,14 +72,14 @@ class MyRepository(context: Context) {
         if (records[0].incomeOrExpend == "收入") {
             Log.i("00000", "插入IncomeSector")
             val sector = IncomeSector(records[0].secondType, records[0].money)
-            IncomeUpdateTask(incomeSectorDao).execute(sector)
+            incomeSectorDao.updateIncomeSectors(sector.consumptionType, sector.moneySum)
             val pillar = IncomePillar(date.plus("月"), records[0].money.toFloat())
-            IncomePillarUpdateTask(incomePillarDao).execute(pillar)
+            incomePillarDao.updateIncomePillar(pillar.date, pillar.moneySum)
         } else {
             val sector = ExpendSector(records[0].secondType, records[0].money)
-            ExpendUpdateTask(expendSectorDao).execute(sector)
+            expendSectorDao.updateExpendSectors(sector.consumptionType, sector.moneySum)
             val pillar = ExpendPillar(date.plus("月"), records[0].money.toFloat())
-            ExpendPillarUpdateTask(expendPillarDao).execute(pillar)
+            expendPillarDao.updateExpendPillar(pillar.date, pillar.moneySum)
         }
     }
 
@@ -143,68 +151,5 @@ class MyRepository(context: Context) {
 
     fun getIncomePillars(): LiveData<List<IncomePillar>> {
         return incomePillarDao.getIncomePillars()
-    }
-
-    class InsertRecordsAsyncTask(private val recordDao: RecordDao) :
-        AsyncTask<Record, Unit, Unit>() {
-        override fun doInBackground(vararg params: Record) {
-            recordDao.insertRecords(*params)
-        }
-    }
-
-    class InsertIncomeTask(private val incomeSectorDao: IncomeSectorDao) :
-        AsyncTask<IncomeSector, Unit, Unit>() {
-        override fun doInBackground(vararg params: IncomeSector) {
-            incomeSectorDao.insertIncomeSectors(*params)
-        }
-    }
-
-    class InsertExpendTask(private val expendSectorDao: ExpendSectorDao) :
-        AsyncTask<ExpendSector, Unit, Unit>() {
-        override fun doInBackground(vararg params: ExpendSector) {
-            expendSectorDao.insertExpendSectors(*params)
-        }
-    }
-
-    class IncomeUpdateTask(private val incomeSectorDao: IncomeSectorDao) :
-        AsyncTask<IncomeSector, Unit, Unit>() {
-        override fun doInBackground(vararg params: IncomeSector) {
-            incomeSectorDao.updateIncomeSectors(params[0].consumptionType, params[0].moneySum)
-        }
-    }
-
-    class ExpendUpdateTask(private val expendSectorDao: ExpendSectorDao) :
-        AsyncTask<ExpendSector, Unit, Unit>() {
-        override fun doInBackground(vararg params: ExpendSector) {
-            expendSectorDao.updateExpendSectors(params[0].consumptionType, params[0].moneySum)
-        }
-    }
-
-    class InsertExpendPillarsTask(private val expendPillarDao: ExpendPillarDao) :
-        AsyncTask<ExpendPillar, Unit, Unit>() {
-        override fun doInBackground(vararg params: ExpendPillar) {
-            expendPillarDao.insertExpendPillar(*params)
-        }
-    }
-
-    class ExpendPillarUpdateTask(private val expendPillarDao: ExpendPillarDao) :
-        AsyncTask<ExpendPillar, Unit, Unit>() {
-        override fun doInBackground(vararg params: ExpendPillar) {
-            expendPillarDao.updateExpendPillar(params[0].date, params[0].moneySum)
-        }
-    }
-
-    class InsertIncomePillarsTask(private val incomePillarDao: IncomePillarDao) :
-        AsyncTask<IncomePillar, Unit, Unit>() {
-        override fun doInBackground(vararg params: IncomePillar) {
-            incomePillarDao.insertIncomePillar(*params)
-        }
-    }
-
-    class IncomePillarUpdateTask(private val incomePillarDao: IncomePillarDao) :
-        AsyncTask<IncomePillar, Unit, Unit>() {
-        override fun doInBackground(vararg params: IncomePillar) {
-            incomePillarDao.updateIncomePillar(params[0].date, params[0].moneySum)
-        }
     }
 }
