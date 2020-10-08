@@ -3,24 +3,33 @@ package com.seekerzhouk.accountbook.ui.details
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import com.seekerzhouk.accountbook.database.MyRepository
 import com.seekerzhouk.accountbook.database.details.Record
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class DetailsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val myRepository: MyRepository =
         MyRepository(application)
 
+    private fun runInScope(block: () -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            run(block)
+        }
+    }
+
     fun insertRecords(vararg records: Record) {
-        myRepository.insertRecords(*records)
+        runInScope { myRepository.insertRecords(*records) }
     }
 
     fun deleteRecords(vararg records: Record) {
-        myRepository.deleteRecords(*records)
+        runInScope { myRepository.deleteRecords(*records) }
     }
 
     fun updateRecords(vararg records: Record) {
-        myRepository.updateRecords(*records)
+        runInScope { myRepository.updateRecords(*records) }
     }
 
     fun loadAllRecords(): LiveData<List<Record>> {
