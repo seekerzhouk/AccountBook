@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.database.details.Record
 import com.seekerzhouk.accountbook.utils.ConsumptionUtil
+import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -71,6 +72,7 @@ object AddDialog {
         buttonSubmit.setOnClickListener {
             val detailsViewModel = ViewModelProvider(mContext).get(DetailsViewModel::class.java)
             val record = Record(
+                SharedPreferencesUtil.getUserName(mContext),
                 firstSpinner.selectedItem.toString(),
                 secondSpinner.selectedItem.toString(),
                 editTextDescription.text.toString(),

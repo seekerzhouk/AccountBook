@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class IncomeSector(
+    @ColumnInfo(name = "userName") var userName: String,
     @ColumnInfo(name = "income_consumptionType") override var consumptionType: String,
     @ColumnInfo(name = "income_moneySum") override var moneySum: Double
 ) : Sector(consumptionType, moneySum) {

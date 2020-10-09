@@ -50,6 +50,8 @@ class MeFragment : Fragment() {
             cl_logout.setOnClickListener {
                 meViewModel.saveLogin(false)
             }
+
+            meViewModel.insertLoginUserDataForm()
         })
 
     }

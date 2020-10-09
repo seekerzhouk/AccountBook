@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 class DetailsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val myRepository: MyRepository =
-        MyRepository(application)
+        MyRepository.getInstance(application)
 
     private fun runInScope(block: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {

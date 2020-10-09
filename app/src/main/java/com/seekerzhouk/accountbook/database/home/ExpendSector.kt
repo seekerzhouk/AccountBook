@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class ExpendSector(
+    @ColumnInfo(name = "userName") var userName: String,
     @ColumnInfo(name = "expend_consumptionType") override var consumptionType: String,
     @ColumnInfo(name = "expend_moneySum") override var moneySum: Double
 ) :

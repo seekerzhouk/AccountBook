@@ -12,7 +12,7 @@ import com.seekerzhouk.accountbook.database.home.IncomePillar
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val myRepository: MyRepository =
-        MyRepository(application)
+        MyRepository.getInstance(application)
 
 //    fun getIncomeSum(): LiveData<Double> {
 //        return myRepository.getIncomeSum()

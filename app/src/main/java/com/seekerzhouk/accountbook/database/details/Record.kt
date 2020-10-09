@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Record(
+    @ColumnInfo(name = "userName") var userName: String,
     @ColumnInfo(name = "income_or_expend") var incomeOrExpend: String,
     @ColumnInfo(name = "consumptionType") val secondType: String,
     @ColumnInfo(name = "description") val description: String,

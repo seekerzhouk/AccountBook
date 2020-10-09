@@ -11,12 +11,12 @@ interface ExpendPillarDao {
     @Insert
     fun insertExpendPillar(vararg expendPillars: ExpendPillar)
 
-    @Query("UPDATE ExpendPillar SET expend_moneySum = expend_moneySum + :value WHERE expend_date = :date")
-    fun updateExpendPillar(date: String, value: Float)
+    @Query("UPDATE ExpendPillar SET expend_moneySum = expend_moneySum + :value WHERE userName is :userName and expend_date = :date")
+    fun updateExpendPillar(userName: String, date: String, value: Float)
 
     @Delete
     fun deleteExpendPillar(vararg expendPillars: ExpendPillar)
 
-    @Query("select * from ExpendPillar order by id")
-    fun getExpendPillars(): LiveData<List<ExpendPillar>>
+    @Query("select * from ExpendPillar where userName is :userName order by id")
+    fun getExpendPillars(userName: String): LiveData<List<ExpendPillar>>
 }

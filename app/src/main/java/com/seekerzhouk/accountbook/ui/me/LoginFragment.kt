@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import cn.leancloud.AVUser
 import com.seekerzhouk.accountbook.R
+import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_login.*
@@ -76,6 +77,7 @@ class LoginFragment : Fragment() {
             }
 
             override fun onNext(t: AVUser) {
+                SharedPreferencesUtil.saveUserName(requireContext(),t.username)
                 Log.i(TAG, "登陆成功")
             }
 
@@ -92,7 +94,6 @@ class LoginFragment : Fragment() {
                 findNavController().navigate(R.id.action_loginFragment_to_navigation_me)
                 Log.i(TAG, "onComplete")
             }
-
         })
     }
 }

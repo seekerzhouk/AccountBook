@@ -8,12 +8,12 @@ interface ExpendSectorDao {
     @Insert
     fun insertExpendSectors(vararg sectors: ExpendSector)
 
-    @Query("update ExpendSector set expend_moneySum = expend_moneySum + :value where expend_consumptionType = :type")
-    fun updateExpendSectors(type: String, value: Double)
+    @Query("update ExpendSector set expend_moneySum = expend_moneySum + :value WHERE userName is :userName and expend_consumptionType = :type")
+    fun updateExpendSectors(userName: String, type: String, value: Double)
 
     @Delete
     fun deleteExpendSectors(vararg sectors: ExpendSector)
 
-    @Query("select * from ExpendSector where expend_moneySum > 0.0")
-    fun getExpendSectors(): LiveData<List<ExpendSector>>
+    @Query("select * from ExpendSector WHERE userName is :userName and expend_moneySum > 0.0")
+    fun getExpendSectors(userName: String): LiveData<List<ExpendSector>>
 }
