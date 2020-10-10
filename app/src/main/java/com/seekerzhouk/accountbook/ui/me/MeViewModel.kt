@@ -28,7 +28,7 @@ class MeViewModel(application: Application, private val handle: SavedStateHandle
         SharedPreferencesUtil.saveIsLogin(getApplication(), isLogin)
     }
 
-    fun insertLoginUserDataForm() {
-        myRepository.insertLoginUserDataForm()
+    fun cloudAndLocalDataInit() {
+        myRepository.cloudAndLocalUserFormInit()
     }
 }

@@ -51,7 +51,7 @@ class MeFragment : Fragment() {
                 meViewModel.saveLogin(false)
             }
 
-            meViewModel.insertLoginUserDataForm()
+            meViewModel.cloudAndLocalDataInit()
         })
 
     }

@@ -11,49 +11,60 @@ object SharedPreferencesUtil {
     private const val SECOND_POSITION_KEY = "second_position"
 
     /**
-     * 用户未登陆过，本地无主数据表格是否已经创建
+     * 用户未登陆过，本地无主数据表格是否已经初始化
      */
-    private const val UNREGISTERED_INSERT_KEY = "is_unregistered_insert"
+    private const val NO_OWNER_FORM_INIT_KEY = "no_owner_form_init"
 
     /**
-     * 用户登陆过，用户本地数据表格是否已经创建
+     * 用户登陆过，用户本地数据表格是否已经初始化
      */
-    private const val LOGIN_INSERT_KEY = "is_login_insert"
+    private const val LOGIN_USER_FORM_INIT_KEY = "login_user_form_init"
 
+    /**
+     * 目前用户是否处于登陆状态。用于刷新Me界面。
+     */
     const val IS_LOGIN_KEY = "is_login"
 
-    private const val USER_NAME_KEY = "save_user_name"
+    /**
+     * 只要登陆过，就能得到不是empty的userName，即使现在已经登出。此值可以知道用户在本应用是否登陆过。
+     */
+    private const val USER_NAME_KEY = "user_name"
+
+    /**
+     * 记录一下用户云端数据表格是否成功初始化过
+     */
+    private const val CLOUD_USER_FORM_INIT = "cloud_user_form_init"
 
     fun saveFirstPosition(context: Context, position: Int) {
-        saveValue(context,FIRST_POSITION_KEY,position)
+        saveValue(context, FIRST_POSITION_KEY, position)
     }
 
     fun getFirstPosition(context: Context): Int {
-        return getValue(context,FIRST_POSITION_KEY, 0)
+        return getValue(context, FIRST_POSITION_KEY, 0)
     }
 
     fun saveSecondPosition(context: Context, secondTag: Int) {
-        saveValue(context,SECOND_POSITION_KEY,secondTag)
+        saveValue(context, SECOND_POSITION_KEY, secondTag)
     }
 
     fun getSecondPosition(context: Context): Int {
-        return getValue(context,SECOND_POSITION_KEY, 0)
+        return getValue(context, SECOND_POSITION_KEY, 0)
     }
 
-    fun saveUnregisteredInsert(context: Context, onceInsert: Boolean) {
-        saveValue(context,UNREGISTERED_INSERT_KEY,onceInsert)
+    fun saveNoOwnerFormHasInit(context: Context, onceInsert: Boolean) {
+        saveValue(context, NO_OWNER_FORM_INIT_KEY, onceInsert)
     }
 
-    fun getUnregisteredInsert(context: Context): Boolean {
-        return getValue(context,UNREGISTERED_INSERT_KEY, false)
+    fun getNoOwnerFormHasInit(context: Context): Boolean {
+        return getValue(context, NO_OWNER_FORM_INIT_KEY, false)
     }
 
-    fun saveLoginInsert(context: Context, onceInsert: Boolean) {
-        saveValue(context,LOGIN_INSERT_KEY,onceInsert)
+    fun saveLoginUserFormHasInit(context: Context, onceInsert: Boolean) {
+        saveValue(context, LOGIN_USER_FORM_INIT_KEY, onceInsert)
     }
 
-    fun getLoginInsert(context: Context): Boolean {
-        return getValue(context,LOGIN_INSERT_KEY, false)
+    fun getLoginUserFormHasInit(context: Context): Boolean {
+        return getValue(context, LOGIN_USER_FORM_INIT_KEY, false)
     }
 
     fun saveIsLogin(context: Context, isLogin: Boolean) {
@@ -68,8 +79,16 @@ object SharedPreferencesUtil {
         saveValue(context, USER_NAME_KEY, userName)
     }
 
-    fun getUserName(context: Context):String {
+    fun getUserName(context: Context): String {
         return getValue(context, USER_NAME_KEY, "")
+    }
+
+    fun saveHasCloudFormInit(context: Context, hasInit: Boolean) {
+        saveValue(context, CLOUD_USER_FORM_INIT, hasInit)
+    }
+
+    fun getHasCloudFormInit(context: Context): Boolean {
+        return getValue(context, CLOUD_USER_FORM_INIT, false)
     }
 
 
