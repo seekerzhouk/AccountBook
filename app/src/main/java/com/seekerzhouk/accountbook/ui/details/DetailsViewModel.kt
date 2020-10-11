@@ -25,7 +25,6 @@ class DetailsViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun deleteRecords(vararg records: Record) {
-        runInScope { myRepository.deleteRecords(*records) }
     }
 
     fun updateRecords(vararg records: Record) {

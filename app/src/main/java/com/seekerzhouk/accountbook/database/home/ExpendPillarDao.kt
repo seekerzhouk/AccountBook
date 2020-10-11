@@ -19,4 +19,7 @@ interface ExpendPillarDao {
 
     @Query("select * from ExpendPillar where userName is :userName order by id")
     fun getExpendPillars(userName: String): LiveData<List<ExpendPillar>>
+
+    @Query("UPDATE ExpendPillar SET expend_moneySum = 0.00 WHERE userName is :userName")
+    fun clearExpendPillars(userName: String)
 }

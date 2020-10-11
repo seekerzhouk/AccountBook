@@ -31,4 +31,8 @@ class MeViewModel(application: Application, private val handle: SavedStateHandle
     fun cloudAndLocalDataInit() {
         myRepository.cloudAndLocalUserFormInit()
     }
+
+    fun syncData() {
+        myRepository.syncData()
+    }
 }

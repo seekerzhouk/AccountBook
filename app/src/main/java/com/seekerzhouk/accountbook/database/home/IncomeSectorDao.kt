@@ -16,4 +16,7 @@ interface IncomeSectorDao {
 
     @Query("select * from IncomeSector WHERE userName is :userName and income_moneySum > 0.0")
     fun getIncomeSectors(userName: String): LiveData<List<IncomeSector>>
+
+    @Query("UPDATE IncomeSector SET income_moneySum = 0.00 WHERE userName is :userName")
+    fun clearIncomeSectors(userName: String)
 }

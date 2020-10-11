@@ -19,4 +19,7 @@ interface IncomePillarDao {
 
     @Query("select * from IncomePillar WHERE userName is :userName order by id")
     fun getIncomePillars(userName: String): LiveData<List<IncomePillar>>
+
+    @Query("UPDATE IncomePillar SET income_moneySum = 0.00 WHERE userName is :userName")
+    fun clearIncomePillars(userName: String)
 }

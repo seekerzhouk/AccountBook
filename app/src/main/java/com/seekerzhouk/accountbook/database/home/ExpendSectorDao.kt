@@ -16,4 +16,7 @@ interface ExpendSectorDao {
 
     @Query("select * from ExpendSector WHERE userName is :userName and expend_moneySum > 0.0")
     fun getExpendSectors(userName: String): LiveData<List<ExpendSector>>
+
+    @Query("UPDATE ExpendSector SET expend_moneySum = 0.00 WHERE userName is :userName")
+    fun clearExpendSectors(userName: String)
 }

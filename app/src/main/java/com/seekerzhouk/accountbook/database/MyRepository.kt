@@ -3,16 +3,21 @@ package com.seekerzhouk.accountbook.database
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
+import cn.leancloud.AVObject
+import cn.leancloud.AVQuery
 import cn.leancloud.AVUser
 import com.seekerzhouk.accountbook.database.details.Record
 import com.seekerzhouk.accountbook.database.details.RecordsDatabase
 import com.seekerzhouk.accountbook.database.home.*
 import com.seekerzhouk.accountbook.utils.ConsumptionUtil
 import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+
 
 class MyRepository private constructor(val context: Context) {
     private val TAG = MyRepository::class.simpleName
@@ -81,7 +86,7 @@ class MyRepository private constructor(val context: Context) {
             val result = channel.receive()
             if (result) { // 已经初始化，return
                 Log.i(TAG, "---channel.receive()$result")
-                SharedPreferencesUtil.saveUserCloudFormStatus(context, user.username,true)
+                SharedPreferencesUtil.saveUserCloudFormStatus(context, user.username, true)
             } else {
                 // 2.初始化云端用户数据
                 LeanCloudOperation.initCloudUserForm()
@@ -164,34 +169,92 @@ class MyRepository private constructor(val context: Context) {
      * 本地插入Record、更新本地四张数据表
      */
     private fun insertLocalData(vararg records: Record) {
-        val record = records[0]
         // 先插入record
-        recordDao.insertRecords(record)
+        recordDao.insertRecords(*records)
         // 再更新sector和 pillar
-        val userName = record.userName
-        val secondType = record.secondType
-        val money = record.money
-        val date = if (record.date.substring(5, 6) == "0") {
-            record.date.substring(6, 7).plus("月")
-        } else {
-            record.date.substring(5, 7).plus("月")
-        }
-        if (record.incomeOrExpend == ConsumptionUtil.INCOME) {
-            val sector = IncomeSector(userName, secondType, money)
-            incomeSectorDao.updateIncomeSectors(userName, sector.consumptionType, sector.moneySum)
-            val pillar = IncomePillar(userName, date, money.toFloat())
-            incomePillarDao.updateIncomePillar(userName, pillar.date, pillar.moneySum)
-        } else {
-            val sector = ExpendSector(userName, secondType, money)
-            expendSectorDao.updateExpendSectors(userName, sector.consumptionType, sector.moneySum)
-            val pillar = ExpendPillar(userName, date, money.toFloat())
-            expendPillarDao.updateExpendPillar(userName, pillar.date, pillar.moneySum)
+        for (record in records) {
+            val userName = record.userName
+            val secondType = record.secondType
+            val money = record.money
+            val date = if (record.date.substring(5, 6) == "0") {
+                record.date.substring(6, 7).plus("月")
+            } else {
+                record.date.substring(5, 7).plus("月")
+            }
+            if (record.incomeOrExpend == ConsumptionUtil.INCOME) {
+                val sector = IncomeSector(userName, secondType, money)
+                incomeSectorDao.updateIncomeSectors(
+                    userName,
+                    sector.consumptionType,
+                    sector.moneySum
+                )
+                val pillar = IncomePillar(userName, date, money.toFloat())
+                incomePillarDao.updateIncomePillar(userName, pillar.date, pillar.moneySum)
+            } else {
+                val sector = ExpendSector(userName, secondType, money)
+                expendSectorDao.updateExpendSectors(
+                    userName,
+                    sector.consumptionType,
+                    sector.moneySum
+                )
+                val pillar = ExpendPillar(userName, date, money.toFloat())
+                expendPillarDao.updateExpendPillar(userName, pillar.date, pillar.moneySum)
+            }
         }
     }
 
+    // 清除/清零本地数据
+    private fun localDataCleared() {
+        val userName = SharedPreferencesUtil.getUserName(context)
+        // 先清除Record
+        deleteRecords(userName)
+        // 再清零四表格
+        clearIncomeSectors(userName)
+        clearIncomePillars(userName)
+        clearExpendSectors(userName)
+        clearExpendPillars(userName)
+    }
 
-    fun deleteRecords(vararg records: Record) {
-        recordDao.deleteRecords(*records)
+    // 将云端数据同步到本地
+    fun syncData() = CoroutineScope(Dispatchers.IO).launch {
+        AVQuery<AVObject>(Record::class.simpleName).apply {
+            whereEqualTo("userName", SharedPreferencesUtil.getUserName(context))
+        }.findInBackground().subscribe(object : Observer<List<AVObject>> {
+            override fun onSubscribe(d: Disposable) {
+
+            }
+
+            override fun onNext(results: List<AVObject>) {
+                Log.i(TAG, "syncRecords---onNext")
+                CoroutineScope(Dispatchers.IO).launch {
+                    localDataCleared()
+                    Array(results.size) { i ->
+                        Record(
+                            results[i].getString("userName"),
+                            results[i].getString("income_or_expend"),
+                            results[i].getString("consumptionType"),
+                            results[i].getString("description"),
+                            results[i].getString("date"),
+                            results[i].getString("time"),
+                            results[i].getDouble("money")
+                        )
+                    }.also { records ->
+                        insertLocalData(*records)
+                    }
+                }
+            }
+
+            override fun onError(e: Throwable) {
+
+            }
+
+            override fun onComplete() {
+            }
+        })
+    }
+
+    fun deleteRecords(userName: String) {
+        recordDao.deleteUserRecords(userName)
     }
 
     fun updateRecords(vararg records: Record) {
@@ -283,5 +346,20 @@ class MyRepository private constructor(val context: Context) {
         return incomePillarDao.getIncomePillars(SharedPreferencesUtil.getUserName(context))
     }
 
+    fun clearIncomeSectors(userName: String) {
+        incomeSectorDao.clearIncomeSectors(userName)
+    }
+
+    fun clearIncomePillars(userName: String) {
+        incomePillarDao.clearIncomePillars(userName)
+    }
+
+    fun clearExpendSectors(userName: String) {
+        expendSectorDao.clearExpendSectors(userName)
+    }
+
+    fun clearExpendPillars(userName: String) {
+        expendPillarDao.clearExpendPillars(userName)
+    }
 
 }
