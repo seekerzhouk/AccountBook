@@ -3,6 +3,7 @@ package com.seekerzhouk.accountbook.database
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
+import cn.leancloud.AVUser
 import com.seekerzhouk.accountbook.database.details.Record
 import com.seekerzhouk.accountbook.database.details.RecordsDatabase
 import com.seekerzhouk.accountbook.database.home.*
@@ -62,14 +63,16 @@ class MyRepository private constructor(val context: Context) {
      * 登陆之后需要进行的操作，初始化cloud和本地的用户数据表格
      */
     fun cloudAndLocalUserFormInit() {
-        // 1.检查用户本地数据是否初始化
-        if (!SharedPreferencesUtil.getLoginUserFormHasInit(context)) {
-            // 2.初始化用户本地数据
+        val user = AVUser.getCurrentUser()
+        // 1.检查具体用户本地数据是否初始化
+        if (!SharedPreferencesUtil.getUserLocalFormStatus(context, user.username)) {
+            // 2.初始化具体用户本地数据
             initLocalUserForm()
+            SharedPreferencesUtil.saveUserLocalFormStatus(context, user.username, true)
         }
 
         // 1.检查LeanCloud云端是否初始化用户数据
-        if (SharedPreferencesUtil.getHasCloudFormInit(context)) {
+        if (SharedPreferencesUtil.getUserCloudFormStatus(context, user.username)) {
             return
         }
         val channel = Channel<Boolean>()
@@ -78,7 +81,7 @@ class MyRepository private constructor(val context: Context) {
             val result = channel.receive()
             if (result) { // 已经初始化，return
                 Log.i(TAG, "---channel.receive()$result")
-                SharedPreferencesUtil.saveHasCloudFormInit(context, true)
+                SharedPreferencesUtil.saveUserCloudFormStatus(context, user.username,true)
             } else {
                 // 2.初始化云端用户数据
                 LeanCloudOperation.initCloudUserForm()
@@ -90,6 +93,9 @@ class MyRepository private constructor(val context: Context) {
      * 本地要先初始化IncomeSector、ExpendSector、IncomePillar、ExpendPillar四张无主数据表格
      */
     private fun initLocalNoOwnerForm() {
+        if (SharedPreferencesUtil.getNoOwnerFormHasInit(context)) {
+            return
+        }
         val userName = SharedPreferencesUtil.getUserName(context)
         val arrIncomes = Array(ConsumptionUtil.incomeTypeList.size - 1) {
             IncomeSector(userName, ConsumptionUtil.incomeTypeList[it + 1], 0.0)
@@ -151,7 +157,6 @@ class MyRepository private constructor(val context: Context) {
                 incomePillarDao.insertIncomePillar(*arrIncomePillars)
             }
         }
-        SharedPreferencesUtil.saveLoginUserFormHasInit(context, true)
     }
 
 

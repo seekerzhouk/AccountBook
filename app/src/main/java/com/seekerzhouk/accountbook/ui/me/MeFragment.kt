@@ -48,6 +48,7 @@ class MeFragment : Fragment() {
             }
 
             cl_logout.setOnClickListener {
+                // 点击logout按钮，实际上没有登出账号。SDK已经记录了登录的用户。除非使用AVUser.logOut()才会登出。
                 meViewModel.saveLogin(false)
             }
 

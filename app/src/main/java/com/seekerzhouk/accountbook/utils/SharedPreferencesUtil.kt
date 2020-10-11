@@ -16,11 +16,6 @@ object SharedPreferencesUtil {
     private const val NO_OWNER_FORM_INIT_KEY = "no_owner_form_init"
 
     /**
-     * 用户登陆过，用户本地数据表格是否已经初始化
-     */
-    private const val LOGIN_USER_FORM_INIT_KEY = "login_user_form_init"
-
-    /**
      * 目前用户是否处于登陆状态。用于刷新Me界面。
      */
     const val IS_LOGIN_KEY = "is_login"
@@ -29,11 +24,6 @@ object SharedPreferencesUtil {
      * 只要登陆过，就能得到不是empty的userName，即使现在已经登出。此值可以知道用户在本应用是否登陆过。
      */
     private const val USER_NAME_KEY = "user_name"
-
-    /**
-     * 记录一下用户云端数据表格是否成功初始化过
-     */
-    private const val CLOUD_USER_FORM_INIT = "cloud_user_form_init"
 
     fun saveFirstPosition(context: Context, position: Int) {
         saveValue(context, FIRST_POSITION_KEY, position)
@@ -59,14 +49,6 @@ object SharedPreferencesUtil {
         return getValue(context, NO_OWNER_FORM_INIT_KEY, false)
     }
 
-    fun saveLoginUserFormHasInit(context: Context, onceInsert: Boolean) {
-        saveValue(context, LOGIN_USER_FORM_INIT_KEY, onceInsert)
-    }
-
-    fun getLoginUserFormHasInit(context: Context): Boolean {
-        return getValue(context, LOGIN_USER_FORM_INIT_KEY, false)
-    }
-
     fun saveIsLogin(context: Context, isLogin: Boolean) {
         saveValue(context, IS_LOGIN_KEY, isLogin)
     }
@@ -83,14 +65,45 @@ object SharedPreferencesUtil {
         return getValue(context, USER_NAME_KEY, "")
     }
 
-    fun saveHasCloudFormInit(context: Context, hasInit: Boolean) {
-        saveValue(context, CLOUD_USER_FORM_INIT, hasInit)
+    /**
+     * 保存状态：具体用户的LeanCloud数据表格是否已经初始化
+     * @param userName 用户名
+     * @param hasInit 是否已经初始化
+     */
+    fun saveUserCloudFormStatus(context: Context, userName: String, hasInit: Boolean) {
+        val key = "cloud_$userName"
+        saveValue(context, key, hasInit)
     }
 
-    fun getHasCloudFormInit(context: Context): Boolean {
-        return getValue(context, CLOUD_USER_FORM_INIT, false)
+    /**
+     * 获取状态：具体用户的LeanCloud数据表格是否已经初始化
+     * @param userName 用户名
+     * @return Boolean 是否已经初始化
+     */
+    fun getUserCloudFormStatus(context: Context, userName: String): Boolean {
+        val key = "cloud_$userName"
+        return getValue(context, key, false)
     }
 
+    /**
+     * 保存状态：具体用户的本地数据表格是否已经初始化
+     * @param userName 用户名
+     * @param hasInit 是否已经初始化
+     */
+    fun saveUserLocalFormStatus(context: Context, userName: String, hasInit: Boolean) {
+        val key = "local_$userName"
+        saveValue(context, key, hasInit)
+    }
+
+    /**
+     * 获取状态：具体用户的本地数据表格是否已经初始化
+     * @param userName 用户名
+     * @return Boolean 是否已经初始化
+     */
+    fun getUserLocalFormStatus(context: Context, userName: String): Boolean {
+        val key = "local_$userName"
+        return getValue(context, key, false)
+    }
 
     private fun <T> saveValue(context: Context, key: String, value: T) {
         val editor = context.getSharedPreferences(SHP_NAME, Context.MODE_PRIVATE).edit()
@@ -116,7 +129,7 @@ object SharedPreferencesUtil {
                 is Int -> getInt(key, defValue)
                 is Boolean -> getBoolean(key, defValue)
                 is Float -> getFloat(key, defValue)
-                else -> throw IllegalArgumentException("This type of data cannot be saved!")
+                else -> throw IllegalArgumentException("Unexpected type!")
             } as T
         }
     }
