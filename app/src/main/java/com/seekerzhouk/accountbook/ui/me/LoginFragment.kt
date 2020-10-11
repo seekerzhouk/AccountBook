@@ -77,7 +77,11 @@ class LoginFragment : Fragment() {
             }
 
             override fun onNext(t: AVUser) {
+                // 保存用户名
                 SharedPreferencesUtil.saveUserName(requireContext(),t.username)
+                // 重置spinner初始位置
+                SharedPreferencesUtil.saveFirstPosition(requireContext(),0)
+                SharedPreferencesUtil.saveSecondPosition(requireContext(),0)
                 Log.i(TAG, "登陆成功")
             }
 
