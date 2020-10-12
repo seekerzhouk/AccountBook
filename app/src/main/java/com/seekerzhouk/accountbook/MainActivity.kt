@@ -2,10 +2,14 @@ package com.seekerzhouk.accountbook
 
 import android.os.Bundle
 import android.os.SystemClock
+import android.util.Log
 import android.view.Gravity
 import android.widget.Toast
+import androidx.activity.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -35,6 +39,18 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val mainViewModel: MainViewModel by viewModels()
+        mainViewModel.isLogin().observe(this, Observer {
+            Log.i("MainActivity","observe")
+            if (it) {
+                Log.i("MainActivity","$it")
+                mainViewModel.syncData()
+            }
+        })
     }
 
     override fun onBackPressed() {

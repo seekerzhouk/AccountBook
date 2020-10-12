@@ -4,7 +4,7 @@ import android.content.Context
 
 object SharedPreferencesUtil {
 
-    private const val SHP_NAME = "tag_shp"
+    const val SHP_NAME = "tag_shp"
 
     private const val FIRST_POSITION_KEY = "first_position"
 

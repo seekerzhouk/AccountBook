@@ -10,7 +10,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import cn.leancloud.AVUser
 import com.seekerzhouk.accountbook.R
-import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_login.*
@@ -19,7 +18,7 @@ import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
 
-    private val meViewModel: MeViewModel by viewModels()
+    private val loginViewModel: LoginViewModel by viewModels()
 
     private val TAG = "SignUpFragment"
     override fun onCreateView(
@@ -78,10 +77,10 @@ class LoginFragment : Fragment() {
 
             override fun onNext(t: AVUser) {
                 // 保存用户名
-                SharedPreferencesUtil.saveUserName(requireContext(),t.username)
+                loginViewModel.saveUserName(t.username)
                 // 重置spinner初始位置
-                SharedPreferencesUtil.saveFirstPosition(requireContext(),0)
-                SharedPreferencesUtil.saveSecondPosition(requireContext(),0)
+                loginViewModel.saveFirstPosition(0)
+                loginViewModel.saveSecondPosition(0)
                 Log.i(TAG, "登陆成功")
             }
 
@@ -90,7 +89,7 @@ class LoginFragment : Fragment() {
             }
 
             override fun onComplete() {
-                meViewModel.saveLogin(true)
+                loginViewModel.saveLogin(true)
                 Toast.makeText(context, R.string.successfully_login, Toast.LENGTH_SHORT)
                     .also { toast ->
                         toast.setGravity(Gravity.CENTER, 0, 0)
