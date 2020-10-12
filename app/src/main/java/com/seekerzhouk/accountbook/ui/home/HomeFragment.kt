@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.seekerzhouk.accountbook.R
+import kotlinx.android.synthetic.main.fragment_home.*
+import java.util.*
 
 class HomeFragment : Fragment() {
 
@@ -53,8 +55,14 @@ class HomeFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        scrollView.post {
-            scrollView.fullScroll(View.FOCUS_RIGHT)
+        val month = Calendar.getInstance().get(Calendar.MONTH) + 1
+        if (month > 6) {
+            scrollView.post {
+                scrollView.fullScroll(View.FOCUS_RIGHT)
+            }
+            horizontalScrollView_income_monthly.post {
+                horizontalScrollView_income_monthly.fullScroll(View.FOCUS_RIGHT)
+            }
         }
     }
 }

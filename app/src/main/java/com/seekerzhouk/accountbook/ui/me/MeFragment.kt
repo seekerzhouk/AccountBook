@@ -53,7 +53,7 @@ class MeFragment : Fragment() {
             }
 
             cl_sync.setOnClickListener {
-                meViewModel.syncData()
+                meViewModel.saveIsNeedSync(true)
             }
 
             meViewModel.cloudAndLocalDataInit()

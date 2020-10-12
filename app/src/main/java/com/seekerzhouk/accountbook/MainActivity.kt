@@ -2,26 +2,21 @@ package com.seekerzhouk.accountbook
 
 import android.os.Bundle
 import android.os.SystemClock
-import android.util.Log
 import android.view.Gravity
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.seekerzhouk.accountbook.ui.details.DetailsFragment
-import com.seekerzhouk.accountbook.ui.home.HomeFragment
-import com.seekerzhouk.accountbook.ui.me.LoginFragment
-import com.seekerzhouk.accountbook.ui.me.MeFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-
+    private val mainViewModel: MainViewModel by viewModels()
     private var lastPressedTime: Long = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,14 +38,26 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val mainViewModel: MainViewModel by viewModels()
-        mainViewModel.isLogin().observe(this, Observer {
-            Log.i("MainActivity","observe")
+
+        mainViewModel.isNeedSync().observe(this, Observer {
             if (it) {
-                Log.i("MainActivity","$it")
                 mainViewModel.syncData()
+                progressBar.visibility = View.VISIBLE
+                mainViewModel.saveHasSyncFinished(false)
+                mainViewModel.saveIsNeedSync(false)
             }
         })
+
+        mainViewModel.hasSyncFinished().observe(this, Observer {
+            if (it) {
+                progressBar.visibility = View.INVISIBLE
+            }
+        })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mainViewModel.saveIsNeedSync(false)
     }
 
     override fun onBackPressed() {

@@ -16,6 +16,7 @@ import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -240,6 +241,8 @@ class MyRepository private constructor(val context: Context) {
                         )
                     }.also { records ->
                         insertLocalData(*records)
+                        delay(2_000)
+                        SharedPreferencesUtil.saveHasSyncFinished(context, true)
                     }
                 }
             }

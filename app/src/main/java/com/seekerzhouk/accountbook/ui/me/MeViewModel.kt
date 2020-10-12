@@ -32,7 +32,7 @@ class MeViewModel(application: Application, private val handle: SavedStateHandle
         myRepository.cloudAndLocalUserFormInit()
     }
 
-    fun syncData() {
-        myRepository.syncData()
+    fun saveIsNeedSync(needSync:Boolean) {
+        SharedPreferencesUtil.saveIsNeedSync(getApplication(), needSync)
     }
 }

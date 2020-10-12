@@ -25,6 +25,16 @@ object SharedPreferencesUtil {
      */
     private const val USER_NAME_KEY = "user_name"
 
+    /**
+     * 同步是否完成
+     */
+    const val HAS_SYNC_FINISHED = "sync_finished"
+
+    /**
+     * 是否需要同步
+     */
+    const val IS_NEED_SYNC = "is_need_sync"
+
     fun saveFirstPosition(context: Context, position: Int) {
         saveValue(context, FIRST_POSITION_KEY, position)
     }
@@ -55,6 +65,22 @@ object SharedPreferencesUtil {
 
     fun getIsLogin(context: Context): Boolean {
         return getValue(context, IS_LOGIN_KEY, false)
+    }
+
+    fun saveHasSyncFinished(context: Context, hasFinished: Boolean) {
+        saveValue(context, HAS_SYNC_FINISHED, hasFinished)
+    }
+
+    fun getHasSyncFinished(context: Context): Boolean {
+        return getValue(context, HAS_SYNC_FINISHED, false)
+    }
+
+    fun saveIsNeedSync(context: Context, needSync: Boolean) {
+        saveValue(context, IS_NEED_SYNC, needSync)
+    }
+
+    fun getIsNeedSync(context: Context): Boolean {
+        return getValue(context, IS_NEED_SYNC, false)
     }
 
     fun saveUserName(context: Context, userName: String) {

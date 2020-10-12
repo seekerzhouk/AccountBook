@@ -11,6 +11,10 @@ class LoginViewModel(application: Application) :
         SharedPreferencesUtil.saveIsLogin(getApplication(), isLogin)
     }
 
+    fun saveIsNeedSync(needSync: Boolean) {
+        SharedPreferencesUtil.saveIsNeedSync(getApplication(), needSync)
+    }
+
     fun saveUserName(userName: String) {
         SharedPreferencesUtil.saveUserName(getApplication(),userName)
     }

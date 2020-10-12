@@ -90,6 +90,7 @@ class LoginFragment : Fragment() {
 
             override fun onComplete() {
                 loginViewModel.saveLogin(true)
+                loginViewModel.saveIsNeedSync(true)
                 Toast.makeText(context, R.string.successfully_login, Toast.LENGTH_SHORT)
                     .also { toast ->
                         toast.setGravity(Gravity.CENTER, 0, 0)
