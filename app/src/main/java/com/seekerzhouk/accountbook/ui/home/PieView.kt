@@ -132,7 +132,7 @@ class PieView : View {
             val x3: Float = if (x1 > 0) (x2 + aLength) else (x2 - aLength)
             val y3: Float = y2
             // 文字的起点
-            val textX: Float = if (x1 > 0) (x2 + 10) else x3
+            val textX: Float = if (x1 > 0) (x2 - 20) else (x3 - 30)
             val textY: Float = if (y3 > 0) y3 else (y3 - 40)
             // 画扇形
             canvas?.save()
