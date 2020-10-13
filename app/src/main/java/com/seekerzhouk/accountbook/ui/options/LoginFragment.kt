@@ -64,6 +64,9 @@ class LoginFragment : Fragment() {
             lifecycleScope.launch(Dispatchers.IO) {
                 login(loginUserName.text.trim().toString(), loginPassword.text.trim().toString())
             }
+
+            loginProgressBar.show(getString(R.string.is_logging))
+
         }
 
         textViewSignUp.setOnClickListener {
@@ -94,11 +97,9 @@ class LoginFragment : Fragment() {
             override fun onComplete() {
                 loginViewModel.saveLogin(true)
                 loginViewModel.saveIsNeedSync(true)
-                Toast.makeText(context, R.string.successfully_login, Toast.LENGTH_SHORT)
-                    .also { toast ->
-                        toast.setGravity(Gravity.CENTER, 0, 0)
-                    }.show()
-                activity?.onBackPressed()
+                loginProgressBar.onJobFinished(getString(R.string.successfully_login)).laterDismiss(1500) {
+                    activity?.onBackPressed()
+                }
                 Log.i(TAG, "onComplete")
             }
         })

@@ -86,6 +86,12 @@ class SignUpFragment : Fragment() {
             lifecycleScope.launch(Dispatchers.IO) {
                 signUp(signUpUserName.text.trim().toString(), signUpPassword.text.trim().toString())
             }
+
+            signUpProgressBar.show(getString(R.string.is_signing_up))
+        }
+
+        returnToLogin.setOnClickListener {
+            findNavController().navigateUp()
         }
     }
 
@@ -114,11 +120,10 @@ class SignUpFragment : Fragment() {
                 }
 
                 override fun onComplete() {
-                    Toast.makeText(context, R.string.successfully_registered, Toast.LENGTH_SHORT)
-                        .also { toast ->
-                            toast.setGravity(Gravity.CENTER, 0, 0)
-                        }.show()
-                    findNavController().navigateUp()
+                    signUpProgressBar.onJobFinished(getString(R.string.successfully_sign_up))
+                        .laterDismiss(1500) {}
+                    signUpLayout.visibility = View.GONE
+                    succeedLayout.visibility = View.VISIBLE
                     Log.i(TAG, "onComplete")
                 }
 

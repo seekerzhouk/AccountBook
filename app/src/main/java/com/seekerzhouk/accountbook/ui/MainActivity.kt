@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel.hasSyncFinished().observe(this, Observer {
             if (it) {
-                myProgressBar.onJobFinished(getString(R.string.sync_finished))
+                myProgressBar.onJobFinished(getString(R.string.sync_finished)).laterDismiss(1500) {}
             }
         })
     }

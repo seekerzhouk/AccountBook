@@ -19,29 +19,39 @@ class MyProgressBar : CardView {
             width = progressBar_inside.width
             height = progressBar_inside.height
         }
+        this.visibility = View.INVISIBLE
     }
 
-    fun onJobFinished(finishDescription:String) {
+    fun onJobFinished(finishDescription: String): MyProgressBar {
         imageView_inside.visibility = View.VISIBLE
         progressBar_inside.visibility = View.INVISIBLE
         setDescription(finishDescription)
-        CoroutineScope(Dispatchers.IO).launch {
-            delay(1000)
-            withContext(Dispatchers.Main){
-               this@MyProgressBar. visibility = View.INVISIBLE
-            }
-        }
+        return this
     }
 
     private fun setDescription(string: String) {
         textView_inside.text = string
     }
 
-    fun show(startDescription:String) {
+    fun show(startDescription: String) {
         setDescription(startDescription)
         imageView_inside.visibility = View.INVISIBLE
         progressBar_inside.visibility = View.VISIBLE
         this.visibility = View.VISIBLE
+    }
+
+    fun dismiss() {
+        this.visibility = View.INVISIBLE
+    }
+
+    fun laterDismiss(timeMillis: Long, block: () -> Unit) {
+        CoroutineScope(Dispatchers.Default).launch {
+            delay(timeMillis)
+            withContext(Dispatchers.Main) {
+                this@MyProgressBar.dismiss()
+                run(block)
+            }
+        }
     }
 
 }
