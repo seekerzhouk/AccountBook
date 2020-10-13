@@ -30,6 +30,6 @@
     </fragment>
     <activity
         android:id="@+id/loginActivity"
-        android:name="com.seekerzhouk.accountbook.ui.LoginActivity"
+        android:name="com.seekerzhouk.accountbook.ui.options.LoginActivity"
         android:label="LoginActivity" />
 </navigation>

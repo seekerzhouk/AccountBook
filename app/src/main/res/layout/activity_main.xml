@@ -30,7 +30,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/mobile_navigation" />
 
-    <com.seekerzhouk.accountbook.ui.MyProgressBar
+    <com.seekerzhouk.accountbook.ui.customize.MyProgressBar
         android:id="@+id/myProgressBar"
         android:layout_width="150dp"
         android:layout_height="wrap_content"

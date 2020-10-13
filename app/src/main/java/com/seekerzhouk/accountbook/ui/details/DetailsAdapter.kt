@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.seekerzhouk.accountbook.R
-import com.seekerzhouk.accountbook.database.details.Record
+import com.seekerzhouk.accountbook.room.details.Record
 import com.seekerzhouk.accountbook.utils.ConsumptionUtil
 
 class DetailsAdapter(var recordList: List<Record>) :

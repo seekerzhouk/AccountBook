@@ -6,7 +6,7 @@
     app:startDestination="@id/loginFragment">
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.seekerzhouk.accountbook.ui.me.LoginFragment"
+        android:name="com.seekerzhouk.accountbook.ui.options.LoginFragment"
         android:label="@string/login"
         tools:layout="@layout/fragment_login" >
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.seekerzhouk.accountbook.ui.me.SignUpFragment"
+        android:name="com.seekerzhouk.accountbook.ui.options.SignUpFragment"
         android:label="@string/sign_up"
         tools:layout="@layout/fragment_sign_up" />
 </navigation>

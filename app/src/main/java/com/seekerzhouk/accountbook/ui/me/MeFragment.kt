@@ -10,9 +10,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.seekerzhouk.accountbook.R
-import com.seekerzhouk.accountbook.SetBackgroundActivity
-import com.seekerzhouk.accountbook.ui.CommonDialog
+import com.seekerzhouk.accountbook.ui.options.SetBackgroundActivity
+import com.seekerzhouk.accountbook.ui.customize.CommonDialog
 import com.seekerzhouk.accountbook.utils.SDCardHelper
+import com.seekerzhouk.accountbook.viewmodel.MeViewModel
 import kotlinx.android.synthetic.main.fragment_me.*
 
 

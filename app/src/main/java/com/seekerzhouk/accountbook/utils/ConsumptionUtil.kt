@@ -1,7 +1,7 @@
 package com.seekerzhouk.accountbook.utils
 
 import com.seekerzhouk.accountbook.R
-import com.seekerzhouk.accountbook.database.details.Record
+import com.seekerzhouk.accountbook.room.details.Record
 
 object ConsumptionUtil {
     const val ALL = "全部"

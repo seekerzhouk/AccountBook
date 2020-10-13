@@ -33,7 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <com.seekerzhouk.accountbook.ui.home.PieView
+                    <com.seekerzhouk.accountbook.ui.customize.PieView
                         android:id="@+id/pie_view_expend"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <com.seekerzhouk.accountbook.ui.home.PieView
+                    <com.seekerzhouk.accountbook.ui.customize.PieView
                         android:id="@+id/pie_view_income"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -128,7 +128,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <com.seekerzhouk.accountbook.ui.home.HistogramView
+                        <com.seekerzhouk.accountbook.ui.customize.HistogramView
                             android:id="@+id/histogram_view_expend_monthly"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -171,7 +171,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <com.seekerzhouk.accountbook.ui.home.HistogramView
+                        <com.seekerzhouk.accountbook.ui.customize.HistogramView
                             android:id="@+id/histogram_view_income_monthly"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />

@@ -9,6 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.seekerzhouk.accountbook.R
+import com.seekerzhouk.accountbook.ui.customize.HistogramView
+import com.seekerzhouk.accountbook.ui.customize.PieView
+import com.seekerzhouk.accountbook.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.fragment_home.*
 import java.util.*
 

@@ -12,9 +12,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.seekerzhouk.accountbook.R
-import com.seekerzhouk.accountbook.database.details.Record
+import com.seekerzhouk.accountbook.room.details.Record
+import com.seekerzhouk.accountbook.ui.customize.AddDialog
 import com.seekerzhouk.accountbook.utils.ConsumptionUtil
 import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
+import com.seekerzhouk.accountbook.viewmodel.DetailsViewModel
 import kotlinx.android.synthetic.main.fragment_details.*
 
 class DetailsFragment : Fragment() {
