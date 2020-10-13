@@ -26,23 +26,24 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_login, container, false).also {
-            it.isFocusableInTouchMode = true
-            it.requestFocus()
-            it.setOnKeyListener(object : View.OnKeyListener {
-                override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
-                    if (event?.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                        this@LoginFragment.findNavController()
-                            .navigate(R.id.action_loginFragment_to_navigation_me)
-                        return true
-                    }
-                    return false
-                }
-            })
+//            it.isFocusableInTouchMode = true
+//            it.requestFocus()
+//            it.setOnKeyListener(object : View.OnKeyListener {
+//                override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
+//                    if (event?.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+//                        this@LoginFragment.findNavController()
+//                            .navigate(R.id.action_loginFragment_to_navigation_me)
+//                        return true
+//                    }
+//                    return false
+//                }
+//            })
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.title = getString(R.string.login)
         buttonLogin.setOnClickListener {
             if (loginUserName.text.isEmpty()) {
                 Toast.makeText(context, R.string.user_name_cannot_be_null, Toast.LENGTH_SHORT)
@@ -96,7 +97,7 @@ class LoginFragment : Fragment() {
                     .also { toast ->
                         toast.setGravity(Gravity.CENTER, 0, 0)
                     }.show()
-                findNavController().navigate(R.id.action_loginFragment_to_navigation_me)
+                activity?.onBackPressed()
                 Log.i(TAG, "onComplete")
             }
         })

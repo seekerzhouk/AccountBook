@@ -24,23 +24,24 @@ class SignUpFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_sign_up, container, false).also {
-            it.isFocusableInTouchMode = true
-            it.requestFocus()
-            it.setOnKeyListener(object : View.OnKeyListener {
-                override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
-                    if (event?.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                        this@SignUpFragment.findNavController()
-                            .navigate(R.id.action_signUpFragment_to_loginFragment)
-                        return true
-                    }
-                    return false
-                }
-            })
+//            it.isFocusableInTouchMode = true
+//            it.requestFocus()
+//            it.setOnKeyListener(object : View.OnKeyListener {
+//                override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
+//                    if (event?.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+//                        this@SignUpFragment.findNavController()
+//                            .navigate(R.id.action_signUpFragment_to_loginFragment)
+//                        return true
+//                    }
+//                    return false
+//                }
+//            })
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.title = getString(R.string.sign_up)
         buttonSignUp.setOnClickListener {
             if (signUpUserName.text.isEmpty()) {
                 Toast.makeText(context, R.string.user_name_cannot_be_null, Toast.LENGTH_SHORT)
@@ -93,7 +94,7 @@ class SignUpFragment : Fragment() {
     }
 
     private fun signUp(signUserName: String, signPassword: String) {
-        val user = AVUser().apply {
+        AVUser().apply {
             this.username = signUserName
             this.password = signPassword
         }.also {
@@ -117,7 +118,7 @@ class SignUpFragment : Fragment() {
                         .also { toast ->
                             toast.setGravity(Gravity.CENTER, 0, 0)
                         }.show()
-                    findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
+                    findNavController().navigateUp()
                     Log.i(TAG, "onComplete")
                 }
 

@@ -41,7 +41,7 @@ class MeFragment : Fragment() {
                 appBarLayout.visibility = View.GONE
                 nestedScrollView.visibility = View.GONE
                 textViewClickToLogin.setOnClickListener {
-                    findNavController().navigate(R.id.action_navigation_me_to_loginFragment)
+                    findNavController().navigate(R.id.action_navigation_me_to_loginActivity)
                 }
                 return@Observer
             }

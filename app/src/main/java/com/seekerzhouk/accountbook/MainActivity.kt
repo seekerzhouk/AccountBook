@@ -3,7 +3,6 @@ package com.seekerzhouk.accountbook
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.Gravity
-import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -24,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
-        val navController = findNavController(R.id.nav_host_fragment)
+        val navController = findNavController(R.id.nav_host_fragment_main)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
