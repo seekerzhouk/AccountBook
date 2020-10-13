@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.SetBackgroundActivity
+import com.seekerzhouk.accountbook.ui.CommonDialog
 import com.seekerzhouk.accountbook.utils.SDCardHelper
 import kotlinx.android.synthetic.main.fragment_me.*
 
@@ -50,18 +51,31 @@ class MeFragment : Fragment() {
             }
 
             cl_logout.setOnClickListener {
-                // 点击logout按钮，实际上没有登出账号。SDK已经记录了登录的用户。除非使用AVUser.logOut()才会登出。
-                meViewModel.saveLogin(false)
+                CommonDialog.showDialog(
+                    requireActivity(),
+                    getString(R.string.title_logout),
+                    getString(R.string.dialog_message)
+                ) {
+                    // 点击logout按钮，实际上没有登出账号。SDK已经记录了登录的用户。除非使用AVUser.logOut()才会登出。
+                    meViewModel.saveLogin(false)
+                }
             }
 
             cl_sync.setOnClickListener {
-                meViewModel.saveIsNeedSync(true)
+                CommonDialog.showDialog(
+                    requireActivity(),
+                    getString(R.string.sync_data),
+                    getString(R.string.sync_data_message)
+                ) {
+                    meViewModel.saveIsNeedSync(true)
+                }
             }
 
             meViewModel.cloudAndLocalDataInit()
         })
 
     }
+
 
     override fun onResume() {
         super.onResume()

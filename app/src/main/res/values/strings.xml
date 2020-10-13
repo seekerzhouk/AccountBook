@@ -22,4 +22,8 @@
     <string name="successfully_login">登录成功</string>
     <string name="data_syncing">正在同步数据……</string>
     <string name="sync_finished">同步完成！</string>
+    <string name="title_logout">退出登陆</string>
+    <string name="dialog_message">登出后产生的数据记录仍属于本用户，继续登出吗？</string>
+    <string name="sync_data">同步数据</string>
+    <string name="sync_data_message">确定同步云端数据吗？</string>
 </resources>
