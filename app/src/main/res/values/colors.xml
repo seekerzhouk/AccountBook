@@ -18,6 +18,8 @@
     <color name="btn_login_pressed">#5C8EB0</color>
     <color name="text_sign_up">#4D80A2</color>
 
+    <color name="my_progress_bar_bg">#F1F7FB</color>
+
     <!-- start   pieView的颜色-->
     <color name="pie_view_0">#F1A49F</color>
     <color name="pie_view_1">#A2E6DF</color>

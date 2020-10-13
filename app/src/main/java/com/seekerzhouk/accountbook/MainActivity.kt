@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.isNeedSync().observe(this, Observer {
             if (it) {
                 mainViewModel.syncData()
-                progressBar.visibility = View.VISIBLE
+                myProgressBar.show(getString(R.string.data_syncing))
                 mainViewModel.saveHasSyncFinished(false)
                 mainViewModel.saveIsNeedSync(false)
             }
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel.hasSyncFinished().observe(this, Observer {
             if (it) {
-                progressBar.visibility = View.INVISIBLE
+                myProgressBar.onJobFinished(getString(R.string.sync_finished))
             }
         })
     }
