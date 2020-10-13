@@ -78,6 +78,7 @@ class LoginFragment : Fragment() {
             override fun onNext(t: AVUser) {
                 // 保存用户名
                 loginViewModel.saveUserName(t.username)
+                loginViewModel.savePhoneNumber(t.mobilePhoneNumber ?: "")
                 // 重置spinner初始位置
                 loginViewModel.saveFirstPosition(0)
                 loginViewModel.saveSecondPosition(0)

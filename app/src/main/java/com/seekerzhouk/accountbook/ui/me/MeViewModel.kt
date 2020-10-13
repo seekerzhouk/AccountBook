@@ -32,7 +32,16 @@ class MeViewModel(application: Application, private val handle: SavedStateHandle
         myRepository.cloudAndLocalUserFormInit()
     }
 
-    fun saveIsNeedSync(needSync:Boolean) {
+    fun saveIsNeedSync(needSync: Boolean) {
         SharedPreferencesUtil.saveIsNeedSync(getApplication(), needSync)
+    }
+
+    // 每次切换到MeFragment都会重新创建fragment，userName不需要使用LiveData
+    fun getUserName(): String {
+        return SharedPreferencesUtil.getUserName(getApplication())
+    }
+
+    fun getPhoneNumber(): String {
+        return SharedPreferencesUtil.getPhoneNumber(getApplication())
     }
 }

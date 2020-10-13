@@ -19,6 +19,10 @@ class LoginViewModel(application: Application) :
         SharedPreferencesUtil.saveUserName(getApplication(),userName)
     }
 
+    fun savePhoneNumber(phoneNumber: String) {
+        SharedPreferencesUtil.savePhoneNumber(getApplication(),phoneNumber)
+    }
+
     fun saveFirstPosition(position: Int) {
         SharedPreferencesUtil.saveFirstPosition(getApplication(),position)
     }

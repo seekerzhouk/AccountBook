@@ -26,6 +26,11 @@ object SharedPreferencesUtil {
     private const val USER_NAME_KEY = "user_name"
 
     /**
+     * 用户手机号
+     */
+    private const val USER_PHONE_KEY = "user_phone"
+
+    /**
      * 同步是否完成
      */
     const val HAS_SYNC_FINISHED = "sync_finished"
@@ -89,6 +94,14 @@ object SharedPreferencesUtil {
 
     fun getUserName(context: Context): String {
         return getValue(context, USER_NAME_KEY, "")
+    }
+
+    fun savePhoneNumber(context: Context, userName: String) {
+        saveValue(context, USER_PHONE_KEY, userName)
+    }
+
+    fun getPhoneNumber(context: Context): String {
+        return getValue(context, USER_PHONE_KEY, "")
     }
 
     /**

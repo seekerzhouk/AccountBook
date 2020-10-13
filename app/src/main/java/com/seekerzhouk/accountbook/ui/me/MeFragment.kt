@@ -31,6 +31,8 @@ class MeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        tv_user_username.text = meViewModel.getUserName()
+        tv_user_phone.text = meViewModel.getPhoneNumber()
         meViewModel.isLogin().observe(requireActivity(), Observer {
             isLogin = it
             if (!isLogin) {
