@@ -1,5 +1,7 @@
 package com.seekerzhouk.accountbook.ui.options
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -95,11 +97,13 @@ class LoginFragment : Fragment() {
             }
 
             override fun onComplete() {
-                loginViewModel.saveLogin(true)
-                loginViewModel.saveIsNeedSync(true)
-                loginProgressBar.onJobFinished(getString(R.string.successfully_login)).laterDismiss(1500) {
-                    activity?.onBackPressed()
-                }
+                loginProgressBar.onJobFinished(getString(R.string.successfully_login))
+                    .laterDismiss(1500) {
+                        activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                            putExtra("isLogin", true)
+                        })
+                        activity?.finish()
+                    }
                 Log.i(TAG, "onComplete")
             }
         })

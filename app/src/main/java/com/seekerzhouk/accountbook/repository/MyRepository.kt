@@ -13,11 +13,8 @@ import com.seekerzhouk.accountbook.utils.ConsumptionUtil
 import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 class MyRepository private constructor(val context: Context) {
@@ -68,31 +65,46 @@ class MyRepository private constructor(val context: Context) {
     /**
      * 登陆之后需要进行的操作，初始化cloud和本地的用户数据表格
      */
-    fun cloudAndLocalUserFormInit() {
+    fun cloudAndLocalUserFormInit() = CoroutineScope(Dispatchers.IO).launch {
         val user = AVUser.getCurrentUser()
-        // 1.检查具体用户本地数据是否初始化
-        if (!SharedPreferencesUtil.getUserLocalFormStatus(context, user.username)) {
-            // 2.初始化具体用户本地数据
-            initLocalUserForm()
-            SharedPreferencesUtil.saveUserLocalFormStatus(context, user.username, true)
+        val isLocalInit = async {
+            // 1.检查具体用户本地数据是否初始化
+            if (!SharedPreferencesUtil.getUserLocalFormStatus(context, user.username)) {
+                // 2.初始化具体用户本地数据
+                initLocalUserForm()
+                SharedPreferencesUtil.saveUserLocalFormStatus(context, user.username, true)
+            }
+            //3.最终都返回true，代表本地初始化结束。
+            return@async true
         }
 
-        // 1.检查LeanCloud云端是否初始化用户数据
-        if (SharedPreferencesUtil.getUserCloudFormStatus(context, user.username)) {
-            return
-        }
-        val channel = Channel<Boolean>()
-        LeanCloudOperation.cloudUserFormHasInit(channel)
-        CoroutineScope(Dispatchers.IO).launch {
-            val result = channel.receive()
-            if (result) { // 已经初始化，return
-                Log.i(TAG, "---channel.receive()$result")
-                SharedPreferencesUtil.saveUserCloudFormStatus(context, user.username, true)
+        val isCloudInit = async {
+            // 1.检查LeanCloud云端是否初始化用户数据
+            if (SharedPreferencesUtil.getUserCloudFormStatus(context, user.username)) {
+                // 2.SharedPreferences记录过云端被初始化，返回true
+                return@async true
             } else {
-                // 2.初始化云端用户数据
-                LeanCloudOperation.initCloudUserForm()
+                // 2.SharedPreferences没有记录过云端被初始化，需要去查找云端
+                val channel = Channel<Boolean>()
+                LeanCloudOperation.cloudUserFormHasInit(channel)
+                val result = channel.receive()
+                if (result) { // 3.查找的结果是已经初始化，return true
+                    Log.i(TAG, "---channel.receive()$result")
+                    SharedPreferencesUtil.saveUserCloudFormStatus(context, user.username, true)
+                    return@async true
+                } else {
+                    // 4.查找的结果是没有被初始化，则要初始化云端用户数据。返回false
+                    LeanCloudOperation.initCloudUserForm()
+                    return@async false
+                }
             }
         }
+
+        //只有本地和云端都被初始化过，才需要进行同步。云端没被初始化过，没有数据，不需要同步。
+        if (isLocalInit.await() && isCloudInit.await()) {
+            SharedPreferencesUtil.saveIsNeedSync(context,true)
+        }
+
     }
 
     /**
@@ -149,20 +161,10 @@ class MyRepository private constructor(val context: Context) {
         val arrIncomePillars = Array(12) {
             IncomePillar(userName, (it + 1).toString().plus("月"), 0F)
         }
-        CoroutineScope(Dispatchers.IO).launch {
-            launch {
-                incomeSectorDao.insertIncomeSectors(*arrIncomes)
-            }
-            launch {
-                expendSectorDao.insertExpendSectors(*arrExpends)
-            }
-            launch {
-                expendPillarDao.insertExpendPillar(*arrExpendPillars)
-            }
-            launch {
-                incomePillarDao.insertIncomePillar(*arrIncomePillars)
-            }
-        }
+        incomeSectorDao.insertIncomeSectors(*arrIncomes)
+        expendSectorDao.insertExpendSectors(*arrExpends)
+        expendPillarDao.insertExpendPillar(*arrExpendPillars)
+        incomePillarDao.insertIncomePillar(*arrIncomePillars)
     }
 
 
@@ -217,7 +219,7 @@ class MyRepository private constructor(val context: Context) {
     }
 
     // 将云端数据同步到本地
-    fun syncData() = CoroutineScope(Dispatchers.IO).launch {
+    fun syncData() {
         AVQuery<AVObject>(Record::class.simpleName).apply {
             whereEqualTo("userName", SharedPreferencesUtil.getUserName(context))
         }.findInBackground().subscribe(object : Observer<List<AVObject>> {
@@ -241,7 +243,7 @@ class MyRepository private constructor(val context: Context) {
                         )
                     }.also { records ->
                         insertLocalData(*records)
-                        delay(2_000)
+                        delay(1_000)
                         SharedPreferencesUtil.saveHasSyncFinished(context, true)
                     }
                 }

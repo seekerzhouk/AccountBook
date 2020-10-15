@@ -21,9 +21,9 @@ class MeViewModel(application: Application, private val handle: SavedStateHandle
         handle.set(key, SharedPreferencesUtil.getIsLogin(getApplication()))
     }
 
-    fun isLogin(): LiveData<Boolean> = handle.getLiveData(key)
+    fun getIsLogin(): LiveData<Boolean> = handle.getLiveData(key)
 
-    fun saveLogin(isLogin: Boolean) {
+    fun saveIsLogin(isLogin: Boolean) {
         handle.set(key, isLogin)
         SharedPreferencesUtil.saveIsLogin(getApplication(), isLogin)
     }
@@ -36,7 +36,6 @@ class MeViewModel(application: Application, private val handle: SavedStateHandle
         SharedPreferencesUtil.saveIsNeedSync(getApplication(), needSync)
     }
 
-    // 每次切换到MeFragment都会重新创建fragment，userName不需要使用LiveData
     fun getUserName(): String {
         return SharedPreferencesUtil.getUserName(getApplication())
     }
