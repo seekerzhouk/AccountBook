@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import cn.leancloud.AVUser
 import com.seekerzhouk.accountbook.R
+import com.seekerzhouk.accountbook.utils.MyLog
 import com.seekerzhouk.accountbook.viewmodel.LoginViewModel
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -23,7 +24,7 @@ class LoginFragment : Fragment() {
 
     private val loginViewModel: LoginViewModel by viewModels()
 
-    private val TAG = "SignUpFragment"
+    private val _tag = LoginFragment::class.java.name
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -79,7 +80,7 @@ class LoginFragment : Fragment() {
     private fun login(user: String, password: String) {
         AVUser.logIn(user, password).subscribe(object : Observer<AVUser> {
             override fun onSubscribe(d: Disposable) {
-                Log.i(TAG, "onSubscribe")
+                MyLog.i(_tag, "login onSubscribe")
             }
 
             override fun onNext(t: AVUser) {
@@ -89,11 +90,11 @@ class LoginFragment : Fragment() {
                 // 重置spinner初始位置
                 loginViewModel.saveFirstPosition(0)
                 loginViewModel.saveSecondPosition(0)
-                Log.i(TAG, "登陆成功")
+                MyLog.i(_tag, "login onNext")
             }
 
             override fun onError(e: Throwable) {
-                Log.i(TAG, "onError")
+                MyLog.i(_tag, "login onError ", e)
             }
 
             override fun onComplete() {
@@ -104,7 +105,7 @@ class LoginFragment : Fragment() {
                         })
                         activity?.finish()
                     }
-                Log.i(TAG, "onComplete")
+                MyLog.i(_tag, "login onComplete")
             }
         })
     }

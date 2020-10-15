@@ -12,12 +12,14 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.room.home.Sector
+import com.seekerzhouk.accountbook.utils.MyLog
 import java.text.NumberFormat
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
 
 class PieView : View {
+    private val tag = PieView::class.java.name
 
     constructor(context: Context) : this(context, null)
 
@@ -67,8 +69,7 @@ class PieView : View {
             field = value
             initData(field)
             invalidate()
-            Log.i("000", sectorList.size.toString())
-            Log.i("000", sectorList.toString())
+            MyLog.i(tag, "set sectorList : $value")
         }
 
     // 总宽高
@@ -113,8 +114,6 @@ class PieView : View {
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-//        Log.i("HomeFragment","onDraw")
-        var i = 0
         var currentStartAngle: Float = startAngle
         val r: Float = (min(totalWidth, totalHeight) / 2 * 0.5).toFloat()
         rectF.set(-r, -r, r, r)

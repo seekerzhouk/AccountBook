@@ -10,6 +10,7 @@ import com.seekerzhouk.accountbook.room.details.Record
 import com.seekerzhouk.accountbook.room.details.RecordsDatabase
 import com.seekerzhouk.accountbook.room.home.*
 import com.seekerzhouk.accountbook.utils.ConsumptionUtil
+import com.seekerzhouk.accountbook.utils.MyLog
 import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -18,7 +19,7 @@ import kotlinx.coroutines.channels.Channel
 
 
 class MyRepository private constructor(val context: Context) {
-    private val TAG = MyRepository::class.simpleName
+    private val tag = MyRepository::class.java.name
 
     companion object {
         private var instance: MyRepository? = null
@@ -89,7 +90,6 @@ class MyRepository private constructor(val context: Context) {
                 LeanCloudOperation.cloudUserFormHasInit(channel)
                 val result = channel.receive()
                 if (result) { // 3.查找的结果是已经初始化，return true
-                    Log.i(TAG, "---channel.receive()$result")
                     SharedPreferencesUtil.saveUserCloudFormStatus(context, user.username, true)
                     return@async true
                 } else {
@@ -224,11 +224,11 @@ class MyRepository private constructor(val context: Context) {
             whereEqualTo("userName", SharedPreferencesUtil.getUserName(context))
         }.findInBackground().subscribe(object : Observer<List<AVObject>> {
             override fun onSubscribe(d: Disposable) {
-
+                MyLog.i(tag, "syncData(): findInBackground onSubscribe")
             }
 
             override fun onNext(results: List<AVObject>) {
-                Log.i(TAG, "syncRecords---onNext")
+                MyLog.i(tag, "syncData(): findInBackground onNext")
                 CoroutineScope(Dispatchers.IO).launch {
                     localDataCleared()
                     Array(results.size) { i ->
@@ -250,10 +250,11 @@ class MyRepository private constructor(val context: Context) {
             }
 
             override fun onError(e: Throwable) {
-
+                MyLog.i(tag, "syncData(): findInBackground onError ",e)
             }
 
             override fun onComplete() {
+                MyLog.i(tag, "syncData(): findInBackground onComplete")
             }
         })
     }

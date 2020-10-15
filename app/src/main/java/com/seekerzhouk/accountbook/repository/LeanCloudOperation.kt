@@ -1,6 +1,5 @@
 package com.seekerzhouk.accountbook.repository
 
-import android.util.Log
 import cn.leancloud.AVObject
 import cn.leancloud.AVQuery
 import cn.leancloud.AVUser
@@ -11,6 +10,7 @@ import com.seekerzhouk.accountbook.room.home.ExpendSector
 import com.seekerzhouk.accountbook.room.home.IncomePillar
 import com.seekerzhouk.accountbook.room.home.IncomeSector
 import com.seekerzhouk.accountbook.utils.ConsumptionUtil
+import com.seekerzhouk.accountbook.utils.MyLog
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 object LeanCloudOperation {
 
-    private val TAG = LeanCloudOperation::class.simpleName
+    private val tag = LeanCloudOperation::class.java.name
 
     /**
      * 初始化云端用户数据
@@ -98,11 +98,7 @@ object LeanCloudOperation {
         } else {
             records[0].date.substring(5, 7).plus("月")
         }
-        val user = AVUser.getCurrentUser()
-        if (user == null) {
-            Log.i(TAG, "user == null")
-            return
-        }
+        val user = AVUser.getCurrentUser() ?: return
         if (user.username != record.userName) {
             throw Exception("userName Inconsistent!")
         }
@@ -127,9 +123,11 @@ object LeanCloudOperation {
         }.also {
             it.firstInBackground.subscribe(object : Observer<AVObject> {
                 override fun onSubscribe(d: Disposable) {
+                    MyLog.i(tag, "updateExpendPillar firstInBackground onSubscribe")
                 }
 
                 override fun onNext(t: AVObject) {
+                    MyLog.i(tag, "updateExpendPillar firstInBackground onNext")
                     CoroutineScope(Dispatchers.IO).launch {
                         // 再更新
                         AVObject.createWithoutData(ExpendPillar::class.simpleName, t.objectId)
@@ -140,19 +138,19 @@ object LeanCloudOperation {
                                 )
                             }.saveInBackground().subscribe(object : Observer<AVObject> {
                                 override fun onSubscribe(d: Disposable) {
-                                    Log.i(TAG, "uploadIncomeSector---update--onSubscribe")
+                                    MyLog.i(tag, "updateExpendPillar---update--onSubscribe")
                                 }
 
                                 override fun onNext(t: AVObject) {
-                                    Log.i(TAG, "uploadIncomeSector---update--onNext")
+                                    MyLog.i(tag, "updateExpendPillar---update--onNext")
                                 }
 
                                 override fun onError(e: Throwable) {
-                                    Log.i(TAG, "uploadIncomeSector---update--onError")
+                                    MyLog.i(tag, "updateExpendPillar---update--onError", e)
                                 }
 
                                 override fun onComplete() {
-                                    Log.i(TAG, "uploadIncomeSector---update--onComplete")
+                                    MyLog.i(tag, "updateExpendPillar---update--onComplete")
                                 }
 
                             })
@@ -161,9 +159,11 @@ object LeanCloudOperation {
                 }
 
                 override fun onError(e: Throwable) {
+                    MyLog.i(tag, "updateExpendPillar firstInBackground onError ", e)
                 }
 
                 override fun onComplete() {
+                    MyLog.i(tag, "updateExpendPillar firstInBackground onComplete")
                 }
 
             })
@@ -181,9 +181,11 @@ object LeanCloudOperation {
         }.also {
             it.firstInBackground.subscribe(object : Observer<AVObject> {
                 override fun onSubscribe(d: Disposable) {
+                    MyLog.i(tag, "updateIncomePillar firstInBackground onSubscribe")
                 }
 
                 override fun onNext(t: AVObject) {
+                    MyLog.i(tag, "updateIncomePillar firstInBackground onNext")
                     CoroutineScope(Dispatchers.IO).launch {
                         // 再更新
                         AVObject.createWithoutData(IncomePillar::class.simpleName, t.objectId)
@@ -194,19 +196,19 @@ object LeanCloudOperation {
                                 )
                             }.saveInBackground().subscribe(object : Observer<AVObject> {
                                 override fun onSubscribe(d: Disposable) {
-                                    Log.i(TAG, "uploadIncomeSector---update--onSubscribe")
+                                    MyLog.i(tag, "updateIncomePillar---update--onSubscribe")
                                 }
 
                                 override fun onNext(t: AVObject) {
-                                    Log.i(TAG, "uploadIncomeSector---update--onNext")
+                                    MyLog.i(tag, "updateIncomePillar---update--onNext")
                                 }
 
                                 override fun onError(e: Throwable) {
-                                    Log.i(TAG, "uploadIncomeSector---update--onError")
+                                    MyLog.i(tag, "updateIncomePillar---update--onError", e)
                                 }
 
                                 override fun onComplete() {
-                                    Log.i(TAG, "uploadIncomeSector---update--onComplete")
+                                    MyLog.i(tag, "updateIncomePillar---update--onComplete")
                                 }
 
                             })
@@ -215,9 +217,11 @@ object LeanCloudOperation {
                 }
 
                 override fun onError(e: Throwable) {
+                    MyLog.i(tag, "updateIncomePillar firstInBackground onError", e)
                 }
 
                 override fun onComplete() {
+                    MyLog.i(tag, "updateIncomePillar firstInBackground onComplete")
                 }
 
             })
@@ -235,9 +239,11 @@ object LeanCloudOperation {
         }.also {
             it.firstInBackground.subscribe(object : Observer<AVObject> {
                 override fun onSubscribe(d: Disposable) {
+                    MyLog.i(tag, "updateExpendSector firstInBackground onSubscribe")
                 }
 
                 override fun onNext(t: AVObject) {
+                    MyLog.i(tag, "updateExpendSector firstInBackground onNext")
                     CoroutineScope(Dispatchers.IO).launch {
                         // 再更新
                         AVObject.createWithoutData(ExpendSector::class.simpleName, t.objectId)
@@ -248,19 +254,19 @@ object LeanCloudOperation {
                                 )
                             }.saveInBackground().subscribe(object : Observer<AVObject> {
                                 override fun onSubscribe(d: Disposable) {
-                                    Log.i(TAG, "uploadIncomeSector---update--onSubscribe")
+                                    MyLog.i(tag, "updateExpendSector---update--onSubscribe")
                                 }
 
                                 override fun onNext(t: AVObject) {
-                                    Log.i(TAG, "uploadIncomeSector---update--onNext")
+                                    MyLog.i(tag, "updateExpendSector---update--onNext")
                                 }
 
                                 override fun onError(e: Throwable) {
-                                    Log.i(TAG, "uploadIncomeSector---update--onError")
+                                    MyLog.i(tag, "updateExpendSector---update--onError", e)
                                 }
 
                                 override fun onComplete() {
-                                    Log.i(TAG, "uploadIncomeSector---update--onComplete")
+                                    MyLog.i(tag, "updateExpendSector---update--onComplete")
                                 }
 
                             })
@@ -269,9 +275,11 @@ object LeanCloudOperation {
                 }
 
                 override fun onError(e: Throwable) {
+                    MyLog.i(tag, "updateExpendSector firstInBackground onError", e)
                 }
 
                 override fun onComplete() {
+                    MyLog.i(tag, "updateExpendSector firstInBackground onComplete")
                 }
 
             })
@@ -289,11 +297,11 @@ object LeanCloudOperation {
         }.also {
             it.firstInBackground.subscribe(object : Observer<AVObject> {
                 override fun onSubscribe(d: Disposable) {
-                    Log.i(TAG, "uploadIncomeSector---onSubscribe")
+                    MyLog.i(tag, "updateIncomeSector firstInBackground onSubscribe")
                 }
 
                 override fun onNext(t: AVObject) {
-                    Log.i(TAG, "uploadIncomeSector---onNext")
+                    MyLog.i(tag, "updateIncomeSector firstInBackground onNext")
                     CoroutineScope(Dispatchers.IO).launch {
                         // 再更新
                         AVObject.createWithoutData(IncomeSector::class.simpleName, t.objectId)
@@ -304,19 +312,19 @@ object LeanCloudOperation {
                                 )
                             }.saveInBackground().subscribe(object : Observer<AVObject> {
                                 override fun onSubscribe(d: Disposable) {
-                                    Log.i(TAG, "uploadIncomeSector---update--onSubscribe")
+                                    MyLog.i(tag, "updateIncomeSector---update--onSubscribe")
                                 }
 
                                 override fun onNext(t: AVObject) {
-                                    Log.i(TAG, "uploadIncomeSector---update--onNext")
+                                    MyLog.i(tag, "updateIncomeSector---update--onNext")
                                 }
 
                                 override fun onError(e: Throwable) {
-                                    Log.i(TAG, "uploadIncomeSector---update--onError")
+                                    MyLog.i(tag, "updateIncomeSector---update--onError", e)
                                 }
 
                                 override fun onComplete() {
-                                    Log.i(TAG, "uploadIncomeSector---update--onComplete")
+                                    MyLog.i(tag, "updateIncomeSector---update--onComplete")
                                 }
 
                             })
@@ -326,11 +334,11 @@ object LeanCloudOperation {
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.i(TAG, "uploadIncomeSector---onError")
+                    MyLog.i(tag, "updateIncomeSector firstInBackground onError", e)
                 }
 
                 override fun onComplete() {
-                    Log.i(TAG, "uploadIncomeSector---onComplete")
+                    MyLog.i(tag, "updateIncomeSector firstInBackground onComplete")
                 }
 
             })
@@ -353,20 +361,20 @@ object LeanCloudOperation {
         }.also {
             it.saveInBackground().subscribe(object : Observer<AVObject> {
                 override fun onSubscribe(d: Disposable) {
-                    Log.i(TAG, "onSubscribe")
+                    MyLog.i(tag, "uploadRecord onSubscribe")
                 }
 
                 override fun onNext(t: AVObject) {
-                    Log.i(TAG, "存储成功")
+                    MyLog.i(tag, "uploadRecord onNext")
                 }
 
                 override fun onError(e: Throwable) {
                     e.printStackTrace()
-                    Log.i(TAG, "onError")
+                    MyLog.i(tag, "uploadRecord onError", e)
                 }
 
                 override fun onComplete() {
-                    Log.i(TAG, "onComplete")
+                    MyLog.i(tag, "uploadRecord onComplete")
                 }
 
             })
@@ -382,11 +390,11 @@ object LeanCloudOperation {
             whereEqualTo("userName", user.username)
         }.findInBackground().subscribe(object : Observer<List<AVObject>> {
             override fun onSubscribe(d: Disposable) {
-                Log.i(TAG, "---onSubscribe")
+                MyLog.i(tag, "cloudUserFormHasInit---onSubscribe")
             }
 
             override fun onNext(t: List<AVObject>) {
-                Log.i(TAG, "---onNext")
+                MyLog.i(tag, "cloudUserFormHasInit---onNext")
                 CoroutineScope(Dispatchers.IO).launch {
                     if (t.isEmpty()) {
                         channel.send(false)
@@ -398,7 +406,7 @@ object LeanCloudOperation {
             }
 
             override fun onError(e: Throwable) {
-                Log.i(TAG, "---onError")
+                MyLog.i(tag, "cloudUserFormHasInit---onError", e)
                 CoroutineScope(Dispatchers.IO).launch {
                     channel.send(false)
                     channel.close()
@@ -406,7 +414,7 @@ object LeanCloudOperation {
             }
 
             override fun onComplete() {
-                Log.i(TAG, "---onComplete")
+                MyLog.i(tag, "cloudUserFormHasInit---onComplete")
             }
 
         })

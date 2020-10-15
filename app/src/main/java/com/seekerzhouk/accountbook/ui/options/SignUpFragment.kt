@@ -1,5 +1,6 @@
 package com.seekerzhouk.accountbook.ui.options
 
+import android.nfc.Tag
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -9,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import cn.leancloud.AVUser
 import com.seekerzhouk.accountbook.R
+import com.seekerzhouk.accountbook.utils.MyLog
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_sign_up.*
@@ -17,7 +19,7 @@ import kotlinx.coroutines.launch
 
 class SignUpFragment : Fragment() {
 
-    private val TAG = "SignUpFragment"
+    private val _tag = SignUpFragment::class.java.name
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -106,17 +108,16 @@ class SignUpFragment : Fragment() {
         }.also {
             it.signUpInBackground().subscribe(object : Observer<AVUser> {
                 override fun onSubscribe(d: Disposable) {
-                    Log.i(TAG, "onSubscribe")
+                    MyLog.i(_tag, "signUp onSubscribe")
                 }
 
                 override fun onNext(t: AVUser) {
 
-                    Log.i(TAG, "注册成功")
+                    MyLog.i(_tag, "signUp onNext")
                 }
 
                 override fun onError(e: Throwable) {
-                    e.printStackTrace()
-                    Log.i(TAG, "onError")
+                    MyLog.i(_tag, "signUp onError ", e)
                 }
 
                 override fun onComplete() {
@@ -124,7 +125,7 @@ class SignUpFragment : Fragment() {
                         .laterDismiss(1500) {}
                     signUpLayout.visibility = View.GONE
                     succeedLayout.visibility = View.VISIBLE
-                    Log.i(TAG, "onComplete")
+                    MyLog.i(_tag, "signUp onComplete")
                 }
 
             })

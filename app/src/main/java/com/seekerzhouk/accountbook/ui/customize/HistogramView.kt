@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.room.home.Pillar
+import com.seekerzhouk.accountbook.utils.MyLog
 import kotlin.math.max
 
 class HistogramView : View {
@@ -28,7 +29,7 @@ class HistogramView : View {
         textPaint.isAntiAlias = true
     }
 
-    private val TAG = "HistogramView"
+    private val tag = HistogramView::class.java.name
 
 
     // 直方图的宽高
@@ -74,8 +75,7 @@ class HistogramView : View {
             }
             average = sum / pillarList.size
             invalidate()
-            Log.i(TAG, "set()" + pillarList.size.toString())
-            Log.i(TAG, "set() $pillarList")
+            MyLog.i(tag, "set pillarList :  $pillarList")
         }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -119,7 +119,6 @@ class HistogramView : View {
         canvas.restore()
         canvas.save()
         canvas.translate(histogramWidth.toFloat(), 0F)
-        Log.i(TAG, "onDraw()" + pillarList.size.toString())
         for (element in pillarList) {
             val histogramHeight = element.moneySum / moneyPerY
             val moneyTextY = -histogramHeight - 20 // 金额文字的Y坐标
@@ -143,6 +142,5 @@ class HistogramView : View {
         linePaint.color = Color.BLACK
         linePath.rLineTo(mWidth, 0F)
         canvas.drawPath(linePath, linePaint)
-        Log.i(TAG, "onDraw()")
     }
 }
