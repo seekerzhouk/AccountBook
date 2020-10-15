@@ -204,6 +204,7 @@ class MyRepository private constructor(val context: Context) {
                 expendPillarDao.updateExpendPillar(userName, pillar.date, pillar.moneySum)
             }
         }
+        MyLog.i(tag,"insertLocalData finished.")
     }
 
     // 清除/清零本地数据
@@ -243,6 +244,7 @@ class MyRepository private constructor(val context: Context) {
                         )
                     }.also { records ->
                         insertLocalData(*records)
+                        MyLog.i(tag, "syncData(): syncData finished.")
                         delay(1_000)
                         SharedPreferencesUtil.saveHasSyncFinished(context, true)
                     }

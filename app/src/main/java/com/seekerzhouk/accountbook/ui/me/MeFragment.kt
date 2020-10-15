@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.ui.options.SetBackgroundActivity
 import com.seekerzhouk.accountbook.ui.customize.CommonDialog
@@ -49,6 +50,10 @@ class MeFragment : Fragment() {
                 // 点击logout按钮，实际上没有登出账号。SDK已经记录了登录的用户。除非使用AVUser.logOut()才会登出。
                 meViewModel.saveIsLogin(false)
             }
+        }
+
+        cl_about.setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_me_to_aboutActivity)
         }
 
         cl_sync.setOnClickListener {

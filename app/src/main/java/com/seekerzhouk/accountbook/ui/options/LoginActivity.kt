@@ -41,9 +41,4 @@ class LoginActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    override fun finish() {
-        super.finish()
-        overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
-    }
 }

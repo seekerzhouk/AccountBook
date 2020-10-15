@@ -32,6 +32,8 @@
     <string name="dialog_message">登出后产生的数据记录仍属于本用户，继续登出吗？</string>
     <string name="sync_data">同步数据</string>
     <string name="sync_data_message">确定同步云端数据吗？</string>
+    <string name="git_hub_link">https://github.com/seekerzhouk/AccountBook</string>
+    <string name="author">seekerzhouk</string>
 
 
 </resources>

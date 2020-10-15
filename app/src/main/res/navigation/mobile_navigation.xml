@@ -23,13 +23,12 @@
         android:label="@string/title_me"
         tools:layout="@layout/fragment_me" >
         <action
-            android:id="@+id/action_navigation_me_to_loginActivity"
-            app:destination="@id/loginActivity"
-            app:enterAnim="@anim/slide_right_in"
-            app:exitAnim="@anim/slide_left_out" />
+            android:id="@+id/action_navigation_me_to_aboutActivity"
+            app:destination="@id/aboutActivity" />
     </fragment>
     <activity
-        android:id="@+id/loginActivity"
-        android:name="com.seekerzhouk.accountbook.ui.options.LoginActivity"
-        android:label="LoginActivity" />
+        android:id="@+id/aboutActivity"
+        android:name="com.seekerzhouk.accountbook.ui.options.AboutActivity"
+        android:label="activity_about"
+        tools:layout="@layout/activity_about" />
 </navigation>
