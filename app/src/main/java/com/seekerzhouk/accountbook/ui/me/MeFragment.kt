@@ -14,6 +14,7 @@ import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.ui.options.SetBackgroundActivity
 import com.seekerzhouk.accountbook.ui.customize.CommonDialog
 import com.seekerzhouk.accountbook.ui.options.LoginActivity
+import com.seekerzhouk.accountbook.utils.NetworkUtil
 import com.seekerzhouk.accountbook.utils.SDCardHelper
 import com.seekerzhouk.accountbook.viewmodel.MeViewModel
 import kotlinx.android.synthetic.main.fragment_me.*
@@ -62,7 +63,9 @@ class MeFragment : Fragment() {
                 getString(R.string.sync_data),
                 getString(R.string.sync_data_message)
             ) {
-                meViewModel.saveIsNeedSync(true)
+                NetworkUtil.doWithNetwork(requireContext()) {
+                    meViewModel.saveIsNeedSync(true)
+                }
             }
         }
 

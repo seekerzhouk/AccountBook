@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import cn.leancloud.AVUser
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.utils.MyLog
+import com.seekerzhouk.accountbook.utils.NetworkUtil
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_sign_up.*
@@ -85,11 +86,12 @@ class SignUpFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            lifecycleScope.launch(Dispatchers.IO) {
-                signUp(signUpUserName.text.trim().toString(), signUpPassword.text.trim().toString())
+            NetworkUtil.doWithNetwork(requireContext()) {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    signUp(signUpUserName.text.trim().toString(), signUpPassword.text.trim().toString())
+                }
+                signUpProgressBar.show(getString(R.string.is_signing_up))
             }
-
-            signUpProgressBar.show(getString(R.string.is_signing_up))
         }
 
         returnToLogin.setOnClickListener {

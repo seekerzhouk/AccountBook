@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import cn.leancloud.AVUser
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.utils.MyLog
+import com.seekerzhouk.accountbook.utils.NetworkUtil
 import com.seekerzhouk.accountbook.viewmodel.LoginViewModel
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -64,12 +65,12 @@ class LoginFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            lifecycleScope.launch(Dispatchers.IO) {
-                login(loginUserName.text.trim().toString(), loginPassword.text.trim().toString())
+            NetworkUtil.doWithNetwork(requireContext()) {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    login(loginUserName.text.trim().toString(), loginPassword.text.trim().toString())
+                }
+                loginProgressBar.show(getString(R.string.is_logging))
             }
-
-            loginProgressBar.show(getString(R.string.is_logging))
-
         }
 
         textViewSignUp.setOnClickListener {
