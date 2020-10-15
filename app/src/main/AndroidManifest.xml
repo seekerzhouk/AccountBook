@@ -23,7 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.options.AboutActivity"></activity>
+        <activity
+            android:name=".ui.options.AboutActivity"
+            android:label="@string/about" />
         <activity android:name=".ui.options.LoginActivity" />
         <activity
             android:name=".ui.options.SetBackgroundActivity"
