@@ -35,6 +35,6 @@
     <string name="git_hub_link">https://github.com/seekerzhouk/AccountBook</string>
     <string name="author">seekerzhouk</string>
     <string name="network_disconnected">网络不可用，请检查网络连接！</string>
-
+    <string name="bg_pic_suffix">_bg_pic.png</string>
 
 </resources>

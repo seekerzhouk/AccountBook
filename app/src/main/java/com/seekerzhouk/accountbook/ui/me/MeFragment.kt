@@ -98,12 +98,17 @@ class MeFragment : Fragment() {
         if (!isLogin) {
             return
         }
-        SDCardHelper.loadBitmapFromSDCard(requireContext().externalCacheDir?.absolutePath + "/background_pic.png")
-            ?.let {
+        SDCardHelper.loadBitmapFromSDCard(
+            requireContext().externalCacheDir?.absolutePath + "/${meViewModel.getUserName()}"
+                    + getString(R.string.bg_pic_suffix)
+        ).let {
+            if (it == null) {
+                toolbar_imageView.setImageResource(R.drawable.src_avatar)
+            }else{
                 toolbar_imageView.setImageBitmap(it)
             }
+        }
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == toLoginCode && resultCode == Activity.RESULT_OK) {

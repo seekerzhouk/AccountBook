@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Environment
+import com.seekerzhouk.accountbook.R
 import java.io.*
 
 object SDCardHelper {
@@ -23,7 +24,7 @@ object SDCardHelper {
                 FileOutputStream(
                     File(
                         context.externalCacheDir,
-                        "background_pic.png"
+                        SharedPreferencesUtil.getUserName(context) + context.getString(R.string.bg_pic_suffix)
                     )
                 )
             ).also {

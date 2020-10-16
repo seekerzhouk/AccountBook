@@ -12,6 +12,7 @@ import android.view.MenuItem
 import android.view.View
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.utils.SDCardHelper
+import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
 import kotlinx.android.synthetic.main.activity_set_background.*
 
 private const val FROM_ALBUM = 2
@@ -22,7 +23,10 @@ class SetBackgroundActivity : AppCompatActivity() {
         setContentView(R.layout.activity_set_background)
         // 显示左上角返回按钮
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        SDCardHelper.loadBitmapFromSDCard(this.externalCacheDir?.absolutePath + "/background_pic.png")
+        SDCardHelper.loadBitmapFromSDCard(
+            this.externalCacheDir?.absolutePath +
+                    "/${SharedPreferencesUtil.getUserName(this)}" + getString(R.string.bg_pic_suffix)
+        )
             ?.let {
                 imageView.setImageBitmap(it)
             }
