@@ -121,12 +121,13 @@ class HistogramView : View {
         canvas.translate(histogramWidth.toFloat(), 0F)
         for (element in pillarList) {
             val histogramHeight = element.moneySum / moneyPerY
+            val moneyTextX = 0F
             val moneyTextY = -histogramHeight - 20 // 金额文字的Y坐标
             canvas.run {
                 drawText(element.date, (histogramWidth / 4).toFloat(), monthTextY, textPaint)
                 drawText(
                     element.moneySum.toString(),
-                    (histogramWidth / 4).toFloat(),
+                    moneyTextX,
                     moneyTextY,
                     textPaint
                 )
