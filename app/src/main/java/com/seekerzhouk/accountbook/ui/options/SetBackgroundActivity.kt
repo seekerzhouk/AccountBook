@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.ContextMenu
 import android.view.Menu
@@ -17,12 +16,10 @@ import kotlinx.android.synthetic.main.activity_set_background.*
 
 private const val FROM_ALBUM = 2
 
-class SetBackgroundActivity : AppCompatActivity() {
+class SetBackgroundActivity : OptionActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_set_background)
-        // 显示左上角返回按钮
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         SDCardHelper.loadBitmapFromSDCard(
             this.externalCacheDir?.absolutePath +
                     "/${SharedPreferencesUtil.getUserName(this)}" + getString(R.string.bg_pic_suffix)
@@ -56,7 +53,6 @@ class SetBackgroundActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> finish()
             R.id.change_background -> toPickPicture()
         }
         return super.onOptionsItemSelected(item)
