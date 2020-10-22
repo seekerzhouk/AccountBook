@@ -31,4 +31,6 @@
     <color name="pie_view_7">#69A9C6</color>
     <color name="pie_view_8">#DCB67E</color>
     <!-- end   pieView的颜色-->
+
+    <color name="feed_back_text_bg_color">#64A7D3</color>
 </resources>

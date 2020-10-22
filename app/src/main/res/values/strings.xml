@@ -33,8 +33,13 @@
     <string name="sync_data">同步数据</string>
     <string name="sync_data_message">确定同步云端数据吗？</string>
     <string name="git_hub_link">https://github.com/seekerzhouk/AccountBook</string>
-    <string name="author">seekerzhouk</string>
+    <string name="author_name">seekerzhouk</string>
     <string name="network_disconnected">网络不可用，请检查网络连接！</string>
     <string name="bg_pic_suffix">_bg_pic.png</string>
-
+    <string name="version">version:</string>
+    <string name="author_string">作者：</string>
+    <string name="git_hub">GitHub：</string>
+    <string name="input_your_feedback">请描述您的问题或反馈：</string>
+    <string name="submit">提交</string>
+    <string name="bg_submit">您的反馈已成功提交！</string>
 </resources>

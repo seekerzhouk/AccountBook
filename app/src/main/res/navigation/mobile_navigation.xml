@@ -25,10 +25,18 @@
         <action
             android:id="@+id/action_navigation_me_to_aboutActivity"
             app:destination="@id/aboutActivity" />
+        <action
+            android:id="@+id/action_navigation_me_to_feedBackActivity"
+            app:destination="@id/feedBackActivity" />
     </fragment>
     <activity
         android:id="@+id/aboutActivity"
         android:name="com.seekerzhouk.accountbook.ui.options.AboutActivity"
         android:label="activity_about"
         tools:layout="@layout/activity_about" />
+    <activity
+        android:id="@+id/feedBackActivity"
+        android:name="com.seekerzhouk.accountbook.ui.options.FeedbackActivity"
+        android:label="activity_feed_back"
+        tools:layout="@layout/activity_feed_back" />
 </navigation>

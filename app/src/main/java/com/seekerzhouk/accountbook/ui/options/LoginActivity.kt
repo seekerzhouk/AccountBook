@@ -19,13 +19,11 @@ fun <F : Fragment> AppCompatActivity.getFragment(fragmentClass: Class<F>): F? {
     return null
 }
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : OptionActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        // 显示左上角返回按钮
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -39,6 +37,6 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
-        return super.onOptionsItemSelected(item)
+        return false
     }
 }

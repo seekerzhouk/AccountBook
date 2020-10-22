@@ -59,7 +59,7 @@
         android:layout_width="283dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:background="@drawable/button_login_selector"
+        android:background="@drawable/button_common_selector"
         android:text="登陆"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"

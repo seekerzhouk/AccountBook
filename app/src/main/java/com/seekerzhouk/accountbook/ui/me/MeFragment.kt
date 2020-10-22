@@ -69,6 +69,10 @@ class MeFragment : Fragment() {
             }
         }
 
+        cl_help_and_feedback.setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_me_to_feedBackActivity)
+        }
+
         textViewClickToLogin.setOnClickListener {
             startActivityForResult(
                 Intent(requireContext(), LoginActivity::class.java),
@@ -104,7 +108,7 @@ class MeFragment : Fragment() {
         ).let {
             if (it == null) {
                 toolbar_imageView.setImageResource(R.drawable.src_avatar)
-            }else{
+            } else {
                 toolbar_imageView.setImageBitmap(it)
             }
         }

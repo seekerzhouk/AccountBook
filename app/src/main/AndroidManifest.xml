@@ -12,7 +12,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <!-- LeanCloud基本模块（必须）END -->
 
     <application
         android:name=".MyApplication"
@@ -23,6 +22,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".ui.options.FeedbackActivity"
+            android:label="@string/help_and_feedback" />
         <activity
             android:name=".ui.options.AboutActivity"
             android:label="@string/about" />
