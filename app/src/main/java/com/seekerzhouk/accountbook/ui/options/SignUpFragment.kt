@@ -88,7 +88,10 @@ class SignUpFragment : Fragment() {
 
             NetworkUtil.doWithNetwork(requireContext()) {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    signUp(signUpUserName.text.trim().toString(), signUpPassword.text.trim().toString())
+                    signUp(
+                        signUpUserName.text.trim().toString(),
+                        signUpPassword.text.trim().toString()
+                    )
                 }
                 signUpProgressBar.show(getString(R.string.is_signing_up))
             }
@@ -119,14 +122,17 @@ class SignUpFragment : Fragment() {
                 }
 
                 override fun onError(e: Throwable) {
+                    signUpProgressBar.onJobError(getString(R.string.user_name_already_exists))
+                        .laterDismiss(1500) {}
                     MyLog.i(_tag, "signUp onError ", e)
                 }
 
                 override fun onComplete() {
                     signUpProgressBar.onJobFinished(getString(R.string.successfully_sign_up))
-                        .laterDismiss(1500) {}
-                    signUpLayout.visibility = View.GONE
-                    succeedLayout.visibility = View.VISIBLE
+                        .laterDismiss(1500) {
+                            signUpLayout.visibility = View.GONE
+                            succeedLayout.visibility = View.VISIBLE
+                        }
                     MyLog.i(_tag, "signUp onComplete")
                 }
 

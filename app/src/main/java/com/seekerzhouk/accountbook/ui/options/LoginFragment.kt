@@ -95,6 +95,8 @@ class LoginFragment : Fragment() {
             }
 
             override fun onError(e: Throwable) {
+                loginProgressBar.onJobError(getString(R.string.Incorrect_username_or_password))
+                    .laterDismiss(1500){}
                 MyLog.i(_tag, "login onError ", e)
             }
 

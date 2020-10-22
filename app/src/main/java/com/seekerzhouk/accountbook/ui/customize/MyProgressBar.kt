@@ -23,9 +23,18 @@ class MyProgressBar : CardView {
     }
 
     fun onJobFinished(finishDescription: String): MyProgressBar {
+        imageView_inside.setImageResource(R.drawable.ic_finish)
         imageView_inside.visibility = View.VISIBLE
         progressBar_inside.visibility = View.INVISIBLE
         setDescription(finishDescription)
+        return this
+    }
+
+    fun onJobError(errorDescription: String): MyProgressBar {
+        imageView_inside.setImageResource(R.drawable.ic_fail)
+        imageView_inside.visibility = View.VISIBLE
+        progressBar_inside.visibility = View.INVISIBLE
+        setDescription(errorDescription)
         return this
     }
 
