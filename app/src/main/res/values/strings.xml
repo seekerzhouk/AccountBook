@@ -43,5 +43,6 @@
     <string name="git_hub">GitHub：</string>
     <string name="input_your_feedback">请描述您的问题或反馈：</string>
     <string name="submit">提交</string>
+    <string name="feedback_without_description">您还没有填写任何描述！</string>
     <string name="bg_submit">您的反馈已成功提交！</string>
 </resources>

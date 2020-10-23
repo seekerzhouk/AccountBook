@@ -13,6 +13,14 @@ class FeedbackActivity : OptionActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed_back)
         feedback_submit.setOnClickListener {
+            if (editTextTextMultiLine.text.toString().isEmpty()) {
+                Toast.makeText(
+                    this,
+                    getString(R.string.feedback_without_description),
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
             submitFeedback()
             Toast.makeText(this, getString(R.string.bg_submit), Toast.LENGTH_SHORT).show()
         }
