@@ -9,15 +9,19 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.ui.options.SetBackgroundActivity
 import com.seekerzhouk.accountbook.ui.customize.CommonDialog
 import com.seekerzhouk.accountbook.ui.options.LoginActivity
+import com.seekerzhouk.accountbook.utils.MyLog
 import com.seekerzhouk.accountbook.utils.NetworkUtil
 import com.seekerzhouk.accountbook.utils.SDCardHelper
 import com.seekerzhouk.accountbook.viewmodel.MeViewModel
 import kotlinx.android.synthetic.main.fragment_me.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class MeFragment : Fragment() {
@@ -119,6 +123,10 @@ class MeFragment : Fragment() {
             if (data?.extras?.getBoolean("isLogin")!!) {
                 meViewModel.saveIsLogin(true)
                 meViewModel.cloudAndLocalDataInit()
+                lifecycleScope.launch {
+                    delay(5_000)
+                    onResume()
+                }
             }
         }
     }

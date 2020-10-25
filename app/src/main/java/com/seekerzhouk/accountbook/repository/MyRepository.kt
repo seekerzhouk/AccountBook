@@ -1,11 +1,13 @@
 package com.seekerzhouk.accountbook.repository
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import cn.leancloud.AVObject
 import cn.leancloud.AVQuery
 import cn.leancloud.AVUser
+import com.bumptech.glide.Glide
+import com.seekerzhouk.accountbook.R
+import com.seekerzhouk.accountbook.room.UserAddInfo
 import com.seekerzhouk.accountbook.room.details.Record
 import com.seekerzhouk.accountbook.room.details.RecordsDatabase
 import com.seekerzhouk.accountbook.room.home.*
@@ -16,6 +18,10 @@ import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 
 
 class MyRepository private constructor(val context: Context) {
@@ -102,7 +108,7 @@ class MyRepository private constructor(val context: Context) {
 
         //只有本地和云端都被初始化过，才需要进行同步。云端没被初始化过，没有数据，不需要同步。
         if (isLocalInit.await() && isCloudInit.await()) {
-            SharedPreferencesUtil.saveIsNeedSync(context,true)
+            SharedPreferencesUtil.saveIsNeedSync(context, true)
         }
 
     }
@@ -204,7 +210,7 @@ class MyRepository private constructor(val context: Context) {
                 expendPillarDao.updateExpendPillar(userName, pillar.date, pillar.moneySum)
             }
         }
-        MyLog.i(tag,"insertLocalData finished.")
+        MyLog.i(tag, "insertLocalData finished.")
     }
 
     // 清除/清零本地数据
@@ -252,13 +258,71 @@ class MyRepository private constructor(val context: Context) {
             }
 
             override fun onError(e: Throwable) {
-                MyLog.i(tag, "syncData(): findInBackground onError ",e)
+                MyLog.i(tag, "syncData(): findInBackground onError ", e)
             }
 
             override fun onComplete() {
                 MyLog.i(tag, "syncData(): findInBackground onComplete")
             }
         })
+    }
+
+    fun loadBgPic() {
+        AVQuery<AVObject>(UserAddInfo::class.java.simpleName).apply {
+            whereEqualTo("userName", AVUser.getCurrentUser().username)
+        }.firstInBackground.subscribe(object : Observer<AVObject> {
+            override fun onSubscribe(d: Disposable) {
+                MyLog.i(tag, "loadBgPic onSubscribe()")
+            }
+
+            override fun onNext(t: AVObject) {
+                MyLog.i(tag, "loadBgPic onNext()")
+                CoroutineScope(Dispatchers.IO).launch {
+                    val file =
+                        Glide.with(context).downloadOnly().load(t.get("bgUrl") as String)
+                            .submit().get()
+                    copyToLocal(file)
+
+                }
+            }
+
+            override fun onError(e: Throwable) {
+                MyLog.i(tag, "loadBgPic onError()", e)
+            }
+
+            override fun onComplete() {
+                MyLog.i(tag, "loadBgPic onComplete()")
+            }
+
+        })
+
+    }
+
+    private fun copyToLocal(file: File) {
+        MyLog.i(tag, "copyToLocal ")
+        val targetFile = File(
+            context.externalCacheDir?.absolutePath +
+                    "/${SharedPreferencesUtil.getUserName(context)}" + context.getString(R.string.bg_pic_suffix)
+        )
+        var fileInputStream: FileInputStream? = null
+        var fileOutputStream: FileOutputStream? = null
+        try {
+            fileInputStream = FileInputStream(file)
+            fileOutputStream = FileOutputStream(targetFile)
+            val buffer = ByteArray(1024)
+            while (fileInputStream.read(buffer) > 0) {
+                fileOutputStream.write(buffer)
+            }
+        } catch (e: Exception) {
+            MyLog.i(tag, "copyToLocal onError ", e)
+        } finally {
+            try {
+                fileInputStream?.close()
+                fileOutputStream?.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
     }
 
     fun deleteRecords(userName: String) {

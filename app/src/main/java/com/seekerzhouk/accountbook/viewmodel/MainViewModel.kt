@@ -48,6 +48,10 @@ class MainViewModel(application: Application, private val handle: SavedStateHand
         myRepository.syncData()
     }
 
+    fun loadBgPic() {
+        myRepository.loadBgPic()
+    }
+
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             syncFinishedKey -> loadHasSyncFinished()

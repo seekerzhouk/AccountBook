@@ -9,14 +9,29 @@ import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import cn.leancloud.AVFile
+import cn.leancloud.AVObject
+import cn.leancloud.AVQuery
+import cn.leancloud.AVUser
 import com.seekerzhouk.accountbook.R
+import com.seekerzhouk.accountbook.room.UserAddInfo
+import com.seekerzhouk.accountbook.utils.MyLog
 import com.seekerzhouk.accountbook.utils.SDCardHelper
 import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_set_background.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
 
 private const val FROM_ALBUM = 2
 
 class SetBackgroundActivity : OptionActivity() {
+
+    private val tag = SetBackgroundActivity::class.java.simpleName
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_set_background)
@@ -77,6 +92,7 @@ class SetBackgroundActivity : OptionActivity() {
                         getBitmapFromUri(uri)?.let {
                             imageView.setImageBitmap(it)
                             SDCardHelper.saveBitmapToPrivateCache(it, this)
+                            savePicToCloud()
                         }
                     }
                 }
@@ -88,4 +104,81 @@ class SetBackgroundActivity : OptionActivity() {
         contentResolver.openFileDescriptor(uri, "r")?.use {
             BitmapFactory.decodeFileDescriptor(it.fileDescriptor)
         }
+
+    private fun savePicToCloud() {
+        val file = AVFile.withAbsoluteLocalPath(
+            SharedPreferencesUtil.getUserName(this) + getString(R.string.bg_pic_suffix),
+            this.externalCacheDir?.absolutePath +
+                    "/${SharedPreferencesUtil.getUserName(this)}" + getString(R.string.bg_pic_suffix)
+        )
+        file.saveInBackground(true).subscribe(object : Observer<AVFile> {
+            override fun onSubscribe(d: Disposable) {
+                MyLog.i(tag, "savePicToCloud onSubscribe()")
+            }
+
+            override fun onNext(t: AVFile) {
+                MyLog.i(tag, "savePicToCloud onNext()")
+                saveBgPicUrl(t.url)
+            }
+
+            override fun onError(e: Throwable) {
+                MyLog.i(tag, "savePicToCloud onError()", e)
+            }
+
+            override fun onComplete() {
+                MyLog.i(tag, "savePicToCloud onComplete()")
+            }
+
+        })
+    }
+
+    private fun saveBgPicUrl(url: String) {
+        // 先查询
+        AVQuery<AVObject>(UserAddInfo::class.java.simpleName).apply {
+            whereEqualTo("userName", AVUser.getCurrentUser().username)
+        }.firstInBackground.subscribe(object : Observer<AVObject> {
+            override fun onSubscribe(d: Disposable) {
+                MyLog.i(tag, "saveBgPicUrl onSubscribe()")
+            }
+
+            override fun onNext(t: AVObject) {
+                MyLog.i(tag, "saveBgPicUrl onNext()")
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    // 再更新
+                    AVObject.createWithoutData(UserAddInfo::class.simpleName, t.objectId)
+                        .apply {
+                            put("bgUrl", url)
+                        }.saveInBackground().subscribe(object : Observer<AVObject> {
+                            override fun onSubscribe(d: Disposable) {
+                                MyLog.i(tag, "saveBgPicUrl ---saveInBackground onSubscribe()")
+                            }
+
+                            override fun onNext(t: AVObject) {
+                                MyLog.i(tag, "saveBgPicUrl ---saveInBackground onNext()")
+                            }
+
+                            override fun onError(e: Throwable) {
+                                MyLog.i(tag, "saveBgPicUrl ---saveInBackground onError()", e)
+                            }
+
+                            override fun onComplete() {
+                                MyLog.i(tag, "saveBgPicUrl ---saveInBackground onComplete()")
+                            }
+
+                        })
+                }
+            }
+
+            override fun onError(e: Throwable) {
+                MyLog.i(tag, "saveBgPicUrl onError()", e)
+            }
+
+            override fun onComplete() {
+                MyLog.i(tag, "saveBgPicUrl onComplete()")
+            }
+
+        })
+
+    }
 }

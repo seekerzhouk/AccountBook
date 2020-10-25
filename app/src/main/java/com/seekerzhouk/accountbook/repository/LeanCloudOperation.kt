@@ -3,7 +3,7 @@ package com.seekerzhouk.accountbook.repository
 import cn.leancloud.AVObject
 import cn.leancloud.AVQuery
 import cn.leancloud.AVUser
-import com.seekerzhouk.accountbook.room.CloudFormStatus
+import com.seekerzhouk.accountbook.room.UserAddInfo
 import com.seekerzhouk.accountbook.room.details.Record
 import com.seekerzhouk.accountbook.room.home.ExpendPillar
 import com.seekerzhouk.accountbook.room.home.ExpendSector
@@ -76,7 +76,7 @@ object LeanCloudOperation {
                 AVObject.saveAllInBackground(it)
             }
 
-            AVObject(CloudFormStatus::class.simpleName).apply {
+            AVObject(UserAddInfo::class.simpleName).apply {
                 put("user", user)
                 put("userName", user.username)
                 put("hasInit", true)
@@ -386,7 +386,7 @@ object LeanCloudOperation {
      */
     fun cloudUserFormHasInit(channel: Channel<Boolean>) {
         val user = AVUser.getCurrentUser()
-        AVQuery<AVObject>(CloudFormStatus::class.simpleName).apply {
+        AVQuery<AVObject>(UserAddInfo::class.simpleName).apply {
             whereEqualTo("userName", user.username)
         }.findInBackground().subscribe(object : Observer<List<AVObject>> {
             override fun onSubscribe(d: Disposable) {
