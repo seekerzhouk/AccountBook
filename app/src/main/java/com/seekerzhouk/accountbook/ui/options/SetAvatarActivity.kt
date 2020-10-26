@@ -20,26 +20,25 @@ import com.seekerzhouk.accountbook.utils.SDCardHelper
 import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.activity_set_background.*
+import kotlinx.android.synthetic.main.activity_set_avatar.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class SetBackgroundActivity : OptionActivity() {
-    private val fromSetBg = 2
-    private val tag = SetBackgroundActivity::class.java.simpleName
+class SetAvatarActivity : OptionActivity() {
+    private val fromSetAvatar = 3
+    private val tag = SetAvatarActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_set_background)
+        setContentView(R.layout.activity_set_avatar)
         SDCardHelper.loadBitmapFromSDCard(
             this.externalCacheDir?.absolutePath +
-                    "/${SharedPreferencesUtil.getUserName(this)}" + getString(R.string.bg_pic_suffix)
-        )
-            ?.let {
-                imageView_bg.setImageBitmap(it)
-            }
-        registerForContextMenu(imageView_bg)
+                    "/${SharedPreferencesUtil.getUserName(this)}" + getString(R.string.avatar_pic_suffix)
+        )?.let {
+            imageView_avatar.setImageBitmap(it)
+        }
+        registerForContextMenu(imageView_avatar)
     }
 
     override fun onCreateContextMenu(
@@ -48,24 +47,24 @@ class SetBackgroundActivity : OptionActivity() {
         menuInfo: ContextMenu.ContextMenuInfo?
     ) {
         super.onCreateContextMenu(menu, v, menuInfo)
-        menuInflater.inflate(R.menu.set_background_menu, menu)
+        menuInflater.inflate(R.menu.set_avatar_menu, menu)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.set_background_menu, menu)
+        menuInflater.inflate(R.menu.set_avatar_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.change_background -> toPickPicture()
+            R.id.change_avatar -> toPickPicture()
         }
         return super.onContextItemSelected(item)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.change_background -> toPickPicture()
+            R.id.change_avatar -> toPickPicture()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -76,22 +75,22 @@ class SetBackgroundActivity : OptionActivity() {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "image/*"
         }.also {
-            startActivityForResult(it, fromSetBg)
+            startActivityForResult(it, fromSetAvatar)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            fromSetBg -> {
+            fromSetAvatar -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     data.data?.let { uri ->
                         getBitmapFromUri(uri)?.let {
-                            imageView_bg.setImageBitmap(it)
+                            imageView_avatar.setImageBitmap(it)
                             SDCardHelper.saveBitmapToPrivateCache(
                                 it,
                                 this,
-                                SharedPreferencesUtil.getUserName(this) + getString(R.string.bg_pic_suffix)
+                                SharedPreferencesUtil.getUserName(this) + getString(R.string.avatar_pic_suffix)
                             )
                             savePicToCloud()
                         }
@@ -108,9 +107,9 @@ class SetBackgroundActivity : OptionActivity() {
 
     private fun savePicToCloud() {
         val file = AVFile.withAbsoluteLocalPath(
-            SharedPreferencesUtil.getUserName(this) + getString(R.string.bg_pic_suffix),
+            SharedPreferencesUtil.getUserName(this) + getString(R.string.avatar_pic_suffix),
             this.externalCacheDir?.absolutePath +
-                    "/${SharedPreferencesUtil.getUserName(this)}" + getString(R.string.bg_pic_suffix)
+                    "/${SharedPreferencesUtil.getUserName(this)}" + getString(R.string.avatar_pic_suffix)
         )
         file.saveInBackground(true).subscribe(object : Observer<AVFile> {
             override fun onSubscribe(d: Disposable) {
@@ -119,7 +118,7 @@ class SetBackgroundActivity : OptionActivity() {
 
             override fun onNext(t: AVFile) {
                 MyLog.i(tag, "savePicToCloud onNext()")
-                saveBgPicUrl(t.url)
+                saveAvatarPicUrl(t.url)
             }
 
             override fun onError(e: Throwable) {
@@ -133,38 +132,38 @@ class SetBackgroundActivity : OptionActivity() {
         })
     }
 
-    private fun saveBgPicUrl(url: String) {
+    private fun saveAvatarPicUrl(url: String) {
         // 先查询
         AVQuery<AVObject>(UserAddInfo::class.java.simpleName).apply {
             whereEqualTo("userName", AVUser.getCurrentUser().username)
         }.firstInBackground.subscribe(object : Observer<AVObject> {
             override fun onSubscribe(d: Disposable) {
-                MyLog.i(tag, "saveBgPicUrl onSubscribe()")
+                MyLog.i(tag, "saveAvatarPicUrl onSubscribe()")
             }
 
             override fun onNext(t: AVObject) {
-                MyLog.i(tag, "saveBgPicUrl onNext()")
+                MyLog.i(tag, "saveAvatarPicUrl onNext()")
 
                 CoroutineScope(Dispatchers.IO).launch {
                     // 再更新
                     AVObject.createWithoutData(UserAddInfo::class.simpleName, t.objectId)
                         .apply {
-                            put("bgUrl", url)
+                            put("avatarUrl", url)
                         }.saveInBackground().subscribe(object : Observer<AVObject> {
                             override fun onSubscribe(d: Disposable) {
-                                MyLog.i(tag, "saveBgPicUrl ---saveInBackground onSubscribe()")
+                                MyLog.i(tag, "saveAvatarPicUrl ---saveInBackground onSubscribe()")
                             }
 
                             override fun onNext(t: AVObject) {
-                                MyLog.i(tag, "saveBgPicUrl ---saveInBackground onNext()")
+                                MyLog.i(tag, "saveAvatarPicUrl ---saveInBackground onNext()")
                             }
 
                             override fun onError(e: Throwable) {
-                                MyLog.i(tag, "saveBgPicUrl ---saveInBackground onError()", e)
+                                MyLog.i(tag, "saveAvatarPicUrl ---saveInBackground onError()", e)
                             }
 
                             override fun onComplete() {
-                                MyLog.i(tag, "saveBgPicUrl ---saveInBackground onComplete()")
+                                MyLog.i(tag, "saveAvatarPicUrl ---saveInBackground onComplete()")
                             }
 
                         })
@@ -172,11 +171,11 @@ class SetBackgroundActivity : OptionActivity() {
             }
 
             override fun onError(e: Throwable) {
-                MyLog.i(tag, "saveBgPicUrl onError()", e)
+                MyLog.i(tag, "saveAvatarPicUrl onError()", e)
             }
 
             override fun onComplete() {
-                MyLog.i(tag, "saveBgPicUrl onComplete()")
+                MyLog.i(tag, "saveAvatarPicUrl onComplete()")
             }
 
         })

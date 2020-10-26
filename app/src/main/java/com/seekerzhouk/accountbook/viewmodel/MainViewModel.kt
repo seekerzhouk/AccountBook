@@ -48,8 +48,8 @@ class MainViewModel(application: Application, private val handle: SavedStateHand
         myRepository.syncData()
     }
 
-    fun loadBgPic() {
-        myRepository.loadBgPic()
+    fun loadCloudPic() {
+        myRepository.loadCloudPic()
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {

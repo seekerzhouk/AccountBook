@@ -15,7 +15,7 @@ import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.ui.options.SetBackgroundActivity
 import com.seekerzhouk.accountbook.ui.customize.CommonDialog
 import com.seekerzhouk.accountbook.ui.options.LoginActivity
-import com.seekerzhouk.accountbook.utils.MyLog
+import com.seekerzhouk.accountbook.ui.options.SetAvatarActivity
 import com.seekerzhouk.accountbook.utils.NetworkUtil
 import com.seekerzhouk.accountbook.utils.SDCardHelper
 import com.seekerzhouk.accountbook.viewmodel.MeViewModel
@@ -44,6 +44,10 @@ class MeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         toolbar_imageView.setOnClickListener {
             startActivity(Intent(requireActivity(), SetBackgroundActivity::class.java))
+        }
+
+        cl_avatar.setOnClickListener {
+            startActivity(Intent(requireContext(), SetAvatarActivity::class.java))
         }
 
         cl_logout.setOnClickListener {
@@ -79,8 +83,7 @@ class MeFragment : Fragment() {
 
         textViewClickToLogin.setOnClickListener {
             startActivityForResult(
-                Intent(requireContext(), LoginActivity::class.java),
-                toLoginCode
+                Intent(requireContext(), LoginActivity::class.java), toLoginCode
             )
         }
 
@@ -114,6 +117,16 @@ class MeFragment : Fragment() {
                 toolbar_imageView.setImageResource(R.drawable.src_avatar)
             } else {
                 toolbar_imageView.setImageBitmap(it)
+            }
+        }
+        SDCardHelper.loadBitmapFromSDCard(
+            requireContext().externalCacheDir?.absolutePath + "/${meViewModel.getUserName()}"
+                    + getString(R.string.avatar_pic_suffix)
+        ).let {
+            if (it == null) {
+                iv_avatar.setImageResource(R.drawable.ic_me)
+            } else {
+                iv_avatar.setImageBitmap(it)
             }
         }
     }

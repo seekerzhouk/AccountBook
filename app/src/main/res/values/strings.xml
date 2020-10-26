@@ -38,6 +38,7 @@
     <string name="author_name">seekerzhouk</string>
     <string name="network_disconnected">网络不可用，请检查网络连接！</string>
     <string name="bg_pic_suffix">_bg_pic.png</string>
+    <string name="avatar_pic_suffix">_avatar_pic.png</string>
     <string name="version">version:</string>
     <string name="author_string">作者：</string>
     <string name="git_hub">GitHub：</string>
@@ -45,4 +46,5 @@
     <string name="submit">提交</string>
     <string name="feedback_without_description">您还没有填写任何描述！</string>
     <string name="bg_submit">您的反馈已成功提交！</string>
+    <string name="change_avatar">更换头像</string>
 </resources>

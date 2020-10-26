@@ -267,7 +267,50 @@ class MyRepository private constructor(val context: Context) {
         })
     }
 
-    fun loadBgPic() {
+    fun loadCloudPic() {
+        loadBgPic()
+        loadAvatar()
+    }
+
+    private fun loadAvatar() {
+        AVQuery<AVObject>(UserAddInfo::class.java.simpleName).apply {
+            whereEqualTo("userName", AVUser.getCurrentUser().username)
+        }.firstInBackground.subscribe(object : Observer<AVObject> {
+            override fun onSubscribe(d: Disposable) {
+                MyLog.i(tag, "loadAvatar onSubscribe()")
+            }
+
+            override fun onNext(t: AVObject) {
+                MyLog.i(tag, "loadAvatar onNext()")
+                t.get("avatarUrl")?.let {
+                    (it as String).also {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val file = Glide.with(context).downloadOnly().load(it).submit().get()
+                            copyToLocal(
+                                file, context.externalCacheDir?.absolutePath +
+                                        "/${SharedPreferencesUtil.getUserName(context)}" + context.getString(
+                                    R.string.avatar_pic_suffix
+                                )
+                            )
+
+                        }
+                    }
+                }
+
+            }
+
+            override fun onError(e: Throwable) {
+                MyLog.i(tag, "loadAvatar onError()", e)
+            }
+
+            override fun onComplete() {
+                MyLog.i(tag, "loadAvatar onComplete()")
+            }
+
+        })
+    }
+
+    private fun loadBgPic() {
         AVQuery<AVObject>(UserAddInfo::class.java.simpleName).apply {
             whereEqualTo("userName", AVUser.getCurrentUser().username)
         }.firstInBackground.subscribe(object : Observer<AVObject> {
@@ -277,12 +320,19 @@ class MyRepository private constructor(val context: Context) {
 
             override fun onNext(t: AVObject) {
                 MyLog.i(tag, "loadBgPic onNext()")
-                CoroutineScope(Dispatchers.IO).launch {
-                    val file =
-                        Glide.with(context).downloadOnly().load(t.get("bgUrl") as String)
-                            .submit().get()
-                    copyToLocal(file)
+                t.get("bgUrl")?.let {
+                    (it as String).also {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val file = Glide.with(context).downloadOnly().load(it).submit().get()
+                            copyToLocal(
+                                file, context.externalCacheDir?.absolutePath +
+                                        "/${SharedPreferencesUtil.getUserName(context)}" + context.getString(
+                                    R.string.bg_pic_suffix
+                                )
+                            )
 
+                        }
+                    }
                 }
             }
 
@@ -298,16 +348,13 @@ class MyRepository private constructor(val context: Context) {
 
     }
 
-    private fun copyToLocal(file: File) {
-        MyLog.i(tag, "copyToLocal ")
-        val targetFile = File(
-            context.externalCacheDir?.absolutePath +
-                    "/${SharedPreferencesUtil.getUserName(context)}" + context.getString(R.string.bg_pic_suffix)
-        )
+    private fun copyToLocal(sourceFile: File, targetPath: String) {
+        MyLog.i(tag, "copyToLocal $targetPath")
+        val targetFile = File(targetPath)
         var fileInputStream: FileInputStream? = null
         var fileOutputStream: FileOutputStream? = null
         try {
-            fileInputStream = FileInputStream(file)
+            fileInputStream = FileInputStream(sourceFile)
             fileOutputStream = FileOutputStream(targetFile)
             val buffer = ByteArray(1024)
             while (fileInputStream.read(buffer) > 0) {

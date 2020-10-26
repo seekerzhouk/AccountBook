@@ -14,7 +14,7 @@ object SDCardHelper {
     }
 
     // 保存bitmap图片到SDCard的私有Cache目录
-    fun saveBitmapToPrivateCache(bitmap: Bitmap, context: Context): Boolean {
+    fun saveBitmapToPrivateCache(bitmap: Bitmap, context: Context, path: String): Boolean {
         if (!isSDCardMounted()) {
             return false
         }
@@ -24,7 +24,7 @@ object SDCardHelper {
                 FileOutputStream(
                     File(
                         context.externalCacheDir,
-                        SharedPreferencesUtil.getUserName(context) + context.getString(R.string.bg_pic_suffix)
+                        path
                     )
                 )
             ).also {

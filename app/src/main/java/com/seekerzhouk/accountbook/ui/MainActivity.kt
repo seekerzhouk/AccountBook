@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel.isNeedSync().observe(this, Observer {
             if (it) {
-                mainViewModel.loadBgPic()
+                mainViewModel.loadCloudPic()
                 mainViewModel.syncData()
                 myProgressBar.show(getString(R.string.data_syncing))
                 mainViewModel.saveHasSyncFinished(false)

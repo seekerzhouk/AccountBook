@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- LeanCloud基本模块（必须）END -->
 
     <application
         android:name=".MyApplication"
@@ -24,6 +25,10 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".ui.options.SetAvatarActivity"
+            android:label="@string/avatar"
+            android:theme="@style/SetPicActivityTheme" />
+        <activity
             android:name=".ui.options.FeedbackActivity"
             android:label="@string/help_and_feedback" />
         <activity
@@ -33,7 +38,7 @@
         <activity
             android:name=".ui.options.SetBackgroundActivity"
             android:label="@string/background"
-            android:theme="@style/SetBackgroundActivityTheme" />
+            android:theme="@style/SetPicActivityTheme" />
         <activity
             android:name=".ui.MainActivity"
             android:label="@string/app_name">
