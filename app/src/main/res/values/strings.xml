@@ -48,4 +48,12 @@
     <string name="bg_submit">您的反馈已成功提交！</string>
     <string name="change_avatar">更换头像</string>
     <string name="not_support_username_modify">暂不支持修改用户名</string>
+    <string name="add_cancel">取消</string>
+    <string name="add_record">记一笔</string>
+    <string name="add_type">类型</string>
+    <string name="add_description">描述</string>
+    <string name="add_amount">金额</string>
+    <string name="add_input_description">请输入描述</string>
+    <string name="add_input_amount">请输入金额</string>
+    <string name="add_confirm">确定</string>
 </resources>
