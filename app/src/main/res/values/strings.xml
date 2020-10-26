@@ -47,4 +47,5 @@
     <string name="feedback_without_description">您还没有填写任何描述！</string>
     <string name="bg_submit">您的反馈已成功提交！</string>
     <string name="change_avatar">更换头像</string>
+    <string name="not_support_username_modify">暂不支持修改用户名</string>
 </resources>
