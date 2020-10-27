@@ -3,8 +3,8 @@ package com.seekerzhouk.accountbook.ui.options
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.fragment.app.viewModels
@@ -49,6 +49,14 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.title = getString(R.string.login)
+
+        loginPassword.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                buttonLogin.performClick()
+            }
+            false
+        }
+
         buttonLogin.setOnClickListener {
             if (loginUserName.text.isEmpty()) {
                 Toast.makeText(context, R.string.user_name_cannot_be_null, Toast.LENGTH_SHORT)

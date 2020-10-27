@@ -1,9 +1,11 @@
 package com.seekerzhouk.accountbook.ui.options
 
-import android.nfc.Tag
 import android.os.Bundle
-import android.util.Log
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -45,6 +47,14 @@ class SignUpFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.title = getString(R.string.sign_up)
+
+        signUpConfirmPassword.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                buttonSignUp.performClick()
+            }
+            false
+        }
+
         buttonSignUp.setOnClickListener {
             if (signUpUserName.text.isEmpty()) {
                 Toast.makeText(context, R.string.user_name_cannot_be_null, Toast.LENGTH_SHORT)
