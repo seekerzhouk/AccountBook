@@ -28,7 +28,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/mobile_navigation" />
+        app:navGraph="@navigation/main_navigation" />
 
     <com.seekerzhouk.accountbook.ui.customize.MyProgressBar
         android:id="@+id/myProgressBar"

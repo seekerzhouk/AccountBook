@@ -17,6 +17,7 @@ import com.seekerzhouk.accountbook.ui.options.SetBackgroundActivity
 import com.seekerzhouk.accountbook.ui.customize.CommonDialog
 import com.seekerzhouk.accountbook.ui.options.LoginActivity
 import com.seekerzhouk.accountbook.ui.options.SetAvatarActivity
+import com.seekerzhouk.accountbook.ui.options.SetPhoneActivity
 import com.seekerzhouk.accountbook.utils.NetworkUtil
 import com.seekerzhouk.accountbook.utils.SDCardHelper
 import com.seekerzhouk.accountbook.viewmodel.MeViewModel
@@ -57,6 +58,10 @@ class MeFragment : Fragment() {
                 getString(R.string.not_support_username_modify),
                 Toast.LENGTH_SHORT
             ).show()
+        }
+
+        cl_phone.setOnClickListener {
+            startActivity(Intent(requireContext(), SetPhoneActivity::class.java))
         }
 
         cl_logout.setOnClickListener {

@@ -4,15 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.seekerzhouk.accountbook">
 
-    <dist:module dist:instant="true" />
-
-    <!-- LeanCloud基本模块（必须）START -->
+    <dist:module dist:instant="true" /> <!-- LeanCloud基本模块（必须）START -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <!-- LeanCloud基本模块（必须）END -->
 
     <application
         android:name=".MyApplication"
@@ -24,6 +21,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".ui.options.SetPhoneActivity"
+            android:label="@string/phone_number" />
         <activity
             android:name=".ui.options.SetAvatarActivity"
             android:label="@string/avatar"
