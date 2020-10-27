@@ -30,11 +30,14 @@
             android:theme="@style/SetPicActivityTheme" />
         <activity
             android:name=".ui.options.FeedbackActivity"
-            android:label="@string/help_and_feedback" />
+            android:label="@string/help_and_feedback"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.options.AboutActivity"
             android:label="@string/about" />
-        <activity android:name=".ui.options.LoginActivity" />
+        <activity
+            android:name=".ui.options.LoginActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.options.SetBackgroundActivity"
             android:label="@string/background"
