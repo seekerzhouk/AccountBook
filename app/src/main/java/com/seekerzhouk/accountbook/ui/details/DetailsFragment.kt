@@ -1,14 +1,17 @@
 package com.seekerzhouk.accountbook.ui.details
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.SearchView.OnQueryTextListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.seekerzhouk.accountbook.R
@@ -19,18 +22,18 @@ import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
 import com.seekerzhouk.accountbook.viewmodel.DetailsViewModel
 import kotlinx.android.synthetic.main.fragment_details.*
 
-class DetailsFragment : Fragment() {
-
-    private val LOG_TAG = "DetailsFragment"
+class DetailsFragment : Fragment(),LifecycleObserver {
 
     private lateinit var myAdapter: DetailsAdapter
 
-    private lateinit var detailsViewModel: DetailsViewModel
+    private val detailsViewModel: DetailsViewModel by viewModels()
 
-    private lateinit var allRecords: LiveData<List<Record>>
-    private lateinit var pattenRecords: LiveData<List<Record>>
-    private lateinit var incomeRecords: LiveData<List<Record>>
-    private lateinit var expendRecords: LiveData<List<Record>>
+    private var allRecords: LiveData<List<Record>>? = null
+    private var pattenRecords: LiveData<List<Record>>? = null
+    private var incomeRecords: LiveData<List<Record>>? = null
+    private var expendRecords: LiveData<List<Record>>? = null
+    private var selectedIncomeRecords: LiveData<List<Record>>? = null
+    private var selectedExpendRecords: LiveData<List<Record>>? = null
 
     private var firstPosition: Int = 0
     private var secondPosition: Int = 0
@@ -52,9 +55,6 @@ class DetailsFragment : Fragment() {
         val records: ArrayList<Record> = ArrayList()
         myAdapter = DetailsAdapter(records)
         recyclerview_details.adapter = myAdapter
-
-        //viewModel
-        detailsViewModel = ViewModelProvider(this).get(DetailsViewModel::class.java)
 
         //获取上一次选定的类型
         firstPosition = SharedPreferencesUtil.getFirstPosition(requireActivity())
@@ -107,7 +107,7 @@ class DetailsFragment : Fragment() {
                             )
                         }
                     }
-                    pattenRecords.observe(requireActivity(), Observer {
+                    pattenRecords?.observe(requireActivity(), Observer {
                         myAdapter.recordList = it
                         myAdapter.notifyDataSetChanged()
                     })
@@ -150,6 +150,7 @@ class DetailsFragment : Fragment() {
                 // 手动选择spinner，第二个spinner的位置初始化为0
                 firstPosition = position
                 secondPosition = 0
+                saveSpinnerPosition()
                 secondTag = ConsumptionUtil.ALL
                 setSecondTypeSpinner()
             }
@@ -181,6 +182,7 @@ class DetailsFragment : Fragment() {
                 id: Long
             ) {
                 secondPosition = position
+                saveSpinnerPosition()
                 if (firstTag == ConsumptionUtil.ALL) {
                     secondTag = ConsumptionUtil.ALL
                     showAllRecords()
@@ -206,40 +208,45 @@ class DetailsFragment : Fragment() {
     }
 
     private fun showAllRecords() {
+        removeObservers()
         allRecords = detailsViewModel.loadAllRecords()
-        allRecords.observe(requireActivity(), Observer {
+        allRecords?.observe(this, Observer {
             myAdapter.recordList = it
             myAdapter.notifyDataSetChanged()
         })
     }
 
     private fun showAllExpendRecords() {
+        removeObservers()
         expendRecords = detailsViewModel.findExpendRecords()
-        expendRecords.observe(requireActivity(), Observer {
+        expendRecords?.observe(this, Observer {
             myAdapter.recordList = it
             myAdapter.notifyDataSetChanged()
         })
     }
 
     private fun showAllIncomeRecords() {
+        removeObservers()
         incomeRecords = detailsViewModel.findIncomeRecords()
-        incomeRecords.observe(requireActivity(), Observer {
+        incomeRecords?.observe(this, Observer {
             myAdapter.recordList = it
             myAdapter.notifyDataSetChanged()
         })
     }
 
     private fun showIncomeRecordsBySecondType(secondTag: String) {
-        val selectedIncomeRecords = detailsViewModel.findIncomeRecordsBySelectedType(secondTag)
-        selectedIncomeRecords.observe(requireActivity(), Observer {
+        removeObservers()
+        selectedIncomeRecords = detailsViewModel.findIncomeRecordsBySelectedType(secondTag)
+        selectedIncomeRecords?.observe(this, Observer {
             myAdapter.recordList = it
             myAdapter.notifyDataSetChanged()
         })
     }
 
     private fun showExpendRecordsBySecondType(secondTag: String) {
-        val selectedExpendRecords = detailsViewModel.findExpendRecordsBySelectedType(secondTag)
-        selectedExpendRecords.observe(requireActivity(), Observer {
+        removeObservers()
+        selectedExpendRecords = detailsViewModel.findExpendRecordsBySelectedType(secondTag)
+        selectedExpendRecords?.observe(this, Observer {
             myAdapter.recordList = it
             myAdapter.notifyDataSetChanged()
         })
@@ -247,6 +254,20 @@ class DetailsFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
+        saveSpinnerPosition()
+        removeObservers()
+    }
+
+    private fun removeObservers() {
+        allRecords?.removeObservers(this)
+        pattenRecords?.removeObservers(this)
+        incomeRecords?.removeObservers(this)
+        expendRecords?.removeObservers(this)
+        selectedIncomeRecords?.removeObservers(this)
+        selectedExpendRecords?.removeObservers(this)
+    }
+
+    private fun saveSpinnerPosition() {
         SharedPreferencesUtil.saveFirstPosition(requireActivity(), firstPosition)
         SharedPreferencesUtil.saveSecondPosition(requireActivity(), secondPosition)
     }
