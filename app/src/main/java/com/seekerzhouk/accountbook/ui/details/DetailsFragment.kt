@@ -18,7 +18,6 @@ import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.room.details.Record
 import com.seekerzhouk.accountbook.ui.customize.AddDialog
 import com.seekerzhouk.accountbook.utils.ConsumptionUtil
-import com.seekerzhouk.accountbook.utils.MyLog
 import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
 import com.seekerzhouk.accountbook.viewmodel.DetailsViewModel
 import kotlinx.android.synthetic.main.fragment_details.*
@@ -29,12 +28,7 @@ class DetailsFragment : Fragment(), LifecycleObserver {
 
     private val detailsViewModel: DetailsViewModel by viewModels()
 
-    private var allRecords: LiveData<List<Record>>? = null
-    private var pattenRecords: LiveData<List<Record>>? = null
-    private var incomeRecords: LiveData<List<Record>>? = null
-    private var expendRecords: LiveData<List<Record>>? = null
-    private var selectedIncomeRecords: LiveData<List<Record>>? = null
-    private var selectedExpendRecords: LiveData<List<Record>>? = null
+    private var records: LiveData<List<Record>>? = null
 
     private var firstPosition: Int = 0
     private var secondPosition: Int = 0
@@ -82,35 +76,7 @@ class DetailsFragment : Fragment(), LifecycleObserver {
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let {
                     val patten = newText.trim()
-                    if (firstTag == ConsumptionUtil.ALL) {
-                        pattenRecords = detailsViewModel.findRecordWithPatten(patten)
-                    }
-                    if (firstTag == ConsumptionUtil.INCOME) {
-                        pattenRecords = when (secondTag) {
-                            ConsumptionUtil.ALL -> detailsViewModel.findIncomeRecordsWithPatten(
-                                patten
-                            )
-                            else -> detailsViewModel.findIncomeRecordsBySelectedTypeWithPatten(
-                                secondTag,
-                                patten
-                            )
-                        }
-                    }
-                    if (firstTag == ConsumptionUtil.EXPEND) {
-                        pattenRecords = when (secondTag) {
-                            ConsumptionUtil.ALL -> detailsViewModel.findExpendRecordsWithPatten(
-                                patten
-                            )
-                            else -> detailsViewModel.findExpendRecordsBySelectedTypeWithPatten(
-                                secondTag,
-                                patten
-                            )
-                        }
-                    }
-                    pattenRecords?.observe(requireActivity(), Observer {
-                        MyLog.i("search_view", "onQueryTextChange")
-                        myAdapter.submitList(it)
-                    })
+                    setSearchRecords(patten)
                 }
                 return true
             }
@@ -119,10 +85,38 @@ class DetailsFragment : Fragment(), LifecycleObserver {
             search_view.isIconified = false
         }
         search_view.setOnCloseListener {
-            MyLog.i("search_view", "onClose")
-            pattenRecords?.removeObservers(requireActivity())
+            records?.removeObservers(this)
             false
         }
+    }
+
+    private fun setSearchRecords(patten: String) {
+        records?.removeObservers(this)
+        records = when (firstTag) {
+            ConsumptionUtil.ALL -> detailsViewModel.findRecordWithPatten(patten)
+
+            ConsumptionUtil.INCOME -> {
+                if (secondTag == ConsumptionUtil.ALL) {
+                    detailsViewModel.findIncomeRecordsWithPatten(patten)
+                } else {
+                    detailsViewModel.findIncomeRecordsBySelectedTypeWithPatten(secondTag, patten)
+                }
+            }
+
+            ConsumptionUtil.EXPEND -> {
+                if (secondTag == ConsumptionUtil.ALL) {
+                    detailsViewModel.findExpendRecordsWithPatten(patten)
+                } else {
+                    detailsViewModel.findExpendRecordsBySelectedTypeWithPatten(secondTag, patten)
+                }
+            }
+
+            else -> null
+        }
+
+        records?.observe(this, Observer {
+            myAdapter.submitList(it)
+        })
     }
 
     //设置first_type_spinner
@@ -147,17 +141,13 @@ class DetailsFragment : Fragment(), LifecycleObserver {
                 id: Long
             ) {
                 firstTag = ConsumptionUtil.fistTypeList[position]
-                // 首次初始化（fragment被创建）的时候，第二个spinner的position就是上次SharedPreferences保存的位置
-                if (firstPosition == position) {
-                    setSecondTypeSpinner()
-                    return
+                if (firstPosition != position) {
+                    // 手动选择spinner，第二个spinner的位置初始化为0
+                    firstPosition = position
+                    secondPosition = 0
                 }
-                // 手动选择spinner，第二个spinner的位置初始化为0
-                firstPosition = position
-                secondPosition = 0
-                saveSpinnerPosition()
-                secondTag = ConsumptionUtil.ALL
                 setSecondTypeSpinner()
+
             }
         }
     }
@@ -186,72 +176,43 @@ class DetailsFragment : Fragment(), LifecycleObserver {
                 position: Int,
                 id: Long
             ) {
+                // 调用两次，达到关闭searchView的目的
+                repeat(2) {
+                    search_view.isIconified = true
+                }
+                secondTag = secondTypeList[position]
                 secondPosition = position
                 saveSpinnerPosition()
-                if (firstTag == ConsumptionUtil.ALL) {
-                    secondTag = ConsumptionUtil.ALL
-                    showAllRecords()
-                }
-                if (firstTag == ConsumptionUtil.INCOME) {
-                    secondTag = ConsumptionUtil.incomeTypeList[position]
-                    if (secondTag == ConsumptionUtil.ALL) {
-                        showAllIncomeRecords()
-                    } else {
-                        showIncomeRecordsBySecondType(secondTag)
-                    }
-                }
-                if (firstTag == ConsumptionUtil.EXPEND) {
-                    secondTag = ConsumptionUtil.expendTypeList[position]
-                    if (secondTag == ConsumptionUtil.ALL) {
-                        showAllExpendRecords()
-                    } else {
-                        showExpendRecordsBySecondType(secondTag)
-                    }
-                }
+                setSpinnerRecords()
             }
         }
     }
 
-    private fun showAllRecords() {
-        removeObservers()
-        allRecords = detailsViewModel.loadAllRecords()
-        allRecords?.observe(this, Observer {
-            myAdapter.submitList(it)
-            scrollRecyclerView()
-        })
-    }
+    private fun setSpinnerRecords() {
+        records?.removeObservers(this)
+        records = when (firstTag) {
+            ConsumptionUtil.ALL -> detailsViewModel.loadAllRecords()
 
-    private fun showAllExpendRecords() {
-        removeObservers()
-        expendRecords = detailsViewModel.findExpendRecords()
-        expendRecords?.observe(this, Observer {
-            myAdapter.submitList(it)
-            scrollRecyclerView()
-        })
-    }
+            ConsumptionUtil.INCOME -> {
+                if (secondTag == ConsumptionUtil.ALL) {
+                    detailsViewModel.findIncomeRecords()
+                } else {
+                    detailsViewModel.findIncomeRecordsBySelectedType(secondTag)
+                }
+            }
 
-    private fun showAllIncomeRecords() {
-        removeObservers()
-        incomeRecords = detailsViewModel.findIncomeRecords()
-        incomeRecords?.observe(this, Observer {
-            myAdapter.submitList(it)
-            scrollRecyclerView()
-        })
-    }
+            ConsumptionUtil.EXPEND -> {
+                if (secondTag == ConsumptionUtil.ALL) {
+                    detailsViewModel.findExpendRecords()
+                } else {
+                    detailsViewModel.findExpendRecordsBySelectedType(secondTag)
+                }
+            }
 
-    private fun showIncomeRecordsBySecondType(secondTag: String) {
-        removeObservers()
-        selectedIncomeRecords = detailsViewModel.findIncomeRecordsBySelectedType(secondTag)
-        selectedIncomeRecords?.observe(this, Observer {
-            myAdapter.submitList(it)
-            scrollRecyclerView()
-        })
-    }
+            else -> null
+        }
 
-    private fun showExpendRecordsBySecondType(secondTag: String) {
-        removeObservers()
-        selectedExpendRecords = detailsViewModel.findExpendRecordsBySelectedType(secondTag)
-        selectedExpendRecords?.observe(this, Observer {
+        records?.observe(this, Observer {
             myAdapter.submitList(it)
             scrollRecyclerView()
         })
@@ -260,16 +221,7 @@ class DetailsFragment : Fragment(), LifecycleObserver {
     override fun onPause() {
         super.onPause()
         saveSpinnerPosition()
-        removeObservers()
-    }
-
-    private fun removeObservers() {
-        allRecords?.removeObservers(this)
-        pattenRecords?.removeObservers(this)
-        incomeRecords?.removeObservers(this)
-        expendRecords?.removeObservers(this)
-        selectedIncomeRecords?.removeObservers(this)
-        selectedExpendRecords?.removeObservers(this)
+        records?.removeObservers(this)
     }
 
     private fun saveSpinnerPosition() {
