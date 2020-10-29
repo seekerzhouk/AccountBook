@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.SearchView.OnQueryTextListener
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleObserver
@@ -18,11 +18,12 @@ import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.room.details.Record
 import com.seekerzhouk.accountbook.ui.customize.AddDialog
 import com.seekerzhouk.accountbook.utils.ConsumptionUtil
+import com.seekerzhouk.accountbook.utils.MyLog
 import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
 import com.seekerzhouk.accountbook.viewmodel.DetailsViewModel
 import kotlinx.android.synthetic.main.fragment_details.*
 
-class DetailsFragment : Fragment(),LifecycleObserver {
+class DetailsFragment : Fragment(), LifecycleObserver {
 
     private lateinit var myAdapter: DetailsAdapter
 
@@ -52,8 +53,7 @@ class DetailsFragment : Fragment(),LifecycleObserver {
         //recyclerView
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
         recyclerview_details.layoutManager = layoutManager
-        val records: ArrayList<Record> = ArrayList()
-        myAdapter = DetailsAdapter(records)
+        myAdapter = DetailsAdapter()
         recyclerview_details.adapter = myAdapter
 
         //获取上一次选定的类型
@@ -74,7 +74,7 @@ class DetailsFragment : Fragment(),LifecycleObserver {
      * 设置 searchView
      */
     private fun setSearchView() {
-        search_view.setOnQueryTextListener(object : OnQueryTextListener {
+        search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -108,8 +108,8 @@ class DetailsFragment : Fragment(),LifecycleObserver {
                         }
                     }
                     pattenRecords?.observe(requireActivity(), Observer {
-                        myAdapter.recordList = it
-                        myAdapter.notifyDataSetChanged()
+                        MyLog.i("search_view", "onQueryTextChange")
+                        myAdapter.submitList(it)
                     })
                 }
                 return true
@@ -117,6 +117,11 @@ class DetailsFragment : Fragment(),LifecycleObserver {
         })
         search_view.setOnClickListener {
             search_view.isIconified = false
+        }
+        search_view.setOnCloseListener {
+            MyLog.i("search_view", "onClose")
+            pattenRecords?.removeObservers(requireActivity())
+            false
         }
     }
 
@@ -211,8 +216,8 @@ class DetailsFragment : Fragment(),LifecycleObserver {
         removeObservers()
         allRecords = detailsViewModel.loadAllRecords()
         allRecords?.observe(this, Observer {
-            myAdapter.recordList = it
-            myAdapter.notifyDataSetChanged()
+            myAdapter.submitList(it)
+            scrollRecyclerView()
         })
     }
 
@@ -220,8 +225,8 @@ class DetailsFragment : Fragment(),LifecycleObserver {
         removeObservers()
         expendRecords = detailsViewModel.findExpendRecords()
         expendRecords?.observe(this, Observer {
-            myAdapter.recordList = it
-            myAdapter.notifyDataSetChanged()
+            myAdapter.submitList(it)
+            scrollRecyclerView()
         })
     }
 
@@ -229,8 +234,8 @@ class DetailsFragment : Fragment(),LifecycleObserver {
         removeObservers()
         incomeRecords = detailsViewModel.findIncomeRecords()
         incomeRecords?.observe(this, Observer {
-            myAdapter.recordList = it
-            myAdapter.notifyDataSetChanged()
+            myAdapter.submitList(it)
+            scrollRecyclerView()
         })
     }
 
@@ -238,8 +243,8 @@ class DetailsFragment : Fragment(),LifecycleObserver {
         removeObservers()
         selectedIncomeRecords = detailsViewModel.findIncomeRecordsBySelectedType(secondTag)
         selectedIncomeRecords?.observe(this, Observer {
-            myAdapter.recordList = it
-            myAdapter.notifyDataSetChanged()
+            myAdapter.submitList(it)
+            scrollRecyclerView()
         })
     }
 
@@ -247,8 +252,8 @@ class DetailsFragment : Fragment(),LifecycleObserver {
         removeObservers()
         selectedExpendRecords = detailsViewModel.findExpendRecordsBySelectedType(secondTag)
         selectedExpendRecords?.observe(this, Observer {
-            myAdapter.recordList = it
-            myAdapter.notifyDataSetChanged()
+            myAdapter.submitList(it)
+            scrollRecyclerView()
         })
     }
 
@@ -270,5 +275,18 @@ class DetailsFragment : Fragment(),LifecycleObserver {
     private fun saveSpinnerPosition() {
         SharedPreferencesUtil.saveFirstPosition(requireActivity(), firstPosition)
         SharedPreferencesUtil.saveSecondPosition(requireActivity(), secondPosition)
+    }
+
+    private fun scrollRecyclerView() {
+        when (myAdapter.itemCount) {
+            in 0..5 -> return
+            in 5..7 -> {
+                val height = recyclerview_details.getChildAt(0).height
+                recyclerview_details.smoothScrollBy(0, -height)
+            }
+            else -> {
+                recyclerview_details.smoothScrollToPosition(0)
+            }
+        }
     }
 }
