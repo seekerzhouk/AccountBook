@@ -105,21 +105,21 @@ object SharedPreferencesUtil {
     }
 
     /**
-     * 保存状态：具体用户的LeanCloud数据表格是否已经初始化
+     * 保存状态：具体用户的UserAddInfo是否已经初始化
      * @param userName 用户名
      * @param hasInit 是否已经初始化
      */
-    fun saveUserCloudFormStatus(context: Context, userName: String, hasInit: Boolean) {
+    fun saveUserAddInfoStatus(context: Context, userName: String, hasInit: Boolean) {
         val key = "cloud_$userName"
         saveValue(context, key, hasInit)
     }
 
     /**
-     * 获取状态：具体用户的LeanCloud数据表格是否已经初始化
+     * 获取状态：具体用户的UserAddInfo是否已经初始化
      * @param userName 用户名
      * @return Boolean 是否已经初始化
      */
-    fun getUserCloudFormStatus(context: Context, userName: String): Boolean {
+    fun getUserAddInfoStatus(context: Context, userName: String): Boolean {
         val key = "cloud_$userName"
         return getValue(context, key, false)
     }

@@ -64,13 +64,13 @@ class MyRepository private constructor(val context: Context) {
         insertLocalData(*records)
         // 检查用户是否登陆过
         if (SharedPreferencesUtil.getUserName(context).isNotEmpty()) {
-            // 登陆过,则用此用户向 LeanCloud云端插入Record，更新IncomeSector、ExpendSector、IncomePillar、ExpendPillar四个数据表
+            // 登陆过,则用此用户向 LeanCloud云端插入Record
             LeanCloudOperation.uploadToCloud(*records)
         }
     }
 
     /**
-     * 登陆之后需要进行的操作，初始化cloud和本地的用户数据表格
+     * 登陆之后需要进行的操作，初始化cloud的UserAddInfo和本地的用户数据表格
      */
     fun cloudAndLocalUserFormInit() = CoroutineScope(Dispatchers.IO).launch {
         val user = AVUser.getCurrentUser()
@@ -86,21 +86,21 @@ class MyRepository private constructor(val context: Context) {
         }
 
         val isCloudInit = async {
-            // 1.检查LeanCloud云端是否初始化用户数据
-            if (SharedPreferencesUtil.getUserCloudFormStatus(context, user.username)) {
+            // 1.检查LeanCloud云端是否初始化UserAddInfo
+            if (SharedPreferencesUtil.getUserAddInfoStatus(context, user.username)) {
                 // 2.SharedPreferences记录过云端被初始化，返回true
                 return@async true
             } else {
                 // 2.SharedPreferences没有记录过云端被初始化，需要去查找云端
                 val channel = Channel<Boolean>()
-                LeanCloudOperation.cloudUserFormHasInit(channel)
+                LeanCloudOperation.cloudUserAddInfoHasInit(channel)
                 val result = channel.receive()
                 if (result) { // 3.查找的结果是已经初始化，return true
-                    SharedPreferencesUtil.saveUserCloudFormStatus(context, user.username, true)
+                    SharedPreferencesUtil.saveUserAddInfoStatus(context, user.username, true)
                     return@async true
                 } else {
                     // 4.查找的结果是没有被初始化，则要初始化云端用户数据。返回false
-                    LeanCloudOperation.initCloudUserForm()
+                    LeanCloudOperation.initCloudUserAddInfo()
                     return@async false
                 }
             }
