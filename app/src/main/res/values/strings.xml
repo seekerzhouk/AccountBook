@@ -66,4 +66,7 @@
     <string name="not_bind">未绑定</string>
     <string name="confirm_bind">确认绑定</string>
     <string name="not_yet_implement">暂不开放</string>
+    <string name="delete">删除</string>
+    <string name="deleted_a_record">删除了一条记录</string>
+    <string name="revoke">撤销</string>
 </resources>

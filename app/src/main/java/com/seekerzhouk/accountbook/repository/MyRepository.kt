@@ -217,7 +217,7 @@ class MyRepository private constructor(val context: Context) {
     private fun localDataCleared() {
         val userName = SharedPreferencesUtil.getUserName(context)
         // 先清除Record
-        deleteRecords(userName)
+        clearUserRecords(userName)
         // 再清零四表格
         clearIncomeSectors(userName)
         clearIncomePillars(userName)
@@ -372,12 +372,16 @@ class MyRepository private constructor(val context: Context) {
         }
     }
 
-    fun deleteRecords(userName: String) {
-        recordDao.deleteUserRecords(userName)
+    private fun clearUserRecords(userName: String) {
+        recordDao.clearUserRecords(userName)
     }
 
     fun updateRecords(vararg records: Record) {
         recordDao.updateRecords(*records)
+    }
+
+    fun deleteRecords(vararg records: Record) {
+        recordDao.deleteRecords(*records)
     }
 
     fun loadAllRecords(): LiveData<List<Record>> {

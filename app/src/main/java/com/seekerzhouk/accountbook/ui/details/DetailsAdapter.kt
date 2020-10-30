@@ -24,6 +24,11 @@ class DetailsAdapter() :
 
     }) {
 
+    private var mPosition = -1
+    fun getPosition(): Int {
+        return mPosition
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.detail_item_view, parent, false)
@@ -42,6 +47,11 @@ class DetailsAdapter() :
         }
         holder.textMoney.text = money
 
+        holder.itemView.isLongClickable = true
+        holder.itemView.setOnLongClickListener {
+            mPosition = holder.adapterPosition
+            false
+        }
     }
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

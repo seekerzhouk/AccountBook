@@ -1,9 +1,7 @@
 package com.seekerzhouk.accountbook.ui.details
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.widget.SearchView
@@ -12,8 +10,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.room.details.Record
 import com.seekerzhouk.accountbook.ui.customize.AddDialog
@@ -35,6 +35,8 @@ class DetailsFragment : Fragment(), LifecycleObserver {
     private var firstTag: String = ConsumptionUtil.ALL
     private var secondTag: String = ConsumptionUtil.ALL
 
+    private var oldCount = 0
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,10 +47,12 @@ class DetailsFragment : Fragment(), LifecycleObserver {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //recyclerView
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
-        recyclerview_details.layoutManager = layoutManager
+        recyclerview_details.layoutManager = LinearLayoutManager(context)
         myAdapter = DetailsAdapter()
         recyclerview_details.adapter = myAdapter
+        // 上下文菜单
+        registerForContextMenu(recyclerview_details)
+//        setItemTouchHelper()
 
         //获取上一次选定的类型
         firstPosition = SharedPreferencesUtil.getFirstPosition(requireActivity())
@@ -62,6 +66,66 @@ class DetailsFragment : Fragment(), LifecycleObserver {
         setFirstTypeSpinner()
 
         setSearchView()
+    }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu,
+        v: View,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        activity?.menuInflater?.inflate(R.menu.recyclerview_menu, menu)
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.delete_item) {
+            val recordToDelete = records?.value?.get(myAdapter.getPosition())
+            if (recordToDelete != null) {
+                detailsViewModel.deleteRecords(recordToDelete)
+                Snackbar.make(
+                    requireView(),
+                    getString(R.string.deleted_a_record),
+                    Snackbar.LENGTH_SHORT
+                ).apply {
+                    setAction(getString(R.string.revoke)) {
+                        detailsViewModel.insertRecords(recordToDelete)
+                    }
+                }.show()
+            }
+        }
+        return super.onContextItemSelected(item)
+    }
+
+    /**
+     * 实现侧滑删除
+     */
+    private fun setItemTouchHelper() {
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.END) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val recordToDelete = records?.value?.get(viewHolder.adapterPosition)
+                if (recordToDelete != null) {
+                    detailsViewModel.deleteRecords(recordToDelete)
+                    Snackbar.make(
+                        requireView(),
+                        getString(R.string.deleted_a_record),
+                        Snackbar.LENGTH_SHORT
+                    ).apply {
+                        setAction(getString(R.string.revoke)) {
+                            detailsViewModel.insertRecords(recordToDelete)
+                        }
+                    }.show()
+                }
+            }
+
+        }).attachToRecyclerView(recyclerview_details)
     }
 
     /**
@@ -230,15 +294,11 @@ class DetailsFragment : Fragment(), LifecycleObserver {
     }
 
     private fun scrollRecyclerView() {
-        when (myAdapter.itemCount) {
-            in 0..5 -> return
-            in 5..7 -> {
-                val height = recyclerview_details.getChildAt(0).height
-                recyclerview_details.smoothScrollBy(0, -height)
-            }
-            else -> {
-                recyclerview_details.smoothScrollToPosition(0)
+        if (myAdapter.itemCount - oldCount == 1) {
+            recyclerview_details.getChildAt(0)?.height?.let {
+                recyclerview_details.smoothScrollBy(0, -it)
             }
         }
+        oldCount = myAdapter.itemCount
     }
 }

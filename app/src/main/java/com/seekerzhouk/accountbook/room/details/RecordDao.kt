@@ -12,8 +12,11 @@ interface RecordDao {
     @Update
     fun updateRecords(vararg records: Record)
 
+    @Delete
+    fun deleteRecords(vararg records: Record)
+
     @Query("DELETE FROM Record WHERE userName is :userName")
-    fun deleteUserRecords(userName: String)
+    fun clearUserRecords(userName: String)
 
     /**
      * 查找 所有记录
