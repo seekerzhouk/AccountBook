@@ -65,7 +65,7 @@ class MyRepository private constructor(val context: Context) {
         // 检查用户是否登陆过
         if (SharedPreferencesUtil.getUserName(context).isNotEmpty()) {
             // 登陆过,则用此用户向 LeanCloud云端插入Record
-            LeanCloudOperation.uploadToCloud(*records)
+            LeanCloudOperation.uploadRecord(*records)
         }
     }
 
@@ -372,6 +372,10 @@ class MyRepository private constructor(val context: Context) {
         }
     }
 
+    private fun deleteLocalData(vararg records: Record) {
+        recordDao.deleteRecords(*records)
+    }
+
     private fun clearUserRecords(userName: String) {
         recordDao.clearUserRecords(userName)
     }
@@ -381,7 +385,15 @@ class MyRepository private constructor(val context: Context) {
     }
 
     fun deleteRecords(vararg records: Record) {
-        recordDao.deleteRecords(*records)
+        // 本地删除Record，更新IncomeSector、ExpendSector、IncomePillar、ExpendPillar四个数据表
+        deleteLocalData(*records)
+        // 检查用户是否登陆过
+        if (SharedPreferencesUtil.getUserName(context).isNotEmpty()) {
+            // 登陆过,则用此用户在 LeanCloud云端删除Record
+            LeanCloudOperation.cloudDeleteRecord(*records)
+        }
+
+
     }
 
     fun loadAllRecords(): LiveData<List<Record>> {

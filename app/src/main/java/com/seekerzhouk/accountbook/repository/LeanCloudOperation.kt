@@ -43,19 +43,12 @@ object LeanCloudOperation {
     /**
      * 上传/更新数据到LeanCloud
      */
-    fun uploadToCloud(vararg records: Record) {
+    fun uploadRecord(vararg records: Record) {
         val record = records[0]
         val user = AVUser.getCurrentUser() ?: return
         if (user.username != record.userName) {
             throw Exception("userName Inconsistent!")
         }
-        uploadRecord(record, user)
-    }
-
-    /**
-     * 上传Record
-     */
-    private fun uploadRecord(record: Record, user: AVUser) {
         AVObject(Record::class.simpleName).apply {
             put("user", user)
             put("userName", record.userName)
@@ -122,6 +115,44 @@ object LeanCloudOperation {
 
             override fun onComplete() {
                 MyLog.i(tag, "cloudUserFormHasInit---onComplete")
+            }
+
+        })
+    }
+
+    fun cloudDeleteRecord(vararg records: Record) {
+        val record = records[0]
+        val user = AVUser.getCurrentUser() ?: return
+        if (user.username != record.userName) {
+            throw Exception("userName Inconsistent!")
+        }
+        AVQuery<AVObject>(Record::class.simpleName).apply {
+            whereEqualTo("userName", record.userName)
+            whereEqualTo("income_or_expend", record.incomeOrExpend)
+            whereEqualTo("consumptionType", record.secondType)
+            whereEqualTo("description", record.description)
+            whereEqualTo("date", record.date)
+            whereEqualTo("time", record.time)
+            whereEqualTo("money", record.money)
+        }.firstInBackground.subscribe(object : Observer<AVObject> {
+            override fun onSubscribe(d: Disposable) {
+                MyLog.i(tag, "cloudDeleteRecord--firstInBackground--subscribe")
+            }
+
+            override fun onNext(t: AVObject) {
+                MyLog.i(tag, "cloudDeleteRecord--firstInBackground--onNext")
+                CoroutineScope(Dispatchers.IO).launch {
+                    AVObject.createWithoutData(Record::class.simpleName, t.objectId).delete()
+                    MyLog.i(tag, "cloudDeleteRecord--firstInBackground--onNext--delete")
+                }
+            }
+
+            override fun onError(e: Throwable) {
+                MyLog.i(tag, "cloudDeleteRecord--firstInBackground--onError", e)
+            }
+
+            override fun onComplete() {
+                MyLog.i(tag, "cloudDeleteRecord--firstInBackground--onComplete")
             }
 
         })
