@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.room.home.Pillar
@@ -124,7 +123,7 @@ class HistogramView : View {
             val moneyTextX = 0F
             val moneyTextY = -histogramHeight - 20 // 金额文字的Y坐标
             canvas.run {
-                drawText(element.date, (histogramWidth / 4).toFloat(), monthTextY, textPaint)
+                drawText(element.month, (histogramWidth / 4).toFloat(), monthTextY, textPaint)
                 drawText(
                     element.moneySum.toString(),
                     moneyTextX,

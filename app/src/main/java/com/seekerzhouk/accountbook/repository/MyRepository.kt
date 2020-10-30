@@ -10,8 +10,6 @@ import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.room.UserAddInfo
 import com.seekerzhouk.accountbook.room.details.Record
 import com.seekerzhouk.accountbook.room.details.RecordsDatabase
-import com.seekerzhouk.accountbook.room.home.*
-import com.seekerzhouk.accountbook.utils.ConsumptionUtil
 import com.seekerzhouk.accountbook.utils.MyLog
 import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
 import io.reactivex.Observer
@@ -41,26 +39,11 @@ class MyRepository private constructor(val context: Context) {
     private val recordDao =
         RecordsDatabase.getDatabase(context.applicationContext).getRecordDao()
 
-    private val incomeSectorDao =
-        IncomeSectorsDatabase.getDatabase(context.applicationContext).getRecordDao()
-
-    private val expendSectorDao =
-        ExpendSectorsDatabase.getDatabase(context.applicationContext).getRecordDao()
-    private val expendPillarDao =
-        ExpendPillarDatabase.getDatabase(context.applicationContext).getPillarDao()
-    private val incomePillarDao =
-        IncomePillarDatabase.getDatabase(context.applicationContext).getPillarDao()
-
-    init {
-        // 初始化本地无主数据表格
-        initLocalNoOwnerForm()
-    }
-
     /**
      * 确认添加一条记录，需要进行的操作
      */
     fun insertRecords(vararg records: Record) {
-        // 本地插入Record，更新IncomeSector、ExpendSector、IncomePillar、ExpendPillar四个数据表
+        // 本地插入Record
         insertLocalData(*records)
         // 检查用户是否登陆过
         if (SharedPreferencesUtil.getUserName(context).isNotEmpty()) {
@@ -70,21 +53,10 @@ class MyRepository private constructor(val context: Context) {
     }
 
     /**
-     * 登陆之后需要进行的操作，初始化cloud的UserAddInfo和本地的用户数据表格
+     * 登陆之后需要进行的操作，初始化cloud的UserAddInfo
      */
     fun cloudAndLocalUserFormInit() = CoroutineScope(Dispatchers.IO).launch {
         val user = AVUser.getCurrentUser()
-        val isLocalInit = async {
-            // 1.检查具体用户本地数据是否初始化
-            if (!SharedPreferencesUtil.getUserLocalFormStatus(context, user.username)) {
-                // 2.初始化具体用户本地数据
-                initLocalUserForm()
-                SharedPreferencesUtil.saveUserLocalFormStatus(context, user.username, true)
-            }
-            //3.最终都返回true，代表本地初始化结束。
-            return@async true
-        }
-
         val isCloudInit = async {
             // 1.检查LeanCloud云端是否初始化UserAddInfo
             if (SharedPreferencesUtil.getUserAddInfoStatus(context, user.username)) {
@@ -106,123 +78,27 @@ class MyRepository private constructor(val context: Context) {
             }
         }
 
-        //只有本地和云端都被初始化过，才需要进行同步。云端没被初始化过，没有数据，不需要同步。
-        if (isLocalInit.await() && isCloudInit.await()) {
+        //只有云端被初始化过，才需要进行同步。云端没被初始化过，没有数据，不需要同步。
+        if (isCloudInit.await()) {
             SharedPreferencesUtil.saveIsNeedSync(context, true)
         }
 
     }
 
     /**
-     * 本地要先初始化IncomeSector、ExpendSector、IncomePillar、ExpendPillar四张无主数据表格
-     */
-    private fun initLocalNoOwnerForm() {
-        if (SharedPreferencesUtil.getNoOwnerFormHasInit(context)) {
-            return
-        }
-        val userName = SharedPreferencesUtil.getUserName(context)
-        val arrIncomes = Array(ConsumptionUtil.incomeTypeList.size - 1) {
-            IncomeSector(userName, ConsumptionUtil.incomeTypeList[it + 1], 0.0)
-        }
-        val arrExpends = Array(ConsumptionUtil.expendTypeList.size - 1) {
-            ExpendSector(userName, ConsumptionUtil.expendTypeList[it + 1], 0.0)
-        }
-        val arrExpendPillars = Array(12) {
-            ExpendPillar(userName, (it + 1).toString().plus("月"), 0F)
-        }
-        val arrIncomePillars = Array(12) {
-            IncomePillar(userName, (it + 1).toString().plus("月"), 0F)
-        }
-        CoroutineScope(Dispatchers.IO).launch {
-            launch {
-                incomeSectorDao.insertIncomeSectors(*arrIncomes)
-            }
-            launch {
-                expendSectorDao.insertExpendSectors(*arrExpends)
-            }
-            launch {
-                expendPillarDao.insertExpendPillar(*arrExpendPillars)
-            }
-            launch {
-                incomePillarDao.insertIncomePillar(*arrIncomePillars)
-            }
-        }
-        SharedPreferencesUtil.saveNoOwnerFormHasInit(context, true)
-    }
-
-    /**
-     * 登陆后，本地初始化IncomeSector、ExpendSector、IncomePillar、ExpendPillar四张 用户 数据表格
-     */
-    private fun initLocalUserForm() {
-        val userName = SharedPreferencesUtil.getUserName(context)
-        val arrIncomes = Array(ConsumptionUtil.incomeTypeList.size - 1) {
-            IncomeSector(userName, ConsumptionUtil.incomeTypeList[it + 1], 0.0)
-        }
-        val arrExpends = Array(ConsumptionUtil.expendTypeList.size - 1) {
-            ExpendSector(userName, ConsumptionUtil.expendTypeList[it + 1], 0.0)
-        }
-        val arrExpendPillars = Array(12) {
-            ExpendPillar(userName, (it + 1).toString().plus("月"), 0F)
-        }
-        val arrIncomePillars = Array(12) {
-            IncomePillar(userName, (it + 1).toString().plus("月"), 0F)
-        }
-        incomeSectorDao.insertIncomeSectors(*arrIncomes)
-        expendSectorDao.insertExpendSectors(*arrExpends)
-        expendPillarDao.insertExpendPillar(*arrExpendPillars)
-        incomePillarDao.insertIncomePillar(*arrIncomePillars)
-    }
-
-
-    /**
-     * 本地插入Record、更新本地四张数据表
+     * 本地插入Record
      */
     private fun insertLocalData(vararg records: Record) {
-        // 先插入record
         recordDao.insertRecords(*records)
-        // 再更新sector和 pillar
-        for (record in records) {
-            val userName = record.userName
-            val secondType = record.secondType
-            val money = record.money
-            val date = if (record.date.substring(5, 6) == "0") {
-                record.date.substring(6, 7).plus("月")
-            } else {
-                record.date.substring(5, 7).plus("月")
-            }
-            if (record.incomeOrExpend == ConsumptionUtil.INCOME) {
-                val sector = IncomeSector(userName, secondType, money)
-                incomeSectorDao.updateIncomeSectors(
-                    userName,
-                    sector.consumptionType,
-                    sector.moneySum
-                )
-                val pillar = IncomePillar(userName, date, money.toFloat())
-                incomePillarDao.updateIncomePillar(userName, pillar.date, pillar.moneySum)
-            } else {
-                val sector = ExpendSector(userName, secondType, money)
-                expendSectorDao.updateExpendSectors(
-                    userName,
-                    sector.consumptionType,
-                    sector.moneySum
-                )
-                val pillar = ExpendPillar(userName, date, money.toFloat())
-                expendPillarDao.updateExpendPillar(userName, pillar.date, pillar.moneySum)
-            }
-        }
         MyLog.i(tag, "insertLocalData finished.")
     }
 
-    // 清除/清零本地数据
+    /**
+     * 清除本地数据
+     */
     private fun localDataCleared() {
         val userName = SharedPreferencesUtil.getUserName(context)
-        // 先清除Record
         clearUserRecords(userName)
-        // 再清零四表格
-        clearIncomeSectors(userName)
-        clearIncomePillars(userName)
-        clearExpendSectors(userName)
-        clearExpendPillars(userName)
     }
 
     // 将云端数据同步到本地
@@ -241,11 +117,10 @@ class MyRepository private constructor(val context: Context) {
                     Array(results.size) { i ->
                         Record(
                             results[i].getString("userName"),
-                            results[i].getString("income_or_expend"),
+                            results[i].getString("incomeOrExpend"),
                             results[i].getString("consumptionType"),
                             results[i].getString("description"),
-                            results[i].getString("date"),
-                            results[i].getString("time"),
+                            results[i].getString("dateTime"),
                             results[i].getDouble("money")
                         )
                     }.also { records ->
@@ -385,7 +260,7 @@ class MyRepository private constructor(val context: Context) {
     }
 
     fun deleteRecords(vararg records: Record) {
-        // 本地删除Record，更新IncomeSector、ExpendSector、IncomePillar、ExpendPillar四个数据表
+        // 本地删除Record
         deleteLocalData(*records)
         // 检查用户是否登陆过
         if (SharedPreferencesUtil.getUserName(context).isNotEmpty()) {
@@ -463,38 +338,6 @@ class MyRepository private constructor(val context: Context) {
                 context
             ), selectedType, "%$patten%"
         )
-    }
-
-    fun getIncomeSectors(): LiveData<List<IncomeSector>> {
-        return incomeSectorDao.getIncomeSectors(SharedPreferencesUtil.getUserName(context))
-    }
-
-    fun getExpendSectors(): LiveData<List<ExpendSector>> {
-        return expendSectorDao.getExpendSectors(SharedPreferencesUtil.getUserName(context))
-    }
-
-    fun getExpendPillars(): LiveData<List<ExpendPillar>> {
-        return expendPillarDao.getExpendPillars(SharedPreferencesUtil.getUserName(context))
-    }
-
-    fun getIncomePillars(): LiveData<List<IncomePillar>> {
-        return incomePillarDao.getIncomePillars(SharedPreferencesUtil.getUserName(context))
-    }
-
-    fun clearIncomeSectors(userName: String) {
-        incomeSectorDao.clearIncomeSectors(userName)
-    }
-
-    fun clearIncomePillars(userName: String) {
-        incomePillarDao.clearIncomePillars(userName)
-    }
-
-    fun clearExpendSectors(userName: String) {
-        expendSectorDao.clearExpendSectors(userName)
-    }
-
-    fun clearExpendPillars(userName: String) {
-        expendPillarDao.clearExpendPillars(userName)
     }
 
 }

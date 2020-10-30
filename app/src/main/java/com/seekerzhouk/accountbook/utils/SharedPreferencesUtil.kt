@@ -11,11 +11,6 @@ object SharedPreferencesUtil {
     private const val SECOND_POSITION_KEY = "second_position"
 
     /**
-     * 用户未登陆过，本地无主数据表格是否已经初始化
-     */
-    private const val NO_OWNER_FORM_INIT_KEY = "no_owner_form_init"
-
-    /**
      * 目前用户是否处于登陆状态。用于刷新Me界面。
      */
     const val IS_LOGIN_KEY = "is_login"
@@ -54,14 +49,6 @@ object SharedPreferencesUtil {
 
     fun getSecondPosition(context: Context): Int {
         return getValue(context, SECOND_POSITION_KEY, 0)
-    }
-
-    fun saveNoOwnerFormHasInit(context: Context, onceInsert: Boolean) {
-        saveValue(context, NO_OWNER_FORM_INIT_KEY, onceInsert)
-    }
-
-    fun getNoOwnerFormHasInit(context: Context): Boolean {
-        return getValue(context, NO_OWNER_FORM_INIT_KEY, false)
     }
 
     fun saveIsLogin(context: Context, isLogin: Boolean) {
@@ -121,26 +108,6 @@ object SharedPreferencesUtil {
      */
     fun getUserAddInfoStatus(context: Context, userName: String): Boolean {
         val key = "cloud_$userName"
-        return getValue(context, key, false)
-    }
-
-    /**
-     * 保存状态：具体用户的本地数据表格是否已经初始化
-     * @param userName 用户名
-     * @param hasInit 是否已经初始化
-     */
-    fun saveUserLocalFormStatus(context: Context, userName: String, hasInit: Boolean) {
-        val key = "local_$userName"
-        saveValue(context, key, hasInit)
-    }
-
-    /**
-     * 获取状态：具体用户的本地数据表格是否已经初始化
-     * @param userName 用户名
-     * @return Boolean 是否已经初始化
-     */
-    fun getUserLocalFormStatus(context: Context, userName: String): Boolean {
-        val key = "local_$userName"
         return getValue(context, key, false)
     }
 

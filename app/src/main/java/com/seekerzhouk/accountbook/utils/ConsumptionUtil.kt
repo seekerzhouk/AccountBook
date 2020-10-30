@@ -72,7 +72,7 @@ object ConsumptionUtil {
     }
 
     fun getIconType(record: Record): Int {
-        return when (record.secondType) {
+        return when (record.consumptionType) {
             SALARY -> R.drawable.ic_salary
             BONUS -> R.drawable.ic_bonus
             INVESTMENT -> R.drawable.ic_investment

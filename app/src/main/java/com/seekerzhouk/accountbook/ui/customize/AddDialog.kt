@@ -10,9 +10,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.room.details.Record
 import com.seekerzhouk.accountbook.utils.ConsumptionUtil
+import com.seekerzhouk.accountbook.utils.DateTimeUtil
 import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
 import com.seekerzhouk.accountbook.viewmodel.DetailsViewModel
-import java.util.*
 import kotlin.collections.ArrayList
 
 object AddDialog {
@@ -77,8 +77,7 @@ object AddDialog {
                 firstSpinner.selectedItem.toString(),
                 secondSpinner.selectedItem.toString(),
                 editTextDescription.text.toString(),
-                getCalendarDate(),
-                getCalendarTime(),
+                DateTimeUtil.getCurrentDateTime(mContext),
                 editTextSum.text.toString().toDouble()
             )
             detailsViewModel.insertRecords(record)
@@ -122,27 +121,6 @@ object AddDialog {
         return fistAdapter
     }
 
-    private fun getCalendarDate(): String {
-        val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR).toString()
-        var month = (calendar.get(Calendar.MONTH) + 1).toString()
-        val day = calendar.get(Calendar.DAY_OF_MONTH).toString()
-        if (month.length == 1) {
-            month = "0$month"
-        }
-        return "$year-$month-$day"
-    }
-
-    private fun getCalendarTime(): String {
-        val calendar = Calendar.getInstance()
-        val hour = calendar.get(Calendar.HOUR_OF_DAY).toString()
-        var minute = calendar.get(Calendar.MINUTE).toString()
-        val second = calendar.get(Calendar.SECOND).toString()
-        if (minute.length == 1) {
-            minute = "0$minute"
-        }
-        return "$hour:$minute:$second"
-    }
 }
 
 

@@ -38,9 +38,9 @@ class DetailsAdapter() :
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val record: Record = getItem(position)
         holder.imageConsumptionType.setImageResource(ConsumptionUtil.getIconType(record))
-        holder.textConsumptionType.text = record.secondType
+        holder.textConsumptionType.text = record.consumptionType
         holder.textDescription.text = record.description
-        holder.textDateAndTime.text = record.date.plus(" ").plus(record.time)
+        holder.textDateAndTime.text = record.dateTime
         var money = String.format("%.2f", record.money)
         if (record.incomeOrExpend == ConsumptionUtil.EXPEND && record.money > 0) {
             money = "-$money"

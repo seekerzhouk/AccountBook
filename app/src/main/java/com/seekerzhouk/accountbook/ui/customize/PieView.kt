@@ -119,6 +119,9 @@ class PieView : View {
         rectF.set(-r, -r, r, r)
         canvas?.translate((totalWidth / 2).toFloat(), totalHeight * 0.55.toFloat())
         for (pie in sectorList) {
+            if (pie.moneySum == 0.0) {
+                continue
+            }
             // 第一段引线的角度
             val lineAngle = currentStartAngle + pie.angle / 2
             // 第一段引线从圆弧开始，下面是第一段引线和圆弧的交点

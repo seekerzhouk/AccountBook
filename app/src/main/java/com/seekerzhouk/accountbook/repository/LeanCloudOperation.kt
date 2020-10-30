@@ -5,11 +5,6 @@ import cn.leancloud.AVQuery
 import cn.leancloud.AVUser
 import com.seekerzhouk.accountbook.room.UserAddInfo
 import com.seekerzhouk.accountbook.room.details.Record
-import com.seekerzhouk.accountbook.room.home.ExpendPillar
-import com.seekerzhouk.accountbook.room.home.ExpendSector
-import com.seekerzhouk.accountbook.room.home.IncomePillar
-import com.seekerzhouk.accountbook.room.home.IncomeSector
-import com.seekerzhouk.accountbook.utils.ConsumptionUtil
 import com.seekerzhouk.accountbook.utils.MyLog
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -52,11 +47,10 @@ object LeanCloudOperation {
         AVObject(Record::class.simpleName).apply {
             put("user", user)
             put("userName", record.userName)
-            put("income_or_expend", record.incomeOrExpend)
-            put("consumptionType", record.secondType)
+            put("incomeOrExpend", record.incomeOrExpend)
+            put("consumptionType", record.consumptionType)
             put("description", record.description)
-            put("date", record.date)
-            put("time", record.time)
+            put("dateTime", record.dateTime)
             put("money", record.money)
         }.also {
             it.saveInBackground().subscribe(object : Observer<AVObject> {
@@ -128,11 +122,10 @@ object LeanCloudOperation {
         }
         AVQuery<AVObject>(Record::class.simpleName).apply {
             whereEqualTo("userName", record.userName)
-            whereEqualTo("income_or_expend", record.incomeOrExpend)
-            whereEqualTo("consumptionType", record.secondType)
+            whereEqualTo("incomeOrExpend", record.incomeOrExpend)
+            whereEqualTo("consumptionType", record.consumptionType)
             whereEqualTo("description", record.description)
-            whereEqualTo("date", record.date)
-            whereEqualTo("time", record.time)
+            whereEqualTo("dateTime", record.dateTime)
             whereEqualTo("money", record.money)
         }.firstInBackground.subscribe(object : Observer<AVObject> {
             override fun onSubscribe(d: Disposable) {
