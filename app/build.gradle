@@ -17,6 +17,10 @@ android {
         versionName "1.1"
     }
 
+    viewBinding {
+        enabled = true
+    }
+
     // 增加自动签名的内容
     signingConfigs {
         config {

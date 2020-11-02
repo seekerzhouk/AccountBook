@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.seekerzhouk.accountbook.R
+import com.seekerzhouk.accountbook.databinding.FragmentMeBinding
 import com.seekerzhouk.accountbook.ui.options.SetBackgroundActivity
 import com.seekerzhouk.accountbook.ui.customize.CommonDialog
 import com.seekerzhouk.accountbook.ui.options.LoginActivity
@@ -21,12 +22,13 @@ import com.seekerzhouk.accountbook.ui.options.SetPhoneActivity
 import com.seekerzhouk.accountbook.utils.NetworkUtil
 import com.seekerzhouk.accountbook.utils.SDCardHelper
 import com.seekerzhouk.accountbook.viewmodel.MeViewModel
-import kotlinx.android.synthetic.main.fragment_me.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
 class MeFragment : Fragment() {
+
+    private lateinit var binding: FragmentMeBinding
 
     private val meViewModel: MeViewModel by viewModels()
 
@@ -39,20 +41,21 @@ class MeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_me, container, false)
+        binding = FragmentMeBinding.inflate(inflater,container,false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        toolbar_imageView.setOnClickListener {
+        binding.toolbarBgImage.setOnClickListener {
             startActivity(Intent(requireActivity(), SetBackgroundActivity::class.java))
         }
 
-        cl_avatar.setOnClickListener {
+        binding.clAvatar.setOnClickListener {
             startActivity(Intent(requireContext(), SetAvatarActivity::class.java))
         }
 
-        cl_username.setOnClickListener {
+        binding.clUsername.setOnClickListener {
             Toast.makeText(
                 requireContext(),
                 getString(R.string.not_support_username_modify),
@@ -60,11 +63,11 @@ class MeFragment : Fragment() {
             ).show()
         }
 
-        cl_phone.setOnClickListener {
+        binding.clPhone.setOnClickListener {
             startActivity(Intent(requireContext(), SetPhoneActivity::class.java))
         }
 
-        cl_logout.setOnClickListener {
+        binding.clLogout.setOnClickListener {
             CommonDialog.showDialog(
                 requireActivity(),
                 getString(R.string.title_logout),
@@ -75,11 +78,11 @@ class MeFragment : Fragment() {
             }
         }
 
-        cl_about.setOnClickListener {
+        binding.clAbout.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_me_to_aboutActivity)
         }
 
-        cl_sync.setOnClickListener {
+        binding.clSync.setOnClickListener {
             CommonDialog.showDialog(
                 requireActivity(),
                 getString(R.string.sync_data),
@@ -91,11 +94,11 @@ class MeFragment : Fragment() {
             }
         }
 
-        cl_help_and_feedback.setOnClickListener {
+        binding.clHelpAndFeedback.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_me_to_feedBackActivity)
         }
 
-        textViewClickToLogin.setOnClickListener {
+        binding.textViewClickToLogin.setOnClickListener {
             startActivityForResult(
                 Intent(requireContext(), LoginActivity::class.java), toLoginCode
             )
@@ -104,15 +107,15 @@ class MeFragment : Fragment() {
         meViewModel.getIsLogin().observe(requireActivity(), Observer {
             isLogin = it
             if (isLogin) {
-                clickToLoginLayout.visibility = View.GONE
-                appBarLayout.visibility = View.VISIBLE
-                nestedScrollView.visibility = View.VISIBLE
-                tv_user_username.text = meViewModel.getUserName()
-                tv_user_phone.text = meViewModel.getPhoneNumber()
+                binding.clickToLoginLayout.visibility = View.GONE
+                binding.appBarLayout.visibility = View.VISIBLE
+                binding.nestedScrollView.visibility = View.VISIBLE
+                binding.tvUserUsername.text = meViewModel.getUserName()
+                binding.tvUserPhone.text = meViewModel.getPhoneNumber()
             } else {
-                clickToLoginLayout.visibility = View.VISIBLE
-                appBarLayout.visibility = View.GONE
-                nestedScrollView.visibility = View.GONE
+                binding.clickToLoginLayout.visibility = View.VISIBLE
+                binding.appBarLayout.visibility = View.GONE
+                binding.nestedScrollView.visibility = View.GONE
             }
         })
     }
@@ -128,9 +131,9 @@ class MeFragment : Fragment() {
                     + getString(R.string.bg_pic_suffix)
         ).let {
             if (it == null) {
-                toolbar_imageView.setImageResource(R.drawable.src_avatar)
+                binding.toolbarBgImage.setImageResource(R.drawable.src_avatar)
             } else {
-                toolbar_imageView.setImageBitmap(it)
+                binding.toolbarBgImage.setImageBitmap(it)
             }
         }
         SDCardHelper.loadBitmapFromSDCard(
@@ -138,9 +141,9 @@ class MeFragment : Fragment() {
                     + getString(R.string.avatar_pic_suffix)
         ).let {
             if (it == null) {
-                iv_avatar.setImageResource(R.drawable.ic_me)
+                binding.ivAvatar.setImageResource(R.drawable.ic_me)
             } else {
-                iv_avatar.setImageBitmap(it)
+                binding.ivAvatar.setImageBitmap(it)
             }
         }
     }

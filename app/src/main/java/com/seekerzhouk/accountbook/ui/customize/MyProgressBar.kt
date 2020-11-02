@@ -6,46 +6,47 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.cardview.widget.CardView
 import com.seekerzhouk.accountbook.R
-import kotlinx.android.synthetic.main.my_progress_bar.view.*
+import com.seekerzhouk.accountbook.databinding.MyProgressBarBinding
 import kotlinx.coroutines.*
 
 class MyProgressBar : CardView {
+    private var binding: MyProgressBarBinding =
+        MyProgressBarBinding.inflate(LayoutInflater.from(context),this,true)
 
     constructor(context: Context) : this(context, null)
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        LayoutInflater.from(context).inflate(R.layout.my_progress_bar, this)
-        imageView_inside.layoutParams.apply {
-            width = progressBar_inside.width
-            height = progressBar_inside.height
+        binding.stateImage.layoutParams.apply {
+            width = binding.progressBar.width
+            height = binding.progressBar.height
         }
         this.visibility = View.INVISIBLE
     }
 
     fun onJobFinished(finishDescription: String): MyProgressBar {
-        imageView_inside.setImageResource(R.drawable.ic_finish)
-        imageView_inside.visibility = View.VISIBLE
-        progressBar_inside.visibility = View.INVISIBLE
+        binding.stateImage.setImageResource(R.drawable.ic_finish)
+        binding.stateImage.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
         setDescription(finishDescription)
         return this
     }
 
     fun onJobError(errorDescription: String): MyProgressBar {
-        imageView_inside.setImageResource(R.drawable.ic_fail)
-        imageView_inside.visibility = View.VISIBLE
-        progressBar_inside.visibility = View.INVISIBLE
+        binding.stateImage.setImageResource(R.drawable.ic_fail)
+        binding.stateImage.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
         setDescription(errorDescription)
         return this
     }
 
     private fun setDescription(string: String) {
-        textView_inside.text = string
+        binding.description.text = string
     }
 
     fun show(startDescription: String) {
         setDescription(startDescription)
-        imageView_inside.visibility = View.INVISIBLE
-        progressBar_inside.visibility = View.VISIBLE
+        binding.stateImage.visibility = View.INVISIBLE
+        binding.progressBar.visibility = View.VISIBLE
         this.visibility = View.VISIBLE
     }
 

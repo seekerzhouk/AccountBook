@@ -5,25 +5,24 @@ import android.os.SystemClock
 import android.view.Gravity
 import android.widget.Toast
 import androidx.activity.viewModels
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.seekerzhouk.accountbook.R
+import com.seekerzhouk.accountbook.databinding.ActivityMainBinding
 import com.seekerzhouk.accountbook.viewmodel.MainViewModel
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
     private val mainViewModel: MainViewModel by viewModels()
     private var lastPressedTime: Long = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         supportActionBar?.hide()
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
         val navController = findNavController(R.id.nav_host_fragment_main)
         // Passing each menu ID as a set of Ids because each
@@ -34,25 +33,25 @@ class MainActivity : AppCompatActivity() {
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        binding.navView.setupWithNavController(navController)
     }
 
     override fun onResume() {
         super.onResume()
 
-        mainViewModel.isNeedSync().observe(this, Observer {
+        mainViewModel.isNeedSync().observe(this, {
             if (it) {
                 mainViewModel.loadCloudPic()
                 mainViewModel.syncData()
-                myProgressBar.show(getString(R.string.data_syncing))
+                binding.myProgressBar.show(getString(R.string.data_syncing))
                 mainViewModel.saveHasSyncFinished(false)
                 mainViewModel.saveIsNeedSync(false)
             }
         })
 
-        mainViewModel.hasSyncFinished().observe(this, Observer {
+        mainViewModel.hasSyncFinished().observe(this, {
             if (it) {
-                myProgressBar.onJobFinished(getString(R.string.sync_finished)).laterDismiss(1500) {}
+                binding.myProgressBar.onJobFinished(getString(R.string.sync_finished)).laterDismiss(1500) {}
             }
         })
     }

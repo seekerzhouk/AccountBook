@@ -5,15 +5,17 @@ import android.widget.Toast
 import cn.leancloud.AVObject
 import cn.leancloud.AVUser
 import com.seekerzhouk.accountbook.R
+import com.seekerzhouk.accountbook.databinding.ActivityFeedBackBinding
 import com.seekerzhouk.accountbook.room.Feedback
-import kotlinx.android.synthetic.main.activity_feed_back.*
 
 class FeedbackActivity : OptionActivity() {
+    private lateinit var binding: ActivityFeedBackBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_feed_back)
-        feedback_submit.setOnClickListener {
-            if (editTextTextMultiLine.text.toString().isEmpty()) {
+        binding = ActivityFeedBackBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.feedbackSubmit.setOnClickListener {
+            if (binding.feedbackText.text.toString().isEmpty()) {
                 Toast.makeText(
                     this,
                     getString(R.string.feedback_without_description),
@@ -30,7 +32,7 @@ class FeedbackActivity : OptionActivity() {
         AVObject(Feedback::class.simpleName).apply {
             put("user", AVUser.getCurrentUser())
             put("userName", AVUser.getCurrentUser().username)
-            put("description", editTextTextMultiLine.text.toString())
+            put("description", binding.feedbackText.text.toString())
             saveEventually()
         }
     }

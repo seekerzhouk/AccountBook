@@ -24,7 +24,7 @@
             app:titleEnabled="false">
 
             <ImageView
-                android:id="@+id/toolbar_imageView"
+                android:id="@+id/toolbarBgImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
@@ -58,7 +58,7 @@
                 android:layout_margin="4dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_avatar"
+                    android:id="@+id/clAvatar"
                     android:layout_width="match_parent"
                     android:layout_height="70dp">
 
@@ -76,7 +76,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
-                        android:id="@+id/iv_avatar"
+                        android:id="@+id/ivAvatar"
                         android:layout_width="60dp"
                         android:layout_height="0dp"
                         android:layout_marginTop="5dp"
@@ -109,7 +109,7 @@
                 android:layout_margin="4dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_username"
+                    android:id="@+id/clUsername"
                     android:layout_width="match_parent"
                     android:layout_height="50dp">
 
@@ -127,7 +127,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/tv_user_username"
+                        android:id="@+id/tvUserUsername"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Bob"
@@ -156,7 +156,7 @@
                 android:layout_margin="4dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_phone"
+                    android:id="@+id/clPhone"
                     android:layout_width="match_parent"
                     android:layout_height="50dp">
 
@@ -174,7 +174,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/tv_user_phone"
+                        android:id="@+id/tvUserPhone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="13838385438"
@@ -242,7 +242,7 @@
                 android:layout_margin="4dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_about"
+                    android:id="@+id/clAbout"
                     android:layout_width="match_parent"
                     android:layout_height="50dp">
 
@@ -279,7 +279,7 @@
                 android:layout_margin="4dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_sync"
+                    android:id="@+id/clSync"
                     android:layout_width="match_parent"
                     android:layout_height="50dp">
 
@@ -316,7 +316,7 @@
                 android:layout_margin="4dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_help_and_feedback"
+                    android:id="@+id/clHelpAndFeedback"
                     android:layout_width="match_parent"
                     android:layout_height="50dp">
 
@@ -353,7 +353,7 @@
                 android:layout_margin="4dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_logout"
+                    android:id="@+id/clLogout"
                     android:layout_width="match_parent"
                     android:layout_height="50dp">
 

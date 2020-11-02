@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.navigation.findNavController
 import com.seekerzhouk.accountbook.R
+import com.seekerzhouk.accountbook.databinding.ActivityLoginBinding
 
 class LoginActivity : OptionActivity() {
-
+    private lateinit var binding: ActivityLoginBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -18,7 +20,7 @@ class LoginActivity : OptionActivity() {
                 val fragment = getFragment(LoginFragment::class.java)
                 if (fragment != null) {
                     finish()
-                }else{
+                } else {
                     findNavController(R.id.nav_host_fragment_login).navigateUp()
                 }
             }

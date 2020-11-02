@@ -1,13 +1,14 @@
 package com.seekerzhouk.accountbook.ui.options
 
 import android.os.Bundle
-import com.seekerzhouk.accountbook.R
-import kotlinx.android.synthetic.main.activity_about.*
+import com.seekerzhouk.accountbook.databinding.ActivityAboutBinding
 
 class AboutActivity : OptionActivity() {
+    private lateinit var binding: ActivityAboutBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_about)
-        version.text = packageManager.getPackageInfo(packageName, 0).versionName
+        binding = ActivityAboutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.version.text = packageManager.getPackageInfo(packageName, 0).versionName
     }
 }

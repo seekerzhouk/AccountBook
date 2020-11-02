@@ -15,14 +15,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.seekerzhouk.accountbook.R
+import com.seekerzhouk.accountbook.databinding.FragmentDetailsBinding
 import com.seekerzhouk.accountbook.room.details.Record
 import com.seekerzhouk.accountbook.ui.customize.AddDialog
 import com.seekerzhouk.accountbook.utils.ConsumptionUtil
 import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
 import com.seekerzhouk.accountbook.viewmodel.DetailsViewModel
-import kotlinx.android.synthetic.main.fragment_details.*
 
 class DetailsFragment : Fragment(), LifecycleObserver {
+
+    private lateinit var binding: FragmentDetailsBinding
 
     private lateinit var myAdapter: DetailsAdapter
 
@@ -42,16 +44,17 @@ class DetailsFragment : Fragment(), LifecycleObserver {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_details, container, false)
+        binding = FragmentDetailsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //recyclerView
-        recyclerview_details.layoutManager = LinearLayoutManager(context)
+        binding.recyclerview.layoutManager = LinearLayoutManager(context)
         myAdapter = DetailsAdapter()
-        recyclerview_details.adapter = myAdapter
+        binding.recyclerview.adapter = myAdapter
         // 上下文菜单
-        registerForContextMenu(recyclerview_details)
+        registerForContextMenu(binding.recyclerview)
 //        setItemTouchHelper()
 
         //获取上一次选定的类型
@@ -59,7 +62,7 @@ class DetailsFragment : Fragment(), LifecycleObserver {
         secondPosition = SharedPreferencesUtil.getSecondPosition(requireActivity())
 
         //悬浮按钮
-        floatingActionButton.setOnClickListener {
+        binding.floatingActionButton.setOnClickListener {
             AddDialog.show(requireActivity())
         }
 
@@ -125,14 +128,14 @@ class DetailsFragment : Fragment(), LifecycleObserver {
                 }
             }
 
-        }).attachToRecyclerView(recyclerview_details)
+        }).attachToRecyclerView(binding.recyclerview)
     }
 
     /**
      * 设置 searchView
      */
     private fun setSearchView() {
-        search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -145,10 +148,10 @@ class DetailsFragment : Fragment(), LifecycleObserver {
                 return true
             }
         })
-        search_view.setOnClickListener {
-            search_view.isIconified = false
+        binding.searchView.setOnClickListener {
+            binding.searchView.isIconified = false
         }
-        search_view.setOnCloseListener {
+        binding.searchView.setOnCloseListener {
             records?.removeObservers(this)
             false
         }
@@ -192,9 +195,9 @@ class DetailsFragment : Fragment(), LifecycleObserver {
                 ConsumptionUtil.fistTypeList
             )
         recordTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        first_type_spinner.adapter = recordTypeAdapter
-        first_type_spinner.setSelection(firstPosition)
-        first_type_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.firstTypeSpinner.adapter = recordTypeAdapter
+        binding.firstTypeSpinner.setSelection(firstPosition)
+        binding.firstTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
 
@@ -228,9 +231,9 @@ class DetailsFragment : Fragment(), LifecycleObserver {
         val secondTypeAdapter =
             ArrayAdapter(requireActivity(), R.layout.my_spinner_item, secondTypeList)
         secondTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        second_type_spinner.adapter = secondTypeAdapter
-        second_type_spinner.setSelection(secondPosition)
-        second_type_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.secondTypeSpinner.adapter = secondTypeAdapter
+        binding.secondTypeSpinner.setSelection(secondPosition)
+        binding.secondTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
 
@@ -242,7 +245,7 @@ class DetailsFragment : Fragment(), LifecycleObserver {
             ) {
                 // 调用两次，达到关闭searchView的目的
                 repeat(2) {
-                    search_view.isIconified = true
+                    binding.searchView.isIconified = true
                 }
                 secondTag = secondTypeList[position]
                 secondPosition = position
@@ -295,8 +298,8 @@ class DetailsFragment : Fragment(), LifecycleObserver {
 
     private fun scrollRecyclerView() {
         if (myAdapter.itemCount - oldCount == 1) {
-            recyclerview_details.getChildAt(0)?.height?.let {
-                recyclerview_details.smoothScrollBy(0, -it)
+            binding.recyclerview.getChildAt(0)?.height?.let {
+                binding.recyclerview.smoothScrollBy(0, -it)
             }
         }
         oldCount = myAdapter.itemCount

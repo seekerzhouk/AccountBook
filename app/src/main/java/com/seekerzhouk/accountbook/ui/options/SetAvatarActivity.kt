@@ -14,31 +14,33 @@ import cn.leancloud.AVObject
 import cn.leancloud.AVQuery
 import cn.leancloud.AVUser
 import com.seekerzhouk.accountbook.R
+import com.seekerzhouk.accountbook.databinding.ActivitySetAvatarBinding
 import com.seekerzhouk.accountbook.room.UserAddInfo
 import com.seekerzhouk.accountbook.utils.MyLog
 import com.seekerzhouk.accountbook.utils.SDCardHelper
 import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.activity_set_avatar.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SetAvatarActivity : OptionActivity() {
+    private lateinit var binding: ActivitySetAvatarBinding
     private val fromSetAvatar = 3
     private val tag = SetAvatarActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_set_avatar)
+        binding = ActivitySetAvatarBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         SDCardHelper.loadBitmapFromSDCard(
             this.externalCacheDir?.absolutePath +
                     "/${SharedPreferencesUtil.getUserName(this)}" + getString(R.string.avatar_pic_suffix)
         )?.let {
-            imageView_avatar.setImageBitmap(it)
+            binding.avatarImage.setImageBitmap(it)
         }
-        registerForContextMenu(imageView_avatar)
+        registerForContextMenu(binding.avatarImage)
     }
 
     override fun onCreateContextMenu(
@@ -86,7 +88,7 @@ class SetAvatarActivity : OptionActivity() {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     data.data?.let { uri ->
                         getBitmapFromUri(uri)?.let {
-                            imageView_avatar.setImageBitmap(it)
+                            binding.avatarImage.setImageBitmap(it)
                             SDCardHelper.saveBitmapToPrivateCache(
                                 it,
                                 this,

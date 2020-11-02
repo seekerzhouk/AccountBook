@@ -1,14 +1,13 @@
 package com.seekerzhouk.accountbook.ui.details
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.seekerzhouk.accountbook.R
+import com.seekerzhouk.accountbook.databinding.DetailItemViewBinding
 import com.seekerzhouk.accountbook.room.details.Record
 import com.seekerzhouk.accountbook.utils.ConsumptionUtil
 
@@ -30,9 +29,9 @@ class DetailsAdapter() :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.detail_item_view, parent, false)
-        return MyViewHolder(view)
+        val binding =
+            DetailItemViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return MyViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
@@ -54,11 +53,12 @@ class DetailsAdapter() :
         }
     }
 
-    inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imageConsumptionType: ImageView = itemView.findViewById(R.id.image_consumption_type)
-        val textConsumptionType: TextView = itemView.findViewById(R.id.text_consumption_type)
-        val textDescription: TextView = itemView.findViewById(R.id.text_consumption_description)
-        val textDateAndTime: TextView = itemView.findViewById(R.id.text_date_time)
-        val textMoney: TextView = itemView.findViewById(R.id.text_money)
+    inner class MyViewHolder(binding: DetailItemViewBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        val imageConsumptionType: ImageView = binding.imageConsumptionType
+        val textConsumptionType: TextView = binding.textConsumptionType
+        val textDescription: TextView = binding.textDescription
+        val textDateAndTime: TextView = binding.textDateTime
+        val textMoney: TextView = binding.textMoney
     }
 }

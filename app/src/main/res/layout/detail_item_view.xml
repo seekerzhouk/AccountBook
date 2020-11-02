@@ -47,12 +47,12 @@
             android:text="生活日用"
             android:textColor="#000000"
             android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@+id/text_consumption_description"
-            app:layout_constraintStart_toStartOf="@+id/text_consumption_description"
+            app:layout_constraintBottom_toTopOf="@+id/textDescription"
+            app:layout_constraintStart_toStartOf="@+id/textDescription"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/text_consumption_description"
+            android:id="@+id/textDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -75,8 +75,8 @@
             android:text="05-17 15：07"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/text_consumption_description"
-            app:layout_constraintTop_toBottomOf="@+id/text_consumption_description" />
+            app:layout_constraintStart_toStartOf="@+id/textDescription"
+            app:layout_constraintTop_toBottomOf="@+id/textDescription" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"

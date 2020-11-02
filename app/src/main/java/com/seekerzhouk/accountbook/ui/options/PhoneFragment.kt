@@ -8,23 +8,23 @@ import android.view.ViewGroup
 import android.widget.Toast
 import cn.leancloud.AVUser
 import com.seekerzhouk.accountbook.R
-import kotlinx.android.synthetic.main.fragment_phone.*
+import com.seekerzhouk.accountbook.databinding.FragmentPhoneBinding
 
 class PhoneFragment : Fragment() {
-
+    private lateinit var binding: FragmentPhoneBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_phone, container, false)
+        binding = FragmentPhoneBinding.inflate(inflater,container,false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        currentNumber.text =
+        binding.currentNumber.text =
             AVUser.getCurrentUser().mobilePhoneNumber ?: getString(R.string.not_bind)
-        bindPhoneButton.setOnClickListener {
+        binding.bindPhoneButton.setOnClickListener {
             Toast.makeText(
                 requireContext(),
                 getString(R.string.not_yet_implement),
@@ -32,7 +32,7 @@ class PhoneFragment : Fragment() {
             ).show()
 //            findNavController().navigate(R.id.action_phoneFragment_to_bindPhoneFragment)
         }
-        changePhoneButton.setOnClickListener {
+        binding.changePhoneButton.setOnClickListener {
             Toast.makeText(
                 requireContext(),
                 getString(R.string.not_yet_implement),

@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextTextMultiLine"
+        android:id="@+id/feedbackText"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="32dp"
@@ -30,14 +30,14 @@
         android:gravity="start|top"
         android:inputType="textMultiLine"
         android:padding="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/feedback_submit"
+        app:layout_constraintBottom_toTopOf="@+id/feedbackSubmit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <Button
-        android:id="@+id/feedback_submit"
+        android:id="@+id/feedbackSubmit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"

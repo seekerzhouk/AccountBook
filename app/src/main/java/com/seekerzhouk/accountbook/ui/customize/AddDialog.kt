@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import com.seekerzhouk.accountbook.R
+import com.seekerzhouk.accountbook.databinding.AddDialogBinding
 import com.seekerzhouk.accountbook.room.details.Record
 import com.seekerzhouk.accountbook.utils.ConsumptionUtil
 import com.seekerzhouk.accountbook.utils.DateTimeUtil
@@ -19,17 +20,10 @@ object AddDialog {
 
     fun show(mContext: FragmentActivity) {
         val builder = AlertDialog.Builder(mContext)
-        val view = View.inflate(mContext, R.layout.add_dialog, null)
-        builder.setView(view)
+        val binding = AddDialogBinding.inflate(mContext.layoutInflater)
+        builder.setView(binding.root)
         val dialog = builder.create()
         dialog.setCanceledOnTouchOutside(false)
-
-        val firstSpinner: Spinner = view.findViewById(R.id.first_spinner)
-        val secondSpinner: Spinner = view.findViewById(R.id.second_spinner)
-        val editTextDescription: EditText = view.findViewById(R.id.editText_description)
-        val editTextSum: EditText = view.findViewById(R.id.editText_sum)
-        val buttonCancel: Button = view.findViewById(R.id.button_cancel)
-        val buttonSubmit: Button = view.findViewById(R.id.button_submit)
 
         // 设置两个spinner
         val firstTypeList = ArrayList<String>()
@@ -37,8 +31,8 @@ object AddDialog {
             firstTypeList.add(i)
         }
         firstTypeList.remove(ConsumptionUtil.ALL)
-        firstSpinner.adapter = getFistAdapter(mContext, firstTypeList)
-        firstSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.firstSpinner.adapter = getFistAdapter(mContext, firstTypeList)
+        binding.firstSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
 
@@ -49,12 +43,12 @@ object AddDialog {
                 id: Long
             ) {
                 val firstType = firstTypeList[position]
-                secondSpinner.adapter = getSecondAdapter(mContext, firstType)
+                binding.secondSpinner.adapter = getSecondAdapter(mContext, firstType)
             }
         }
 
         //editText_sum 设置输入监听
-        editTextSum.addTextChangedListener(object : TextWatcher {
+        binding.editTextSum.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
@@ -62,23 +56,23 @@ object AddDialog {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                buttonSubmit.isEnabled = editTextSum.text.trim().isNotEmpty()
+                binding.buttonSubmit.isEnabled = binding.editTextSum.text.trim().isNotEmpty()
             }
         })
 
-        buttonCancel.setOnClickListener {
+        binding.buttonCancel.setOnClickListener {
             dialog.cancel()
         }
 
-        buttonSubmit.setOnClickListener {
+        binding.buttonSubmit.setOnClickListener {
             val detailsViewModel = ViewModelProvider(mContext).get(DetailsViewModel::class.java)
             val record = Record(
                 SharedPreferencesUtil.getUserName(mContext),
-                firstSpinner.selectedItem.toString(),
-                secondSpinner.selectedItem.toString(),
-                editTextDescription.text.toString(),
+                binding.firstSpinner.selectedItem.toString(),
+                binding.secondSpinner.selectedItem.toString(),
+                binding.editTextDescription.text.toString(),
                 DateTimeUtil.getCurrentDateTime(mContext),
-                editTextSum.text.toString().toDouble()
+                binding.editTextSum.text.toString().toDouble()
             )
             detailsViewModel.insertRecords(record)
             dialog.dismiss()

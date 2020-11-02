@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.navigation.findNavController
 import com.seekerzhouk.accountbook.R
+import com.seekerzhouk.accountbook.databinding.ActivitySetPhoneBinding
 
 class SetPhoneActivity : OptionActivity() {
+    private lateinit var binding: ActivitySetPhoneBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_set_phone)
+        binding = ActivitySetPhoneBinding.inflate(layoutInflater)
+        setContentView(binding.root)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -17,7 +20,7 @@ class SetPhoneActivity : OptionActivity() {
                 val fragment = getFragment(PhoneFragment::class.java)
                 if (fragment != null) {
                     finish()
-                }else{
+                } else {
                     findNavController(R.id.nav_host_fragment_phone).navigateUp()
                 }
             }

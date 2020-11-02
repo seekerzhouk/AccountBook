@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content">
 
                     <com.seekerzhouk.accountbook.ui.customize.PieView
-                        android:id="@+id/pie_view_expend"
+                        android:id="@+id/pieViewExpend"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -53,7 +53,7 @@
                         android:textSize="18sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/pie_view_expend" />
+                        app:layout_constraintTop_toTopOf="@+id/pieViewExpend" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -71,7 +71,7 @@
                     android:layout_height="wrap_content">
 
                     <com.seekerzhouk.accountbook.ui.customize.PieView
-                        android:id="@+id/pie_view_income"
+                        android:id="@+id/pieViewIncome"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -90,7 +90,7 @@
                         android:textSize="18sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/pie_view_income" />
+                        app:layout_constraintTop_toTopOf="@+id/pieViewIncome" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -119,7 +119,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <HorizontalScrollView
-                        android:id="@+id/horizontalScrollView_expend_monthly"
+                        android:id="@+id/expendHistogramScrollView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:scrollbars="none"
@@ -129,7 +129,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <com.seekerzhouk.accountbook.ui.customize.HistogramView
-                            android:id="@+id/histogram_view_expend_monthly"
+                            android:id="@+id/expendHistogram"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </HorizontalScrollView>
@@ -162,7 +162,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <HorizontalScrollView
-                        android:id="@+id/horizontalScrollView_income_monthly"
+                        android:id="@+id/incomeHistogramScrollView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:scrollbars="none"
@@ -172,7 +172,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <com.seekerzhouk.accountbook.ui.customize.HistogramView
-                            android:id="@+id/histogram_view_income_monthly"
+                            android:id="@+id/incomeHistogram"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </HorizontalScrollView>

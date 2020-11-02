@@ -7,7 +7,7 @@
     tools:context=".ui.options.SetAvatarActivity">
 
     <ImageView
-        android:id="@+id/imageView_avatar"
+        android:id="@+id/avatarImage"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_marginStart="8dp"

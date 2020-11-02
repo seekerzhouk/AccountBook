@@ -12,17 +12,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import cn.leancloud.AVUser
 import com.seekerzhouk.accountbook.R
+import com.seekerzhouk.accountbook.databinding.FragmentLoginBinding
 import com.seekerzhouk.accountbook.utils.MyLog
 import com.seekerzhouk.accountbook.utils.NetworkUtil
 import com.seekerzhouk.accountbook.viewmodel.LoginViewModel
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
-
+    private lateinit var binding: FragmentLoginBinding
     private val loginViewModel: LoginViewModel by viewModels()
 
     private val _tag = LoginFragment::class.java.name
@@ -30,7 +30,9 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_login, container, false).also {
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
+        return binding.root
+//            .also {
 //            it.isFocusableInTouchMode = true
 //            it.requestFocus()
 //            it.setOnKeyListener(object : View.OnKeyListener {
@@ -43,29 +45,29 @@ class LoginFragment : Fragment() {
 //                    return false
 //                }
 //            })
-        }
+//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.title = getString(R.string.login)
 
-        loginPassword.setOnEditorActionListener { _, actionId, _ ->
+        binding.loginPassword.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                buttonLogin.performClick()
+                binding.buttonLogin.performClick()
             }
             false
         }
 
-        buttonLogin.setOnClickListener {
-            if (loginUserName.text.isEmpty()) {
+        binding.buttonLogin.setOnClickListener {
+            if (binding.loginUserName.text.isEmpty()) {
                 Toast.makeText(context, R.string.user_name_cannot_be_null, Toast.LENGTH_SHORT)
                     .also {
                         it.setGravity(Gravity.CENTER, 0, 0)
                     }.show()
                 return@setOnClickListener
             }
-            if (loginPassword.text.isEmpty()) {
+            if (binding.loginPassword.text.isEmpty()) {
                 Toast.makeText(context, R.string.password_cannot_be_null, Toast.LENGTH_SHORT)
                     .also {
                         it.setGravity(Gravity.CENTER, 0, 0)
@@ -75,13 +77,16 @@ class LoginFragment : Fragment() {
 
             NetworkUtil.doWithNetwork(requireContext()) {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    login(loginUserName.text.trim().toString(), loginPassword.text.trim().toString())
+                    login(
+                        binding.loginUserName.text.trim().toString(),
+                        binding.loginPassword.text.trim().toString()
+                    )
                 }
-                loginProgressBar.show(getString(R.string.is_logging))
+                binding.loginProgressBar.show(getString(R.string.is_logging))
             }
         }
 
-        textViewSignUp.setOnClickListener {
+        binding.textViewSignUp.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
         }
     }
@@ -103,13 +108,13 @@ class LoginFragment : Fragment() {
             }
 
             override fun onError(e: Throwable) {
-                loginProgressBar.onJobError(getString(R.string.Incorrect_username_or_password))
-                    .laterDismiss(1500){}
+                binding.loginProgressBar.onJobError(getString(R.string.Incorrect_username_or_password))
+                    .laterDismiss(1500) {}
                 MyLog.i(_tag, "login onError ", e)
             }
 
             override fun onComplete() {
-                loginProgressBar.onJobFinished(getString(R.string.successfully_login))
+                binding.loginProgressBar.onJobFinished(getString(R.string.successfully_login))
                     .laterDismiss(1500) {
                         activity?.setResult(Activity.RESULT_OK, Intent().apply {
                             putExtra("isLogin", true)

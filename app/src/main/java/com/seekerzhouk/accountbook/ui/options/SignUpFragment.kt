@@ -12,23 +12,25 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import cn.leancloud.AVUser
 import com.seekerzhouk.accountbook.R
+import com.seekerzhouk.accountbook.databinding.FragmentSignUpBinding
 import com.seekerzhouk.accountbook.utils.MyLog
 import com.seekerzhouk.accountbook.utils.NetworkUtil
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.fragment_sign_up.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SignUpFragment : Fragment() {
-
+    private lateinit var binding: FragmentSignUpBinding
     private val _tag = SignUpFragment::class.java.name
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_sign_up, container, false).also {
+        binding = FragmentSignUpBinding.inflate(inflater,container,false)
+        return binding.root
+//            .also {
 //            it.isFocusableInTouchMode = true
 //            it.requestFocus()
 //            it.setOnKeyListener(object : View.OnKeyListener {
@@ -41,36 +43,36 @@ class SignUpFragment : Fragment() {
 //                    return false
 //                }
 //            })
-        }
+//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.title = getString(R.string.sign_up)
 
-        signUpConfirmPassword.setOnEditorActionListener { _, actionId, _ ->
+        binding.signUpConfirmPassword.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                buttonSignUp.performClick()
+                binding.buttonSignUp.performClick()
             }
             false
         }
 
-        buttonSignUp.setOnClickListener {
-            if (signUpUserName.text.isEmpty()) {
+        binding.buttonSignUp.setOnClickListener {
+            if (binding.signUpUserName.text.isEmpty()) {
                 Toast.makeText(context, R.string.user_name_cannot_be_null, Toast.LENGTH_SHORT)
                     .also {
                         it.setGravity(Gravity.CENTER, 0, 0)
                     }.show()
                 return@setOnClickListener
             }
-            if (signUpPassword.text.isEmpty()) {
+            if (binding.signUpPassword.text.isEmpty()) {
                 Toast.makeText(context, R.string.password_cannot_be_null, Toast.LENGTH_SHORT)
                     .also {
                         it.setGravity(Gravity.CENTER, 0, 0)
                     }.show()
                 return@setOnClickListener
             }
-            if (signUpConfirmPassword.text.isEmpty()) {
+            if (binding.signUpConfirmPassword.text.isEmpty()) {
                 Toast.makeText(context, R.string.please_confirm_password, Toast.LENGTH_SHORT)
                     .also {
                         it.setGravity(Gravity.CENTER, 0, 0)
@@ -78,8 +80,8 @@ class SignUpFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            if (signUpPassword.text.trim().toString()
-                != signUpConfirmPassword.text.trim().toString()
+            if (binding.signUpPassword.text.trim().toString()
+                != binding.signUpConfirmPassword.text.trim().toString()
             ) {
                 Toast.makeText(context, R.string.inconsistent_passwords, Toast.LENGTH_SHORT)
                     .also {
@@ -88,7 +90,7 @@ class SignUpFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            if (!userNameCanUse(signUpUserName.text.trim().toString())) {
+            if (!userNameCanUse(binding.signUpUserName.text.trim().toString())) {
                 Toast.makeText(context, R.string.user_name_already_exists, Toast.LENGTH_SHORT)
                     .also {
                         it.setGravity(Gravity.CENTER, 0, 0)
@@ -99,15 +101,15 @@ class SignUpFragment : Fragment() {
             NetworkUtil.doWithNetwork(requireContext()) {
                 lifecycleScope.launch(Dispatchers.IO) {
                     signUp(
-                        signUpUserName.text.trim().toString(),
-                        signUpPassword.text.trim().toString()
+                        binding.signUpUserName.text.trim().toString(),
+                        binding.signUpPassword.text.trim().toString()
                     )
                 }
-                signUpProgressBar.show(getString(R.string.is_signing_up))
+                binding.signUpProgressBar.show(getString(R.string.is_signing_up))
             }
         }
 
-        returnToLogin.setOnClickListener {
+        binding.returnToLogin.setOnClickListener {
             findNavController().navigateUp()
         }
     }
@@ -132,16 +134,16 @@ class SignUpFragment : Fragment() {
                 }
 
                 override fun onError(e: Throwable) {
-                    signUpProgressBar.onJobError(getString(R.string.user_name_already_exists))
+                    binding.signUpProgressBar.onJobError(getString(R.string.user_name_already_exists))
                         .laterDismiss(1500) {}
                     MyLog.i(_tag, "signUp onError ", e)
                 }
 
                 override fun onComplete() {
-                    signUpProgressBar.onJobFinished(getString(R.string.successfully_sign_up))
+                    binding.signUpProgressBar.onJobFinished(getString(R.string.successfully_sign_up))
                         .laterDismiss(1500) {
-                            signUpLayout.visibility = View.GONE
-                            succeedLayout.visibility = View.VISIBLE
+                            binding.signUpLayout.visibility = View.GONE
+                            binding.succeedLayout.visibility = View.VISIBLE
                         }
                     MyLog.i(_tag, "signUp onComplete")
                 }
