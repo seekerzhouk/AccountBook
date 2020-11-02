@@ -17,7 +17,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun getIncomeSectors(): LiveData<List<IncomeSector>> {
         val cList =
             ConsumptionUtil.incomeTypeList.filterIndexed { index: Int, _: String -> index > 0 }
-        return getSectors(myRepository.findIncomeRecords(), cList) {
+        return getSectors(myRepository.loadIncomeRecords(), cList) {
             it.map { entry ->
                 IncomeSector(entry.key, entry.value)
             }.toList()
@@ -27,7 +27,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun getExpendSectors(): LiveData<List<ExpendSector>> {
         val cList =
             ConsumptionUtil.expendTypeList.filterIndexed { index: Int, _: String -> index > 0 }
-        return getSectors(myRepository.findExpendRecords(), cList) {
+        return getSectors(myRepository.loadExpendRecords(), cList) {
             it.map { entry ->
                 ExpendSector(entry.key, entry.value)
             }.toList()
@@ -36,7 +36,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
 
     fun getIncomePillars(): LiveData<List<IncomePillar>> =
-        getPillars(myRepository.findIncomeRecords()) {
+        getPillars(myRepository.loadIncomeRecords()) {
             it.map { entry ->
                 IncomePillar(entry.key, entry.value.toFloat())
             }.toList()
@@ -44,7 +44,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
 
     fun getExpendPillars(): LiveData<List<ExpendPillar>> =
-        getPillars(myRepository.findExpendRecords()) {
+        getPillars(myRepository.loadExpendRecords()) {
             it.map { entry ->
                 ExpendPillar(entry.key, entry.value.toFloat())
             }.toList()

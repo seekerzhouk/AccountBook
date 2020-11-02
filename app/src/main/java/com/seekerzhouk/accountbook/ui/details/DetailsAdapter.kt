@@ -4,15 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.seekerzhouk.accountbook.databinding.DetailItemViewBinding
 import com.seekerzhouk.accountbook.room.details.Record
 import com.seekerzhouk.accountbook.utils.ConsumptionUtil
 
 class DetailsAdapter() :
-    ListAdapter<Record, DetailsAdapter.MyViewHolder>(object : DiffUtil.ItemCallback<Record>() {
+    PagedListAdapter<Record, DetailsAdapter.MyViewHolder>(object : DiffUtil.ItemCallback<Record>() {
         override fun areItemsTheSame(oldItem: Record, newItem: Record): Boolean {
             return oldItem.id == newItem.id
         }
@@ -35,16 +35,18 @@ class DetailsAdapter() :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val record: Record = getItem(position)
-        holder.imageConsumptionType.setImageResource(ConsumptionUtil.getIconType(record))
-        holder.textConsumptionType.text = record.consumptionType
-        holder.textDescription.text = record.description
-        holder.textDateAndTime.text = record.dateTime
-        var money = String.format("%.2f", record.money)
-        if (record.incomeOrExpend == ConsumptionUtil.EXPEND && record.money > 0) {
-            money = "-$money"
+        val record: Record? = getItem(position)
+        record?.let {
+            holder.imageConsumptionType.setImageResource(ConsumptionUtil.getIconType(it))
+            holder.textConsumptionType.text = it.consumptionType
+            holder.textDescription.text = it.description
+            holder.textDateAndTime.text = it.dateTime
+            var money = String.format("%.2f", it.money)
+            if (it.incomeOrExpend == ConsumptionUtil.EXPEND && it.money > 0) {
+                money = "-$money"
+            }
+            holder.textMoney.text = money
         }
-        holder.textMoney.text = money
 
         holder.itemView.isLongClickable = true
         holder.itemView.setOnLongClickListener {

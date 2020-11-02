@@ -2,6 +2,7 @@ package com.seekerzhouk.accountbook.repository
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import cn.leancloud.AVObject
 import cn.leancloud.AVQuery
 import cn.leancloud.AVUser
@@ -271,47 +272,47 @@ class MyRepository private constructor(val context: Context) {
 
     }
 
-    fun loadAllRecords(): LiveData<List<Record>> {
+    fun loadAllRecords(): DataSource.Factory<Int, Record> {
         return recordDao.loadAllRecords(SharedPreferencesUtil.getUserName(context))
     }
 
-    fun findRecordsWithPatten(patten: String): LiveData<List<Record>> {
+    fun findRecordsWithPatten(patten: String): DataSource.Factory<Int, Record> {
         return recordDao.findRecordWithPatten(
             SharedPreferencesUtil.getUserName(context),
             "%$patten%"
         )
     }
 
-    fun findIncomeRecords(): LiveData<List<Record>> {
+    fun findIncomeRecords(): DataSource.Factory<Int, Record> {
         return recordDao.findIncomeRecords(SharedPreferencesUtil.getUserName(context))
     }
 
-    fun findExpendRecords(): LiveData<List<Record>> {
+    fun findExpendRecords(): DataSource.Factory<Int, Record> {
         return recordDao.findExpendRecords(SharedPreferencesUtil.getUserName(context))
     }
 
-    fun findIncomeRecordsWithPatten(patten: String): LiveData<List<Record>> {
+    fun findIncomeRecordsWithPatten(patten: String): DataSource.Factory<Int, Record> {
         return recordDao.findIncomeRecordsWithPatten(
             SharedPreferencesUtil.getUserName(context),
             "%$patten%"
         )
     }
 
-    fun findExpendRecordsWithPatten(patten: String): LiveData<List<Record>> {
+    fun findExpendRecordsWithPatten(patten: String): DataSource.Factory<Int, Record> {
         return recordDao.findExpendRecordsWithPatten(
             SharedPreferencesUtil.getUserName(context),
             "%$patten%"
         )
     }
 
-    fun findIncomeRecordsBySelectedType(selectedType: String): LiveData<List<Record>> {
+    fun findIncomeRecordsBySelectedType(selectedType: String): DataSource.Factory<Int, Record> {
         return recordDao.findIncomeRecordsBySelectedType(
             SharedPreferencesUtil.getUserName(context),
             selectedType
         )
     }
 
-    fun findExpendRecordsBySelectedType(selectedType: String): LiveData<List<Record>> {
+    fun findExpendRecordsBySelectedType(selectedType: String): DataSource.Factory<Int, Record> {
         return recordDao.findExpendRecordsBySelectedType(
             SharedPreferencesUtil.getUserName(context),
             selectedType
@@ -321,7 +322,7 @@ class MyRepository private constructor(val context: Context) {
     fun findIncomeRecordsBySelectedTypeWithPatten(
         selectedType: String,
         patten: String
-    ): LiveData<List<Record>> {
+    ): DataSource.Factory<Int, Record> {
         return recordDao.findIncomeRecordsBySelectedTypeWithPatten(
             SharedPreferencesUtil.getUserName(
                 context
@@ -332,7 +333,7 @@ class MyRepository private constructor(val context: Context) {
     fun findExpendRecordsBySelectedTypeWithPatten(
         selectedType: String,
         patten: String
-    ): LiveData<List<Record>> {
+    ): DataSource.Factory<Int, Record> {
         return recordDao.findExpendRecordsBySelectedTypeWithPatten(
             SharedPreferencesUtil.getUserName(
                 context
@@ -340,4 +341,17 @@ class MyRepository private constructor(val context: Context) {
         )
     }
 
+    /**
+     * 查找所有 收入记录
+     */
+    fun loadIncomeRecords(): LiveData<List<Record>>{
+        return recordDao.loadIncomeRecords(SharedPreferencesUtil.getUserName(context))
+    }
+
+    /**
+     * 查找所有 支出记录
+     */
+    fun loadExpendRecords(): LiveData<List<Record>>{
+        return recordDao.loadExpendRecords(SharedPreferencesUtil.getUserName(context))
+    }
 }

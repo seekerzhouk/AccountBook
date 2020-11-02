@@ -27,7 +27,7 @@ android {
             // 加载local.properties文件
             Properties properties = new Properties()
             InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
-            properties.load( inputStream )
+            properties.load(inputStream)
 
             keyAlias properties.getProperty('keyAlias')
             keyPassword properties.getProperty('keyPassword')
@@ -89,4 +89,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
     // LiveData
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
+    // Paging
+    implementation 'androidx.paging:paging-runtime-ktx:2.1.2'
 }

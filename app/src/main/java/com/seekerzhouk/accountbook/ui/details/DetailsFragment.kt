@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +20,7 @@ import com.seekerzhouk.accountbook.databinding.FragmentDetailsBinding
 import com.seekerzhouk.accountbook.room.details.Record
 import com.seekerzhouk.accountbook.ui.customize.AddDialog
 import com.seekerzhouk.accountbook.utils.ConsumptionUtil
+import com.seekerzhouk.accountbook.utils.MyLog
 import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
 import com.seekerzhouk.accountbook.viewmodel.DetailsViewModel
 
@@ -30,7 +32,7 @@ class DetailsFragment : Fragment(), LifecycleObserver {
 
     private val detailsViewModel: DetailsViewModel by viewModels()
 
-    private var records: LiveData<List<Record>>? = null
+    private var records: LiveData<PagedList<Record>>? = null
 
     private var firstPosition: Int = 0
     private var secondPosition: Int = 0
@@ -281,6 +283,7 @@ class DetailsFragment : Fragment(), LifecycleObserver {
 
         records?.observe(this, Observer {
             myAdapter.submitList(it)
+            MyLog.i("DetailsFragment", "${it.size}")
             scrollRecyclerView()
         })
     }
