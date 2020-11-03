@@ -148,6 +148,7 @@ class PieView : View {
 
             // 画线和文字
             canvas?.save()
+            path.reset()
             path.moveTo(x1, y1)
             path.lineTo(x2, y2)
             path.lineTo(x3, y3)
