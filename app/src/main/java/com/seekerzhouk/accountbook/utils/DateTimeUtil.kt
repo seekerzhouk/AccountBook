@@ -54,4 +54,16 @@ object DateTimeUtil {
     fun getTime(pattern: String): String {
         return pattern.substring(12)
     }
+
+    /**
+     * 获取具体某个月有多少天
+     */
+    fun getDaysOfMonth(year: String, month: String): Int {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.YEAR, year.substring(0, year.length - 1).toInt())
+        calendar.set(Calendar.MONTH, month.substring(0, month.length - 1).toInt() - 1)
+        calendar.set(Calendar.DATE, 1)
+        calendar.roll(Calendar.DATE, -1)
+        return calendar.get(Calendar.DATE)
+    }
 }

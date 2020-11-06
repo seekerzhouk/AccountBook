@@ -22,7 +22,6 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 
-
 class MyRepository private constructor(val context: Context) {
     private val tag = MyRepository::class.java.name
 
@@ -344,14 +343,54 @@ class MyRepository private constructor(val context: Context) {
     /**
      * 查找所有 收入记录
      */
-    fun loadIncomeRecords(): LiveData<List<Record>>{
+    fun loadIncomeRecords(): LiveData<List<Record>> {
         return recordDao.loadIncomeRecords(SharedPreferencesUtil.getUserName(context))
     }
 
     /**
      * 查找所有 支出记录
      */
-    fun loadExpendRecords(): LiveData<List<Record>>{
+    fun loadExpendRecords(): LiveData<List<Record>> {
         return recordDao.loadExpendRecords(SharedPreferencesUtil.getUserName(context))
+    }
+
+    /**
+     * 查找具体月份 收入记录
+     */
+    fun loadIncomeRecordsByMonth(specificMonth: String): LiveData<List<Record>> {
+        return recordDao.loadIncomeRecordsByMonth(
+            SharedPreferencesUtil.getUserName(context),
+            specificMonth
+        )
+    }
+
+    /**
+     * 查找具体月份 支出记录
+     */
+    fun loadExpendRecordsByMonth(specificMonth: String): LiveData<List<Record>> {
+        return recordDao.loadExpendRecordsByMonth(
+            SharedPreferencesUtil.getUserName(context),
+            specificMonth
+        )
+    }
+
+    /**
+     * 查找年份 收入记录
+     */
+    fun loadIncomeRecordsByYear(year: String): LiveData<List<Record>> {
+        return recordDao.loadIncomeRecordsByYear(
+            SharedPreferencesUtil.getUserName(context),
+            year
+        )
+    }
+
+    /**
+     * 查找年份 支出记录
+     */
+    fun loadExpendRecordsByYear(year: String): LiveData<List<Record>> {
+        return recordDao.loadExpendRecordsByYear(
+            SharedPreferencesUtil.getUserName(context),
+            year
+        )
     }
 }

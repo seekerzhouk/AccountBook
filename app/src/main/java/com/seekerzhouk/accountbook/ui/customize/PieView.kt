@@ -119,7 +119,7 @@ class PieView : View {
         rectF.set(-r, -r, r, r)
         canvas?.translate((totalWidth / 2).toFloat(), totalHeight * 0.55.toFloat())
         for (pie in sectorList) {
-            if (pie.moneySum == 0.0) {
+            if (pie.moneySum == 0F) {
                 continue
             }
             // 第一段引线的角度

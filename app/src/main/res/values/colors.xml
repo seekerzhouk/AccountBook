@@ -33,4 +33,7 @@
     <!-- end   pieView的颜色-->
 
     <color name="feed_back_text_bg_color">#64A7D3</color>
+    <color name="line_chart">#E47C75</color>
+    <color name="circle_point">#E2A96D</color>
+    <color name="aux_line">#89C3E8</color>
 </resources>

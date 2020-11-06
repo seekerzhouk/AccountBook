@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">AccountBook</string>
-    <string name="title_home">主页</string>
+    <string name="title_statistics">统计</string>
     <string name="title_details">账单</string>
     <string name="title_me">我的</string>
     <string name="avatar">头像</string>

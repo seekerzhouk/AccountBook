@@ -1,6 +1,7 @@
 package com.seekerzhouk.accountbook.room.home
 
-class Pillar(
-    var month: String,
+class Point(
+    var date: String,
     var moneySum: Float
-)  {}
+) {
+}

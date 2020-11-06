@@ -3,9 +3,9 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home"
-android:titleCondensed=""
-        android:title="@string/title_home" />
+        android:icon="@drawable/ic_statistics"
+        android:title="@string/title_statistics"
+        android:titleCondensed="" />
 
     <item
         android:id="@+id/navigation_details"

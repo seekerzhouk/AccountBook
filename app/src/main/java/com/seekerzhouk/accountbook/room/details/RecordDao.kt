@@ -47,13 +47,19 @@ interface RecordDao {
      * 关键字 查找 收入记录
      */
     @Query("select * from record where userName is :userName and incomeOrExpend is '收入' and description like :patten order by id desc")
-    fun findIncomeRecordsWithPatten(userName: String, patten: String): DataSource.Factory<Int, Record>
+    fun findIncomeRecordsWithPatten(
+        userName: String,
+        patten: String
+    ): DataSource.Factory<Int, Record>
 
     /**
      * 关键字 查找 支出记录
      */
     @Query("select * from record where userName is :userName and incomeOrExpend is '支出' and description like :patten order by id desc")
-    fun findExpendRecordsWithPatten(userName: String, patten: String): DataSource.Factory<Int, Record>
+    fun findExpendRecordsWithPatten(
+        userName: String,
+        patten: String
+    ): DataSource.Factory<Int, Record>
 
     /**
      * 根据 类型 查找 收入记录
@@ -96,12 +102,36 @@ interface RecordDao {
     /**
      * 查找所有 收入记录
      */
-    @Query("select * from Record where userName is :userName and incomeOrExpend is '收入' order by id desc")
+    @Query("select * from Record where userName is :userName and incomeOrExpend is '收入'")
     fun loadIncomeRecords(userName: String): LiveData<List<Record>>
 
     /**
      * 查找所有 支出记录
      */
-    @Query("select * from Record where userName is :userName and incomeOrExpend is '支出' order by id desc")
+    @Query("select * from Record where userName is :userName and incomeOrExpend is '支出'")
     fun loadExpendRecords(userName: String): LiveData<List<Record>>
+
+    /**
+     * 查找具体月份 收入记录
+     */
+    @Query("select * from Record where userName is :userName and incomeOrExpend is '收入' AND substr(dateTime,1,8) = :specificMonth")
+    fun loadIncomeRecordsByMonth(userName: String, specificMonth: String): LiveData<List<Record>>
+
+    /**
+     * 查找具体月份 支出记录
+     */
+    @Query("select * from Record where userName is :userName and incomeOrExpend is '支出' AND substr(dateTime,1,8) = :specificMonth")
+    fun loadExpendRecordsByMonth(userName: String,  specificMonth: String): LiveData<List<Record>>
+
+    /**
+     * 查找具体年份 收入记录
+     */
+    @Query("select * from Record where userName is :userName and incomeOrExpend is '收入' AND substr(dateTime,1,5) = :year")
+    fun loadIncomeRecordsByYear(userName: String, year: String): LiveData<List<Record>>
+
+    /**
+     * 查找具体年份 支出记录
+     */
+    @Query("select * from Record where userName is :userName and incomeOrExpend is '支出' AND substr(dateTime,1,5) = :year")
+    fun loadExpendRecordsByYear(userName: String, year: String): LiveData<List<Record>>
 }

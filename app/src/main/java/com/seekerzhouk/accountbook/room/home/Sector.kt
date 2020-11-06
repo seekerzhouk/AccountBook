@@ -1,8 +1,8 @@
 package com.seekerzhouk.accountbook.room.home
 
-abstract class Sector(
-    open var consumptionType: String,
-    open var moneySum: Double
+class Sector(
+    var consumptionType: String,
+    var moneySum: Float
 ) {
     var percentage: Float = 0F
 
