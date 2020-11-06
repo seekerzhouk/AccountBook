@@ -146,16 +146,18 @@ class HistogramView @JvmOverloads constructor(
                 monthTextY,
                 textPaint
             )
-            canvas.drawText(
-                pillarList[i].moneySum.toString(),
-                commonX - textPaint.measureText(pillarList[i].moneySum.toString()) / 2,
-                moneyTextY,
-                textPaint
-            )
-            canvas.drawLine(
-                commonX, 0F, commonX,
-                -histogramHeight, histogramPaint
-            )
+            if (pillarList[i].moneySum > 0) {
+                canvas.drawText(
+                    pillarList[i].moneySum.toString(),
+                    commonX - textPaint.measureText(pillarList[i].moneySum.toString()) / 2,
+                    moneyTextY,
+                    textPaint
+                )
+                canvas.drawLine(
+                    commonX, 0F, commonX,
+                    -histogramHeight, histogramPaint
+                )
+            }
         }
     }
 
