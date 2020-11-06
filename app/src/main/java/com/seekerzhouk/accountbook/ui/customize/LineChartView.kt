@@ -195,15 +195,15 @@ class LineChartView @JvmOverloads constructor(
                 auxPath.rLineTo(0F, moneyTextY)
 
                 canvas.drawPath(auxPath, auxPaint)
-                canvas.drawRoundRect(commonX - 50,
+                canvas.drawRoundRect(commonX - 70,
                     moneyTextY-40,
-                    commonX + 50,
+                    commonX + 70,
                     moneyTextY+15,
                     10F,
                     10F,rectPaint)
                 canvas.drawText(
-                    daysList[i].moneySum.toString(),
-                    commonX - textPaint.measureText(daysList[i].moneySum.toString()) / 2,
+                    String.format("%.2f",daysList[i].moneySum),
+                    commonX - textPaint.measureText(String.format("%.2f",daysList[i].moneySum)) / 2,
                     moneyTextY,
                     textPaint
                 )

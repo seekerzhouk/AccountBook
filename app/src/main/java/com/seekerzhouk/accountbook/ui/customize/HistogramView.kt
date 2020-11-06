@@ -139,7 +139,7 @@ class HistogramView @JvmOverloads constructor(
         for (i in pillarList.indices) {
             histogramHeight = pillarList[i].moneySum / moneyPerY
             commonX = (histogramWidth * 1.5F) + (histogramWidth * 2 * i).toFloat()
-            moneyTextY = -histogramHeight - 20 // 金额文字的Y坐标
+            moneyTextY = -histogramHeight - 20
             canvas.drawText(
                 pillarList[i].month,
                 commonX - textPaint.measureText(pillarList[i].month) / 2,
@@ -148,8 +148,8 @@ class HistogramView @JvmOverloads constructor(
             )
             if (pillarList[i].moneySum > 0) {
                 canvas.drawText(
-                    pillarList[i].moneySum.toString(),
-                    commonX - textPaint.measureText(pillarList[i].moneySum.toString()) / 2,
+                    String.format("%.2f",pillarList[i].moneySum),
+                    commonX - textPaint.measureText(String.format("%.2f",pillarList[i].moneySum)) / 2,
                     moneyTextY,
                     textPaint
                 )
