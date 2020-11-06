@@ -16,8 +16,6 @@ class LineChartView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    private val tag = LineChartView::class.java.name
-
     // 画线、写字、画圆点的paint
     private val linePaint = Paint().apply {
         style = Paint.Style.STROKE
@@ -103,14 +101,12 @@ class LineChartView @JvmOverloads constructor(
             }
             average = sum / daysList.size
             invalidate()
-            MyLog.i(tag, "set daysList :  ${value.size}")
         }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         mWidth = w.toFloat()
         mHeight = h.toFloat()
-        MyLog.i(tag, "onSizeChanged()")
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -120,7 +116,6 @@ class LineChartView @JvmOverloads constructor(
         measuredWidth = resolveSize(measuredWidth, widthMeasureSpec)
         measuredHeight = resolveSize(measuredHeight, heightMeasureSpec)
         setMeasuredDimension(measuredWidth, measuredHeight)
-        MyLog.i(tag, "onMeasure()")
     }
 
     override fun onDraw(canvas: Canvas?) {

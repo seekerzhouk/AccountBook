@@ -17,8 +17,6 @@ class HistogramView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    private val tag = HistogramView::class.java.name
-
     // 直方图的宽高
     private var mWidth: Float = 0f
     private var mHeight: Float = 0F
@@ -85,7 +83,6 @@ class HistogramView @JvmOverloads constructor(
             }
             average = sum / pillarList.size
             invalidate()
-            MyLog.i(tag, "set pillarList :  $pillarList")
         }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -135,6 +132,9 @@ class HistogramView @JvmOverloads constructor(
         canvas.drawPath(linePath, linePaint)
     }
 
+    /**
+     * 画出文字、柱子
+     */
     private fun drawTextAndLine(canvas: Canvas) {
         for (i in pillarList.indices) {
             histogramHeight = pillarList[i].moneySum / moneyPerY
@@ -159,6 +159,9 @@ class HistogramView @JvmOverloads constructor(
         }
     }
 
+    /**
+     * 画X轴
+     */
     private fun drawXLine(canvas: Canvas) {
         linePath.reset()
         linePaint.color = Color.BLACK
