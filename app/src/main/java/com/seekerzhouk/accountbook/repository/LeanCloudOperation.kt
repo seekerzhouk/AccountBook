@@ -3,7 +3,7 @@ package com.seekerzhouk.accountbook.repository
 import cn.leancloud.AVObject
 import cn.leancloud.AVQuery
 import cn.leancloud.AVUser
-import com.seekerzhouk.accountbook.room.UserAddInfo
+import com.seekerzhouk.accountbook.room.me.UserAddInfo
 import com.seekerzhouk.accountbook.room.details.Record
 import com.seekerzhouk.accountbook.utils.MyLog
 import io.reactivex.Observer

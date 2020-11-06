@@ -1,4 +1,4 @@
-package com.seekerzhouk.accountbook.room
+package com.seekerzhouk.accountbook.room.me
 
 /**
  * 记录云端是否已经初始化

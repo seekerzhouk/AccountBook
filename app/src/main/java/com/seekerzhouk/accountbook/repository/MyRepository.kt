@@ -8,7 +8,7 @@ import cn.leancloud.AVQuery
 import cn.leancloud.AVUser
 import com.bumptech.glide.Glide
 import com.seekerzhouk.accountbook.R
-import com.seekerzhouk.accountbook.room.UserAddInfo
+import com.seekerzhouk.accountbook.room.me.UserAddInfo
 import com.seekerzhouk.accountbook.room.details.Record
 import com.seekerzhouk.accountbook.room.details.RecordsDatabase
 import com.seekerzhouk.accountbook.utils.MyLog

@@ -6,7 +6,7 @@ import cn.leancloud.AVObject
 import cn.leancloud.AVUser
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.databinding.ActivityFeedBackBinding
-import com.seekerzhouk.accountbook.room.Feedback
+import com.seekerzhouk.accountbook.room.me.Feedback
 
 class FeedbackActivity : OptionActivity() {
     private lateinit var binding: ActivityFeedBackBinding
