@@ -5,41 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <include
         android:id="@+id/homeTitleBar"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/title_bar_height"
-        android:background="@color/colorPrimary"
-        app:layout_constraintBottom_toTopOf="@+id/scrollView"
+        layout="@layout/title_bar_home"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.AppCompatSpinner
-            android:id="@+id/yearSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline15"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatSpinner
-            android:id="@+id/monthSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline15"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline15"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -62,7 +33,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:foreground="?attr/selectableItemBackground"
                 app:cardCornerRadius="10dp"
                 tools:visibility="gone">
 
@@ -299,7 +269,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <HorizontalScrollView
-                        android:id="@+id/horizontalScrollView1"
+                        android:id="@+id/expendChartScroll"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:scrollbars="none"
@@ -351,7 +321,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <HorizontalScrollView
-                        android:id="@+id/horizontalScrollView"
+                        android:id="@+id/incomeChartScroll"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:scrollbars="none"

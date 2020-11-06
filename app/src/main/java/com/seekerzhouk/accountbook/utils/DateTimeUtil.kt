@@ -22,6 +22,44 @@ object DateTimeUtil {
     }
 
     /**
+     * 返回月份 yyyy年MM月
+     */
+    fun getSpecificMonth(): String {
+        val calendar = Calendar.getInstance()
+        return if (calendar.get(Calendar.MONTH) + 1 < 10) {
+            calendar.get(Calendar.YEAR).toString().plus("年").plus(0)
+                .plus(calendar.get(Calendar.MONTH) + 1).plus("月")
+        } else {
+            calendar.get(Calendar.YEAR).toString().plus("年").plus(calendar.get(Calendar.MONTH) + 1)
+                .plus("月")
+        }
+    }
+
+    /**
+     * 返回月份数字
+     */
+    fun getCurrentMonth(): Int {
+        val calendar = Calendar.getInstance()
+        return calendar.get(Calendar.MONTH) + 1
+    }
+
+    /**
+     * 返回日期数字
+     */
+    fun getCurrentDayOfMonth(): Int {
+        val calendar = Calendar.getInstance()
+        return calendar.get(Calendar.DAY_OF_MONTH)
+    }
+
+    /**
+     * 返回年份 yyyy年
+     */
+    fun getCurrentYear(): String {
+        val calendar = Calendar.getInstance()
+        return calendar.get(Calendar.YEAR).toString().plus("年")
+    }
+
+    /**
      * @param pattern the pattern describing the date and time format.
      * must be "yyyy年MM月dd日 HH:mm:ss".
      */
@@ -56,12 +94,12 @@ object DateTimeUtil {
     }
 
     /**
-     * 获取具体某个月有多少天
+     * 获取具体某个月{yyyy年MM月}有多少天
      */
-    fun getDaysOfMonth(year: String, month: String): Int {
+    fun getDaysOfMonth(specificMonth: String): Int {
         val calendar = Calendar.getInstance()
-        calendar.set(Calendar.YEAR, year.substring(0, year.length - 1).toInt())
-        calendar.set(Calendar.MONTH, month.substring(0, month.length - 1).toInt() - 1)
+        calendar.set(Calendar.YEAR, specificMonth.substring(0, 4).toInt())
+        calendar.set(Calendar.MONTH, specificMonth.substring(5, 7).toInt() - 1)
         calendar.set(Calendar.DATE, 1)
         calendar.roll(Calendar.DATE, -1)
         return calendar.get(Calendar.DATE)

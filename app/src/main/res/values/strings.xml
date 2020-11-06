@@ -69,4 +69,6 @@
     <string name="delete">删除</string>
     <string name="deleted_a_record">删除了一条记录</string>
     <string name="revoke">撤销</string>
+    <string name="count_by_year">按年统计</string>
+    <string name="count_by_month">按月统计</string>
 </resources>

@@ -3,6 +3,7 @@ package com.seekerzhouk.accountbook.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.seekerzhouk.accountbook.repository.MyRepository
 import com.seekerzhouk.accountbook.room.details.Record
@@ -10,9 +11,21 @@ import com.seekerzhouk.accountbook.room.home.*
 import com.seekerzhouk.accountbook.utils.ConsumptionUtil
 import com.seekerzhouk.accountbook.utils.DateTimeUtil
 
+enum class Switch {
+    ByYear, ByMonth
+}
+
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val myRepository: MyRepository = MyRepository.getInstance(application)
+
+    private val _titleSwitch = MutableLiveData(Switch.ByMonth)
+
+    val titleSwitch: LiveData<Switch> = _titleSwitch
+
+    fun turnTitleSwitch() {
+        _titleSwitch.postValue(if (_titleSwitch.value == Switch.ByMonth) Switch.ByYear else Switch.ByMonth)
+    }
 
     fun getAllIncomeSectors(): LiveData<List<Sector>> {
         val cList =
@@ -74,18 +87,18 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             pillarsToList(it)
         }
 
-    fun getExpendPointsByMonth(year: String, month: String) =
+    fun getExpendPointsByMonth(specificMonth: String) =
         getPoints(
-            myRepository.loadExpendRecordsByMonth(year + month),
-            DateTimeUtil.getDaysOfMonth(year, month)
+            myRepository.loadExpendRecordsByMonth(specificMonth),
+            DateTimeUtil.getDaysOfMonth(specificMonth)
         ) {
             pointsToList(it)
         }
 
-    fun getIncomePointsByMonth(year: String, month: String) =
+    fun getIncomePointsByMonth(specificMonth: String) =
         getPoints(
-            myRepository.loadIncomeRecordsByMonth(year + month),
-            DateTimeUtil.getDaysOfMonth(year, month)
+            myRepository.loadIncomeRecordsByMonth(specificMonth),
+            DateTimeUtil.getDaysOfMonth(specificMonth)
         ) {
             pointsToList(it)
         }
