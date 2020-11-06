@@ -7,57 +7,68 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.graphics.withTranslation
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.room.home.Pillar
 import com.seekerzhouk.accountbook.utils.MyLog
 import kotlin.math.max
 
-class HistogramView : View {
-    constructor(context: Context?) : this(context, null)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        linePaint.style = Paint.Style.STROKE
-        linePaint.strokeWidth = 2F
-        linePaint.isAntiAlias = true
-
-        histogramPaint.style = Paint.Style.STROKE
-        histogramPaint.isAntiAlias = true
-        histogramPaint.color = resources.getColor(R.color.histogram)
-
-        textPaint.color = Color.BLACK
-        textPaint.textSize = 30F
-        textPaint.isAntiAlias = true
-    }
+class HistogramView @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
 
     private val tag = HistogramView::class.java.name
-
 
     // 直方图的宽高
     private var mWidth: Float = 0f
     private var mHeight: Float = 0F
 
-    // 画线、画图、写字的paint
-    private val linePaint = Paint()
-    private val histogramPaint = Paint()
-    private val textPaint = Paint()
-
-    // 画线的path
-    private val linePath = Path()
-
-    // 横线的数量为4，即把高度分成5份
-    private val lineCount = 6
-
     // 每个柱子的宽度、柱子之间的距离，都设为一样
     private var histogramWidth = 70
+
+    // 画线、画图、写字的paint
+    private val linePaint = Paint().apply {
+        style = Paint.Style.STROKE
+        strokeWidth = 2F
+        isAntiAlias = true
+    }
+    private val histogramPaint = Paint().apply {
+        style = Paint.Style.STROKE
+        isAntiAlias = true
+        strokeWidth = histogramWidth.toFloat()
+        color = resources.getColor(R.color.histogram)
+    }
+    private val textPaint = Paint().apply {
+        color = Color.BLACK
+        textSize = 30F
+        isAntiAlias = true
+    }
+
+    // 画横线的path
+    private val linePath = Path()
+
+    // 横线的数量为6，即把高度分成7份。X轴一条、浅黄色线4条，剩余的不画。
+    private val lineCount = 6
 
     // 每根线之间的距离
     private var perLineOff = 0
 
+    // 柱子的高度
+    private var histogramHeight = 0F
+
+    // 文字、柱子的X坐标
+    private var commonX = (histogramWidth / 2).toFloat()
+
+    // moneySum文字Y坐标
+    private var moneyTextY = 0F
+
     // 月份文字的Y坐标
     private val monthTextY = 50F
 
-
     // money的平均值
     private var average: Float = 0F
+
+    // money的最大值
     private var maxMoney = 0F
 
     // 一个单位高度表示的money大小
@@ -89,7 +100,7 @@ class HistogramView : View {
         var measuredHeight = histogramWidth * 9
         measuredWidth = resolveSize(measuredWidth, widthMeasureSpec)
         measuredHeight = resolveSize(measuredHeight, heightMeasureSpec)
-        setMeasuredDimension(measuredWidth, measuredHeight.toInt())
+        setMeasuredDimension(measuredWidth, measuredHeight)
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -101,12 +112,20 @@ class HistogramView : View {
             return
         }
         perLineOff = (mHeight / (lineCount + 1)).toInt()
-        moneyPerY = (maxMoney / (mHeight * 4 / (lineCount + 1)))
+        moneyPerY = (maxMoney / (perLineOff * (lineCount - 2)))
 
-        histogramPaint.strokeWidth = histogramWidth.toFloat()
-        canvas.translate(0F, perLineOff * lineCount.toFloat())
-        canvas.save()
-        // 开始画横线
+        canvas.withTranslation(0F, perLineOff * lineCount.toFloat()) {
+            drawYellowLine(canvas)
+            drawTextAndLine(canvas)
+            drawXLine(canvas)
+        }
+    }
+
+    /**
+     * 画出浅黄色横线
+     */
+    private fun drawYellowLine(canvas: Canvas) {
+        linePath.reset()
         linePaint.color = resources.getColor(R.color.histogram_line)
         linePath.rMoveTo(0F, (-perLineOff).toFloat())
         for (i in perLineOff until perLineOff * 5 step perLineOff) {
@@ -114,31 +133,34 @@ class HistogramView : View {
             linePath.rMoveTo(-mWidth, (-perLineOff).toFloat())
         }
         canvas.drawPath(linePath, linePaint)
-        linePath.reset()
-        canvas.restore()
-        canvas.save()
-        canvas.translate(histogramWidth.toFloat(), 0F)
-        for (element in pillarList) {
-            val histogramHeight = element.moneySum / moneyPerY
-            val moneyTextX = 0F
-            val moneyTextY = -histogramHeight - 20 // 金额文字的Y坐标
-            canvas.run {
-                drawText(element.month, (histogramWidth / 4).toFloat(), monthTextY, textPaint)
-                drawText(
-                    element.moneySum.toString(),
-                    moneyTextX,
-                    moneyTextY,
-                    textPaint
-                )
-                drawLine(
-                    (histogramWidth / 2).toFloat(), 0F, (histogramWidth / 2).toFloat(),
-                    -histogramHeight, histogramPaint
-                )
-            }
-            canvas.translate((histogramWidth * 2).toFloat(), 0F)
+    }
+
+    private fun drawTextAndLine(canvas: Canvas) {
+        for (i in pillarList.indices) {
+            histogramHeight = pillarList[i].moneySum / moneyPerY
+            commonX = (histogramWidth * 1.5F) + (histogramWidth * 2 * i).toFloat()
+            moneyTextY = -histogramHeight - 20 // 金额文字的Y坐标
+            canvas.drawText(
+                pillarList[i].month,
+                commonX - textPaint.measureText(pillarList[i].month) / 2,
+                monthTextY,
+                textPaint
+            )
+            canvas.drawText(
+                pillarList[i].moneySum.toString(),
+                commonX - textPaint.measureText(pillarList[i].moneySum.toString()) / 2,
+                moneyTextY,
+                textPaint
+            )
+            canvas.drawLine(
+                commonX, 0F, commonX,
+                -histogramHeight, histogramPaint
+            )
         }
-        canvas.restore()
-        // 最后才画出X轴,使得X轴不会被柱字覆盖
+    }
+
+    private fun drawXLine(canvas: Canvas) {
+        linePath.reset()
         linePaint.color = Color.BLACK
         linePath.rLineTo(mWidth, 0F)
         canvas.drawPath(linePath, linePaint)
