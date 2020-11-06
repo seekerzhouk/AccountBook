@@ -18,6 +18,7 @@ import com.seekerzhouk.accountbook.room.home.Sector
 import com.seekerzhouk.accountbook.ui.customize.MonthPickerDialog
 import com.seekerzhouk.accountbook.ui.customize.YearPickerDialog
 import com.seekerzhouk.accountbook.utils.DateTimeUtil
+import com.seekerzhouk.accountbook.utils.MyLog
 import com.seekerzhouk.accountbook.viewmodel.HomeViewModel
 import com.seekerzhouk.accountbook.viewmodel.Switch
 
@@ -97,7 +98,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun setDataByYear() {
-        removeObservers()
         binding.incomeChartCard.visibility = View.GONE
         binding.expendChartCard.visibility = View.GONE
         binding.expendHistogramCard.visibility = View.VISIBLE
@@ -113,7 +113,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun setDataByMonth() {
-        removeObservers()
         binding.incomeChartCard.visibility = View.VISIBLE
         binding.expendChartCard.visibility = View.VISIBLE
         binding.expendHistogramCard.visibility = View.GONE
@@ -131,6 +130,7 @@ class HomeFragment : Fragment() {
     private fun setPieViewsByMonth() {
         incomeSectors = homeViewModel.getIncomeSectorsByMonth(specificMonth)
         incomeSectors?.observe(viewLifecycleOwner, {
+            MyLog.i("HomeFragment", "setPieViewsByMonth()")
             binding.pieViewIncome.sectorList = it
         })
         expendSectors = homeViewModel.getExpendSectorsByMonth(specificMonth)
@@ -142,6 +142,7 @@ class HomeFragment : Fragment() {
     private fun setPieViewsByYear() {
         incomeSectors = homeViewModel.getIncomeSectorsByYear(year)
         incomeSectors?.observe(viewLifecycleOwner, {
+            MyLog.i("HomeFragment", "setPieViewsByYear()")
             binding.pieViewIncome.sectorList = it
         })
         expendSectors = homeViewModel.getExpendSectorsByYear(year)
@@ -202,14 +203,5 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun removeObservers() {
-        incomeSectors?.removeObservers(this)
-        expendSectors?.removeObservers(this)
-        incomePillars?.removeObservers(this)
-        expendPillars?.removeObservers(this)
-        incomePoints?.removeObservers(this)
-        expendPoints?.removeObservers(this)
     }
 }
