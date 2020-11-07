@@ -3,18 +3,21 @@ package com.seekerzhouk.accountbook.ui
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.Gravity
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.databinding.ActivityMainBinding
+import com.seekerzhouk.accountbook.ui.details.AddFragment
+import com.seekerzhouk.accountbook.ui.options.OptionActivity
+import com.seekerzhouk.accountbook.ui.options.getFragment
 import com.seekerzhouk.accountbook.viewmodel.MainViewModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : OptionActivity() {
     private lateinit var binding: ActivityMainBinding
     private val mainViewModel: MainViewModel by viewModels()
     private var lastPressedTime: Long = 0
@@ -34,6 +37,14 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.addFragment -> binding.navView.visibility = View.GONE
+                R.id.navigation_details -> binding.navView.visibility = View.VISIBLE
+            }
+        }
+
     }
 
     override fun onResume() {
@@ -51,7 +62,8 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel.hasSyncFinished().observe(this, {
             if (it) {
-                binding.myProgressBar.onJobFinished(getString(R.string.sync_finished)).laterDismiss(1500) {}
+                binding.myProgressBar.onJobFinished(getString(R.string.sync_finished))
+                    .laterDismiss(1500) {}
             }
         })
     }
@@ -77,6 +89,12 @@ class MainActivity : AppCompatActivity() {
 //        } else {
 //            super.onBackPressed()
 //        }
+
+        val fragment = getFragment(AddFragment::class.java)
+        if (fragment != null) {
+            findNavController(R.id.nav_host_fragment_main).navigateUp()
+            return
+        }
 
         val curTime = SystemClock.uptimeMillis()
         if (curTime - lastPressedTime < 3_000) {

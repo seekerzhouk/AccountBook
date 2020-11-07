@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +19,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.databinding.FragmentDetailsBinding
 import com.seekerzhouk.accountbook.room.details.Record
-import com.seekerzhouk.accountbook.ui.customize.AddDialog
 import com.seekerzhouk.accountbook.utils.ConsumptionUtil
 import com.seekerzhouk.accountbook.utils.MyLog
 import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
@@ -65,7 +65,7 @@ class DetailsFragment : Fragment(), LifecycleObserver {
 
         //悬浮按钮
         binding.floatingActionButton.setOnClickListener {
-            AddDialog.show(requireActivity())
+            findNavController().navigate(R.id.action_navigation_details_to_addFragment)
         }
 
         setFirstTypeSpinner()

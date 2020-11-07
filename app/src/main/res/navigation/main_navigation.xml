@@ -15,7 +15,13 @@
         android:id="@+id/navigation_details"
         android:name="com.seekerzhouk.accountbook.ui.details.DetailsFragment"
         android:label="@string/title_details"
-        tools:layout="@layout/fragment_details" />
+        tools:layout="@layout/fragment_details" >
+        <action
+            android:id="@+id/action_navigation_details_to_addFragment"
+            app:destination="@id/addFragment"
+            app:enterAnim="@anim/slide_top_in"
+            app:popExitAnim="@anim/slide_top_out" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_me"
@@ -39,4 +45,8 @@
         android:name="com.seekerzhouk.accountbook.ui.options.FeedbackActivity"
         android:label="activity_feed_back"
         tools:layout="@layout/activity_feed_back" />
+    <fragment
+        android:id="@+id/addFragment"
+        android:name="com.seekerzhouk.accountbook.ui.details.AddFragment"
+        android:label="AddFragment" />
 </navigation>

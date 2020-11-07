@@ -49,11 +49,11 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         year = DateTimeUtil.getCurrentYear()
-        specificMonth = DateTimeUtil.getSpecificMonth()
+        specificMonth = DateTimeUtil.getCurrentSpecificMonth()
         binding.homeTitleBar.switchYearOrMonth.setOnClickListener {
 
             year = DateTimeUtil.getCurrentYear()
-            specificMonth = DateTimeUtil.getSpecificMonth()
+            specificMonth = DateTimeUtil.getCurrentSpecificMonth()
             homeViewModel.turnTitleSwitch()
         }
         homeViewModel.titleSwitch.observe(viewLifecycleOwner, {

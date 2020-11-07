@@ -6,33 +6,31 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object DateTimeUtil {
-    fun getCurrentDateTime(context: Context): String {
-        val date = Date(System.currentTimeMillis())
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            SimpleDateFormat(
-                "yyyy年MM月dd日 HH:mm:ss",
-                context.resources.configuration.locales.get(0)
-            ).format(date)
-        } else {
-            SimpleDateFormat(
-                "yyyy年MM月dd日 HH:mm:ss",
-                context.resources.configuration.locale
-            ).format(date)
-        }
+    /**
+     * 返回当前月份 yyyy年MM月
+     */
+    fun getCurrentSpecificMonth(): String {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        return year.toString().plus("年").plus(if (month + 1 < 10) "0" else "").plus(month + 1)
+            .plus("月")
     }
 
     /**
-     * 返回月份 yyyy年MM月
+     * 返回当前日期 yyyy年MM月dd日
      */
-    fun getSpecificMonth(): String {
+    fun getCurrentSpecificDate(): String {
         val calendar = Calendar.getInstance()
-        return if (calendar.get(Calendar.MONTH) + 1 < 10) {
-            calendar.get(Calendar.YEAR).toString().plus("年").plus(0)
-                .plus(calendar.get(Calendar.MONTH) + 1).plus("月")
-        } else {
-            calendar.get(Calendar.YEAR).toString().plus("年").plus(calendar.get(Calendar.MONTH) + 1)
-                .plus("月")
-        }
+        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+        return getCurrentSpecificMonth().plus(if (dayOfMonth < 10) "0" else "").plus(dayOfMonth).plus("日")
+    }
+
+    /**
+     * 返回当前时间 HH:mm:ss
+     */
+    fun getCurrentTime():String {
+        return SimpleDateFormat.getTimeInstance(2).format(System.currentTimeMillis())
     }
 
     /**
@@ -103,5 +101,25 @@ object DateTimeUtil {
         calendar.set(Calendar.DATE, 1)
         calendar.roll(Calendar.DATE, -1)
         return calendar.get(Calendar.DATE)
+    }
+
+    /**
+     * 返回"yyyy年mm月dd日"格式的日期
+     * @return "yyyy年mm月dd日"格式的日期
+     */
+    fun getPickerDate(year: Int, month: Int, dayOfMonth: Int): String {
+        return year.toString().plus("年")
+            .plus(if (month + 1 < 10) 0 else "").plus(month + 1).plus("月")
+            .plus(if (dayOfMonth < 10) 0 else "").plus(dayOfMonth).plus("日")
+    }
+
+    /**
+     * 返回"hh:mm:00"格式的时间
+     * @return "hh:mm:00"格式的时间
+     */
+    fun getPickerTime(hourOfDay: Int, minute: Int): String {
+        return (if (hourOfDay < 10) "0" else "").plus(hourOfDay)
+            .plus(":")
+            .plus(if (minute < 10) 0 else "").plus(minute).plus(":00")
     }
 }
