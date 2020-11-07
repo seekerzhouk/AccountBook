@@ -199,26 +199,27 @@ class DetailsFragment : Fragment(), LifecycleObserver {
         recordTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.firstTypeSpinner.adapter = recordTypeAdapter
         binding.firstTypeSpinner.setSelection(firstPosition)
-        binding.firstTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                firstTag = ConsumptionUtil.fistTypeList[position]
-                if (firstPosition != position) {
-                    // 手动选择spinner，第二个spinner的位置初始化为0
-                    firstPosition = position
-                    secondPosition = 0
+        binding.firstTypeSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
                 }
-                setSecondTypeSpinner()
 
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    firstTag = ConsumptionUtil.fistTypeList[position]
+                    if (firstPosition != position) {
+                        // 手动选择spinner，第二个spinner的位置初始化为0
+                        firstPosition = position
+                        secondPosition = 0
+                    }
+                    setSecondTypeSpinner()
+
+                }
             }
-        }
     }
 
     //设置second_type_spinner
@@ -235,26 +236,27 @@ class DetailsFragment : Fragment(), LifecycleObserver {
         secondTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.secondTypeSpinner.adapter = secondTypeAdapter
         binding.secondTypeSpinner.setSelection(secondPosition)
-        binding.secondTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                // 调用两次，达到关闭searchView的目的
-                repeat(2) {
-                    binding.searchView.isIconified = true
+        binding.secondTypeSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
                 }
-                secondTag = secondTypeList[position]
-                secondPosition = position
-                saveSpinnerPosition()
-                setSpinnerRecords()
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    // 调用两次，达到关闭searchView的目的
+                    repeat(2) {
+                        binding.searchView.isIconified = true
+                    }
+                    secondTag = secondTypeList[position]
+                    secondPosition = position
+                    saveSpinnerPosition()
+                    setSpinnerRecords()
+                }
             }
-        }
     }
 
     private fun setSpinnerRecords() {
@@ -284,7 +286,6 @@ class DetailsFragment : Fragment(), LifecycleObserver {
         records?.observe(this, Observer {
             myAdapter.submitList(it)
             MyLog.i("DetailsFragment", "${it.size}")
-            scrollRecyclerView()
         })
     }
 
@@ -300,11 +301,16 @@ class DetailsFragment : Fragment(), LifecycleObserver {
     }
 
     private fun scrollRecyclerView() {
-        if (myAdapter.itemCount - oldCount == 1) {
-            binding.recyclerview.getChildAt(0)?.height?.let {
-                binding.recyclerview.smoothScrollBy(0, -it)
-            }
-        }
-        oldCount = myAdapter.itemCount
+//        binding.recyclerview.apply {
+//            post {
+//                smoothScrollToPosition(0)
+//            }
+//        }
+//        if (myAdapter.itemCount - oldCount == 1) {
+//            binding.recyclerview.getChildAt(0)?.height?.let {
+//                binding.recyclerview.smoothScrollBy(0, -it)
+//            }
+//        }
+//        oldCount = myAdapter.itemCount
     }
 }
