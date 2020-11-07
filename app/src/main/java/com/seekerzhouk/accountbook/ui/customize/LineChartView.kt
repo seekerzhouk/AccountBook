@@ -189,7 +189,7 @@ class LineChartView @JvmOverloads constructor(
             // 画圆点
             canvas.drawPoint(commonX, cPointY, pointPaint)
             // 画点击的点所对应的money文字
-            if (hypot((clickX - commonX), (clickY - cPointY)) <= 20) {
+            if (hypot((clickX - commonX), (clickY - cPointY)) <= 30) {
                 auxPath.reset()
                 auxPath.rMoveTo(commonX, 0F)
                 auxPath.rLineTo(0F, moneyTextY)
