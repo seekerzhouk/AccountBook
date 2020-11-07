@@ -18,11 +18,11 @@ class DetailsViewModel(application: Application) : AndroidViewModel(application)
         MyRepository.getInstance(application)
 
     private val config = PagedList.Config.Builder().apply {
-        setPageSize(5) // 定义从DataSource每一次加载的项目数。
+        setPageSize(20) // 定义从DataSource每一次加载的项目数。
         setEnablePlaceholders(false) // 是否使用占位符
-        setMaxSize(20) // 定义一次保留多少个项目。这可用于通过删除页面来限制保存在内存中的项目数。此值通常是许多页面，因此如果用户向后滚动，则会缓存旧页面。该值必须至少是setPrefetchDistance(int)预取距离的两倍 加上} page size。此约束可防止由于预取而导致连续读取和丢弃负载。
-        setInitialLoadSizeHint(10) // 定义首次加载时要加载的项目数。需要是pageSize的两倍及以上。
-        setPrefetchDistance(5) // 距离底部还有多少个项目开始预加载
+        setMaxSize(40) // 定义一次保留多少个项目。这可用于通过删除页面来限制保存在内存中的项目数。此值通常是许多页面，因此如果用户向后滚动，则会缓存旧页面。该值必须至少是setPrefetchDistance(int)预取距离的两倍 加上} page size。此约束可防止由于预取而导致连续读取和丢弃负载。
+        setInitialLoadSizeHint(20) // 定义首次加载时要加载的项目数。需要是pageSize的倍数。
+        setPrefetchDistance(10) // 距离底部还有多少个项目开始预加载
     }.build()
 
     private fun runInScope(block: () -> Unit) {
