@@ -45,6 +45,10 @@ class MainActivity : OptionActivity() {
             }
         }
 
+        // 设置OnNavigationItemReselectedListener，
+        // 使得MenuItem在已经被选择的情况下重复点击不会重新创建当前的fragment
+        binding.navView.setOnNavigationItemReselectedListener {
+        }
     }
 
     override fun onResume() {
