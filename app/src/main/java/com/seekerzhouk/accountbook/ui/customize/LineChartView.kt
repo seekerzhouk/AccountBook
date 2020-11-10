@@ -8,8 +8,6 @@ import android.view.View
 import androidx.core.graphics.withTranslation
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.room.home.Point
-import com.seekerzhouk.accountbook.utils.MyLog
-import kotlin.math.hypot
 import kotlin.math.max
 
 class LineChartView @JvmOverloads constructor(
@@ -61,8 +59,8 @@ class LineChartView @JvmOverloads constructor(
     // 横线的数量为6，即把高度分成7份
     private val lineCount = 6
 
-    // 每个柱子的宽度、柱子之间的距离，都设为一样
-    private val histogramWidth = 70
+    // 每一天之间的距离，都设为一样
+    private val widthPerDay = 70
 
     // 每根线之间的距离
     private var perLineOff = 0
@@ -111,8 +109,8 @@ class LineChartView @JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        var measuredWidth = histogramWidth * 32
-        var measuredHeight = histogramWidth * 9
+        var measuredWidth = widthPerDay * 32
+        var measuredHeight = widthPerDay * 9
         measuredWidth = resolveSize(measuredWidth, widthMeasureSpec)
         measuredHeight = resolveSize(measuredHeight, heightMeasureSpec)
         setMeasuredDimension(measuredWidth, measuredHeight)
@@ -168,10 +166,10 @@ class LineChartView @JvmOverloads constructor(
     private fun drawTextPointLine(canvas: Canvas) {
         linePath.reset()
         linePaint.color = resources.getColor(R.color.line_chart)
-        linePath.rMoveTo(histogramWidth.toFloat(), -daysList[0].moneySum / moneyPerY)
+        linePath.rMoveTo(widthPerDay.toFloat(), -daysList[0].moneySum / moneyPerY)
 
         for (i in daysList.indices) {
-            commonX += histogramWidth
+            commonX += widthPerDay
             cPointY = -(daysList[i].moneySum / moneyPerY)
 
             linePath.lineTo(commonX, cPointY)
@@ -189,21 +187,28 @@ class LineChartView @JvmOverloads constructor(
             // 画圆点
             canvas.drawPoint(commonX, cPointY, pointPaint)
             // 画点击的点所对应的money文字
-            if (hypot((clickX - commonX), (clickY - cPointY)) <= 30) {
+            if (clickX > commonX - 35 && clickX <= commonX + 35 && clickY > moneyTextY) {
                 auxPath.reset()
                 auxPath.rMoveTo(commonX, 0F)
                 auxPath.rLineTo(0F, moneyTextY)
 
                 canvas.drawPath(auxPath, auxPaint)
-                canvas.drawRoundRect(commonX - 70,
-                    moneyTextY-40,
+                canvas.drawRoundRect(
+                    commonX - 70,
+                    moneyTextY - 40,
                     commonX + 70,
-                    moneyTextY+15,
+                    moneyTextY + 15,
                     10F,
-                    10F,rectPaint)
+                    10F, rectPaint
+                )
                 canvas.drawText(
-                    String.format("%.2f",daysList[i].moneySum),
-                    commonX - textPaint.measureText(String.format("%.2f",daysList[i].moneySum)) / 2,
+                    String.format("%.2f", daysList[i].moneySum),
+                    commonX - textPaint.measureText(
+                        String.format(
+                            "%.2f",
+                            daysList[i].moneySum
+                        )
+                    ) / 2,
                     moneyTextY,
                     textPaint
                 )
