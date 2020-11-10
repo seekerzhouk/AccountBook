@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.databinding.FragmentMeBinding
 import com.seekerzhouk.accountbook.ui.options.SetBackgroundActivity
@@ -19,11 +20,14 @@ import com.seekerzhouk.accountbook.ui.customize.CommonDialog
 import com.seekerzhouk.accountbook.ui.options.LoginActivity
 import com.seekerzhouk.accountbook.ui.options.SetAvatarActivity
 import com.seekerzhouk.accountbook.ui.options.SetPhoneActivity
+import com.seekerzhouk.accountbook.utils.MyLog
 import com.seekerzhouk.accountbook.utils.NetworkUtil
 import com.seekerzhouk.accountbook.utils.SDCardHelper
 import com.seekerzhouk.accountbook.viewmodel.MeViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class MeFragment : Fragment() {
@@ -41,7 +45,7 @@ class MeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentMeBinding.inflate(inflater,container,false)
+        binding = FragmentMeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -126,26 +130,14 @@ class MeFragment : Fragment() {
         if (!isLogin) {
             return
         }
-        SDCardHelper.loadBitmapFromSDCard(
+        Glide.with(this).load(
             requireContext().externalCacheDir?.absolutePath + "/${meViewModel.getUserName()}"
                     + getString(R.string.bg_pic_suffix)
-        ).let {
-            if (it == null) {
-                binding.toolbarBgImage.setImageResource(R.drawable.src_avatar)
-            } else {
-                binding.toolbarBgImage.setImageBitmap(it)
-            }
-        }
-        SDCardHelper.loadBitmapFromSDCard(
+        ).placeholder(R.drawable.src_avatar).into(binding.toolbarBgImage)
+        Glide.with(this).load(
             requireContext().externalCacheDir?.absolutePath + "/${meViewModel.getUserName()}"
                     + getString(R.string.avatar_pic_suffix)
-        ).let {
-            if (it == null) {
-                binding.ivAvatar.setImageResource(R.drawable.ic_me)
-            } else {
-                binding.ivAvatar.setImageBitmap(it)
-            }
-        }
+        ).placeholder(R.drawable.ic_me).into(binding.ivAvatar)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
