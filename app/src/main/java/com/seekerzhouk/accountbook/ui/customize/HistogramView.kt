@@ -6,11 +6,11 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.graphics.withTranslation
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.room.home.Pillar
-import com.seekerzhouk.accountbook.utils.MyLog
 import kotlin.math.max
 
 class HistogramView @JvmOverloads constructor(
@@ -72,6 +72,16 @@ class HistogramView @JvmOverloads constructor(
     // 一个单位高度表示的money大小
     private var moneyPerY = 0F
 
+    // 点击位置
+    private var clickX = 0F
+    private var clickY =0F
+
+    // 点击的柱子，-1 代表未点击到柱子
+    private var clickPosition = -1
+
+    // 点击监听器
+    private var listener: OnHistogramClickListener? = null
+
     // 月份-消费
     var pillarList: List<Pillar> = ArrayList()
         set(value) {
@@ -84,6 +94,43 @@ class HistogramView @JvmOverloads constructor(
             average = sum / pillarList.size
             invalidate()
         }
+
+    fun setOnHistogramClickListener(l: OnHistogramClickListener) {
+        this.listener = l
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        when (event?.action) {
+            MotionEvent.ACTION_DOWN ->{
+                clickX = event.x
+                clickY = event.y - perLineOff * lineCount
+                invalidate()
+                return true
+            }
+            MotionEvent.ACTION_CANCEL -> {
+                clickX = 0F
+                clickY = 0F
+                invalidate()
+                return true
+            }
+            MotionEvent.ACTION_UP -> {
+                clickX = 0F
+                clickY = 0F
+                invalidate()
+                performClick()
+                return true
+            }
+            else -> return super.onTouchEvent(event)
+        }
+    }
+
+    override fun performClick(): Boolean {
+        if (clickPosition != -1) {
+            listener?.onCLick(clickPosition)
+            clickPosition = -1
+        }
+        return super.performClick()
+    }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
@@ -147,6 +194,12 @@ class HistogramView @JvmOverloads constructor(
                 textPaint
             )
             if (pillarList[i].moneySum > 0) {
+                if (clickX >= commonX - histogramWidth / 2 && clickX <= commonX + histogramWidth / 2 && clickY >= -histogramHeight && clickY <= 0){
+                    clickPosition = i
+                    moneyTextY -= 10
+                    histogramHeight += 10
+                    histogramPaint.strokeWidth += 5
+                }
                 canvas.drawText(
                     String.format("%.2f",pillarList[i].moneySum),
                     commonX - textPaint.measureText(String.format("%.2f",pillarList[i].moneySum)) / 2,
@@ -157,6 +210,7 @@ class HistogramView @JvmOverloads constructor(
                     commonX, 0F, commonX,
                     -histogramHeight, histogramPaint
                 )
+                histogramPaint.strokeWidth = histogramWidth.toFloat()
             }
         }
     }
@@ -169,5 +223,9 @@ class HistogramView @JvmOverloads constructor(
         linePaint.color = Color.BLACK
         linePath.rLineTo(mWidth, 0F)
         canvas.drawPath(linePath, linePaint)
+    }
+
+    interface OnHistogramClickListener {
+        fun onCLick(i: Int)
     }
 }
