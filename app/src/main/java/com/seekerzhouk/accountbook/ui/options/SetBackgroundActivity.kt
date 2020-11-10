@@ -1,5 +1,6 @@
 package com.seekerzhouk.accountbook.ui.options
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -9,10 +10,13 @@ import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import cn.leancloud.AVFile
 import cn.leancloud.AVObject
 import cn.leancloud.AVQuery
 import cn.leancloud.AVUser
+import com.bumptech.glide.Glide
+import com.bumptech.glide.signature.ObjectKey
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.databinding.ActivitySetBackgroundBinding
 import com.seekerzhouk.accountbook.room.me.UserAddInfo
@@ -24,23 +28,24 @@ import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SetBackgroundActivity : OptionActivity() {
     private lateinit var binding: ActivitySetBackgroundBinding
     private val fromSetBg = 2
     private val tag = SetBackgroundActivity::class.java.simpleName
-
+    private lateinit var bgPath: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySetBackgroundBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        SDCardHelper.loadBitmapFromSDCard(
-            this.externalCacheDir?.absolutePath +
-                    "/${SharedPreferencesUtil.getUserName(this)}" + getString(R.string.bg_pic_suffix)
-        )
-            ?.let {
-                binding.imageViewBg.setImageBitmap(it)
-            }
+        bgPath = this.externalCacheDir?.absolutePath +
+                "/${SharedPreferencesUtil.getUserName(this)}" + getString(R.string.bg_pic_suffix)
+        Glide.with(this)
+            .load(bgPath)
+            .signature(ObjectKey(SharedPreferencesUtil.getBgSignature(this)))
+            .error(R.drawable.src_bg)
+            .into(binding.imageViewBg)
         registerForContextMenu(binding.imageViewBg)
     }
 
@@ -88,19 +93,36 @@ class SetBackgroundActivity : OptionActivity() {
             fromSetBg -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     data.data?.let { uri ->
-                        getBitmapFromUri(uri)?.let {
-                            binding.imageViewBg.setImageBitmap(it)
-                            SDCardHelper.saveBitmapToPrivateCache(
-                                it,
-                                this,
-                                SharedPreferencesUtil.getUserName(this) + getString(R.string.bg_pic_suffix)
-                            )
-                            savePicToCloud()
+                        binding.imageViewBg.setImageURI(uri)
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            getBitmapFromUri(uri)?.let {
+                                SDCardHelper.saveBitmapToPrivateCache(
+                                    it, this@SetBackgroundActivity,
+                                    SharedPreferencesUtil.getUserName(this@SetBackgroundActivity) + getString(
+                                        R.string.bg_pic_suffix
+                                    )
+                                )
+                                withContext(Dispatchers.Main) {
+                                    saveToGlideCache()
+                                }
+                                savePicToCloud()
+                            }
                         }
+
                     }
                 }
             }
         }
+    }
+
+    // 将图片加到Glide缓存
+    @SuppressLint("CheckResult")
+    private fun saveToGlideCache() {
+        val sign = SharedPreferencesUtil.getBgSignature(this) + 1
+        SharedPreferencesUtil.saveBgSignature(this, sign)
+        Glide.with(this)
+            .load(bgPath)
+            .signature(ObjectKey(sign))
     }
 
     private fun getBitmapFromUri(uri: Uri) =

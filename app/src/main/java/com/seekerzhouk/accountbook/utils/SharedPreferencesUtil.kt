@@ -35,6 +35,12 @@ object SharedPreferencesUtil {
      */
     const val IS_NEED_SYNC = "is_need_sync"
 
+    /**
+     * 保存SIGNATURE
+     */
+    private const val BG_SIGNATURE = "bg_signature"
+    private const val AVATAR_SIGNATURE = "avatar_signature"
+
     fun saveFirstPosition(context: Context, position: Int) {
         saveValue(context, FIRST_POSITION_KEY, position)
     }
@@ -89,6 +95,20 @@ object SharedPreferencesUtil {
 
     fun getPhoneNumber(context: Context): String {
         return getValue(context, USER_PHONE_KEY, "")
+    }
+
+    fun saveBgSignature(context: Context, sign: Int) {
+        saveValue(context, BG_SIGNATURE,sign)
+    }
+    fun getBgSignature(context: Context): Int {
+        return getValue(context, BG_SIGNATURE,0)
+    }
+
+    fun saveAvatarSignature(context: Context, sign: Int) {
+        saveValue(context, AVATAR_SIGNATURE,sign)
+    }
+    fun getAvatarSignature(context: Context): Int {
+        return getValue(context, AVATAR_SIGNATURE,0)
     }
 
     /**

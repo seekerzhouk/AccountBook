@@ -18,5 +18,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/src_avatar" />
+        app:srcCompat="@drawable/src_bg" />
 </androidx.constraintlayout.widget.ConstraintLayout>

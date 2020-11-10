@@ -1,5 +1,6 @@
 package com.seekerzhouk.accountbook.ui.options
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -9,10 +10,13 @@ import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import cn.leancloud.AVFile
 import cn.leancloud.AVObject
 import cn.leancloud.AVQuery
 import cn.leancloud.AVUser
+import com.bumptech.glide.Glide
+import com.bumptech.glide.signature.ObjectKey
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.databinding.ActivitySetAvatarBinding
 import com.seekerzhouk.accountbook.room.me.UserAddInfo
@@ -24,22 +28,24 @@ import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SetAvatarActivity : OptionActivity() {
     private lateinit var binding: ActivitySetAvatarBinding
     private val fromSetAvatar = 3
     private val tag = SetAvatarActivity::class.java.simpleName
-
+    private lateinit var avatarPath: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        avatarPath = this.externalCacheDir?.absolutePath +
+                "/${SharedPreferencesUtil.getUserName(this)}" + getString(R.string.avatar_pic_suffix)
         binding = ActivitySetAvatarBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        SDCardHelper.loadBitmapFromSDCard(
-            this.externalCacheDir?.absolutePath +
-                    "/${SharedPreferencesUtil.getUserName(this)}" + getString(R.string.avatar_pic_suffix)
-        )?.let {
-            binding.avatarImage.setImageBitmap(it)
-        }
+        Glide.with(this)
+            .load(avatarPath)
+            .signature(ObjectKey(SharedPreferencesUtil.getAvatarSignature(this)))
+            .error(R.drawable.ic_me)
+            .into(binding.avatarImage)
         registerForContextMenu(binding.avatarImage)
     }
 
@@ -87,19 +93,35 @@ class SetAvatarActivity : OptionActivity() {
             fromSetAvatar -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     data.data?.let { uri ->
-                        getBitmapFromUri(uri)?.let {
-                            binding.avatarImage.setImageBitmap(it)
-                            SDCardHelper.saveBitmapToPrivateCache(
-                                it,
-                                this,
-                                SharedPreferencesUtil.getUserName(this) + getString(R.string.avatar_pic_suffix)
-                            )
-                            savePicToCloud()
+                        binding.avatarImage.setImageURI(uri)
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            getBitmapFromUri(uri)?.let {
+                                SDCardHelper.saveBitmapToPrivateCache(
+                                    it, this@SetAvatarActivity,
+                                    SharedPreferencesUtil.getUserName(this@SetAvatarActivity) + getString(
+                                        R.string.avatar_pic_suffix
+                                    )
+                                )
+                                withContext(Dispatchers.Main) {
+                                    saveToGlideCache()
+                                }
+                                savePicToCloud()
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    // 将图片加到Glide缓存
+    @SuppressLint("CheckResult")
+    private fun saveToGlideCache() {
+        val sign = SharedPreferencesUtil.getAvatarSignature(this) + 1
+        SharedPreferencesUtil.saveAvatarSignature(this, sign)
+        Glide.with(this)
+            .load(avatarPath)
+            .signature(ObjectKey(sign))
     }
 
     private fun getBitmapFromUri(uri: Uri) =

@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.signature.ObjectKey
 import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.databinding.FragmentMeBinding
 import com.seekerzhouk.accountbook.ui.options.SetBackgroundActivity
@@ -22,12 +23,10 @@ import com.seekerzhouk.accountbook.ui.options.SetAvatarActivity
 import com.seekerzhouk.accountbook.ui.options.SetPhoneActivity
 import com.seekerzhouk.accountbook.utils.MyLog
 import com.seekerzhouk.accountbook.utils.NetworkUtil
-import com.seekerzhouk.accountbook.utils.SDCardHelper
+import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
 import com.seekerzhouk.accountbook.viewmodel.MeViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class MeFragment : Fragment() {
@@ -130,14 +129,24 @@ class MeFragment : Fragment() {
         if (!isLogin) {
             return
         }
-        Glide.with(this).load(
-            requireContext().externalCacheDir?.absolutePath + "/${meViewModel.getUserName()}"
-                    + getString(R.string.bg_pic_suffix)
-        ).placeholder(R.drawable.src_avatar).into(binding.toolbarBgImage)
-        Glide.with(this).load(
-            requireContext().externalCacheDir?.absolutePath + "/${meViewModel.getUserName()}"
-                    + getString(R.string.avatar_pic_suffix)
-        ).placeholder(R.drawable.ic_me).into(binding.ivAvatar)
+        Glide.with(this)
+            .load(
+                requireContext().externalCacheDir?.absolutePath + "/${meViewModel.getUserName()}" + getString(
+                    R.string.bg_pic_suffix
+                )
+            )
+            .error(R.drawable.src_bg)
+            .signature(ObjectKey(SharedPreferencesUtil.getBgSignature(requireContext())))
+            .into(binding.toolbarBgImage)
+        Glide.with(this)
+            .load(
+                requireContext().externalCacheDir?.absolutePath + "/${meViewModel.getUserName()}" + getString(
+                    R.string.avatar_pic_suffix
+                )
+            )
+            .error(R.drawable.ic_me)
+            .signature(ObjectKey(SharedPreferencesUtil.getAvatarSignature(requireContext())))
+            .into(binding.ivAvatar)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
