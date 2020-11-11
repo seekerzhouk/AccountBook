@@ -15,7 +15,9 @@ import com.seekerzhouk.accountbook.databinding.FragmentHomeBinding
 import com.seekerzhouk.accountbook.room.home.Pillar
 import com.seekerzhouk.accountbook.room.home.Point
 import com.seekerzhouk.accountbook.room.home.Sector
+import com.seekerzhouk.accountbook.ui.customize.HistogramView
 import com.seekerzhouk.accountbook.ui.customize.MonthPickerDialog
+import com.seekerzhouk.accountbook.ui.customize.PieView
 import com.seekerzhouk.accountbook.ui.customize.YearPickerDialog
 import com.seekerzhouk.accountbook.utils.DateTimeUtil
 import com.seekerzhouk.accountbook.utils.MyLog
@@ -130,24 +132,46 @@ class HomeFragment : Fragment() {
     private fun setPieViewsByMonth() {
         incomeSectors = homeViewModel.getIncomeSectorsByMonth(specificMonth)
         incomeSectors?.observe(viewLifecycleOwner, {
-            MyLog.i("HomeFragment", "setPieViewsByMonth()")
             binding.pieViewIncome.sectorList = it
         })
         expendSectors = homeViewModel.getExpendSectorsByMonth(specificMonth)
         expendSectors?.observe(viewLifecycleOwner, {
             binding.pieViewExpend.sectorList = it
         })
+        binding.pieViewIncome.setOnSectorClickListener(object :PieView.OnSectorClickListener{
+            override fun onCLick(i: Int) {
+                MyLog.i("HomeFragment", "setPieViewsByMonth(): pieViewIncome: $i")
+            }
+
+        })
+        binding.pieViewExpend.setOnSectorClickListener(object :PieView.OnSectorClickListener{
+            override fun onCLick(i: Int) {
+                MyLog.i("HomeFragment", "setPieViewsByMonth(): pieViewExpend: $i")
+            }
+
+        })
     }
 
     private fun setPieViewsByYear() {
         incomeSectors = homeViewModel.getIncomeSectorsByYear(year)
         incomeSectors?.observe(viewLifecycleOwner, {
-            MyLog.i("HomeFragment", "setPieViewsByYear()")
             binding.pieViewIncome.sectorList = it
         })
         expendSectors = homeViewModel.getExpendSectorsByYear(year)
         expendSectors?.observe(viewLifecycleOwner, {
             binding.pieViewExpend.sectorList = it
+        })
+        binding.pieViewIncome.setOnSectorClickListener(object :PieView.OnSectorClickListener{
+            override fun onCLick(i: Int) {
+                MyLog.i("HomeFragment", "setPieViewsByYear() : pieViewIncome； $i")
+            }
+
+        })
+        binding.pieViewExpend.setOnSectorClickListener(object :PieView.OnSectorClickListener{
+            override fun onCLick(i: Int) {
+                MyLog.i("HomeFragment", "setPieViewsByYear() : pieViewExpend： $i")
+            }
+
         })
     }
 
@@ -159,6 +183,18 @@ class HomeFragment : Fragment() {
         expendPillars = homeViewModel.getExpendPillarsByYear(year)
         expendPillars?.observe(viewLifecycleOwner, {
             binding.expendHistogram.pillarList = it
+        })
+        binding.incomeHistogram.setOnHistogramClickListener(object :HistogramView.OnHistogramClickListener{
+            override fun onCLick(i: Int) {
+                MyLog.i("HomeFragment", "setHistogramViews() : incomeHistogram： $i")
+            }
+
+        })
+        binding.expendHistogram.setOnHistogramClickListener(object :HistogramView.OnHistogramClickListener{
+            override fun onCLick(i: Int) {
+                MyLog.i("HomeFragment", "setHistogramViews() : expendHistogram： $i")
+            }
+
         })
 
         val currentMonth = DateTimeUtil.getCurrentMonth()
