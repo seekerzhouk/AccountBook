@@ -134,6 +134,9 @@ class LineChartView @JvmOverloads constructor(
 
             drawXLine(this)
         }
+        // 每次画完都要重置点击点坐标
+        clickX = 0F
+        clickY = 0F
     }
 
     /**
@@ -183,7 +186,6 @@ class LineChartView @JvmOverloads constructor(
                     textPaint
                 )
             }
-
             // 画圆点
             canvas.drawPoint(commonX, cPointY, pointPaint)
             // 画点击的点所对应的money文字
@@ -225,8 +227,17 @@ class LineChartView @JvmOverloads constructor(
             MotionEvent.ACTION_DOWN -> {
                 clickX = event.x
                 clickY = event.y - perLineOff * lineCount
+                return true
+            }
+            MotionEvent.ACTION_CANCEL -> {
+                clickX = 0F
+                clickY = 0F
+                return true
+            }
+            MotionEvent.ACTION_UP -> {
                 invalidate()
                 performClick()
+                return true
             }
         }
         return super.onTouchEvent(event)
