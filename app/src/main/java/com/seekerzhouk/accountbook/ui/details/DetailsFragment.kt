@@ -20,7 +20,6 @@ import com.seekerzhouk.accountbook.R
 import com.seekerzhouk.accountbook.databinding.FragmentDetailsBinding
 import com.seekerzhouk.accountbook.room.details.Record
 import com.seekerzhouk.accountbook.utils.ConsumptionUtil
-import com.seekerzhouk.accountbook.utils.MyLog
 import com.seekerzhouk.accountbook.utils.SharedPreferencesUtil
 import com.seekerzhouk.accountbook.viewmodel.DetailsViewModel
 
@@ -38,8 +37,6 @@ class DetailsFragment : Fragment(), LifecycleObserver {
     private var secondPosition: Int = 0
     private var firstTag: String = ConsumptionUtil.ALL
     private var secondTag: String = ConsumptionUtil.ALL
-
-    private var oldCount = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -154,7 +151,7 @@ class DetailsFragment : Fragment(), LifecycleObserver {
             binding.searchView.isIconified = false
         }
         binding.searchView.setOnCloseListener {
-            records?.removeObservers(this)
+            records?.removeObservers(viewLifecycleOwner)
             // 关闭了searchView后又移除了所有观察，所以要重新设置一遍records。（解决了关闭searchView后由于观察被清除导致的 删除记录却没有刷新界面的bug）
             setSpinnerRecords()
             false
@@ -162,7 +159,7 @@ class DetailsFragment : Fragment(), LifecycleObserver {
     }
 
     private fun setSearchRecords(patten: String) {
-        records?.removeObservers(this)
+        records?.removeObservers(viewLifecycleOwner)
         records = when (firstTag) {
             ConsumptionUtil.ALL -> detailsViewModel.findRecordWithPatten(patten)
 
@@ -185,7 +182,7 @@ class DetailsFragment : Fragment(), LifecycleObserver {
             else -> null
         }
 
-        records?.observe(this, Observer {
+        records?.observe(viewLifecycleOwner, Observer {
             myAdapter.submitList(it)
         })
     }
@@ -262,7 +259,7 @@ class DetailsFragment : Fragment(), LifecycleObserver {
     }
 
     private fun setSpinnerRecords() {
-        records?.removeObservers(this)
+        records?.removeObservers(viewLifecycleOwner)
         records = when (firstTag) {
             ConsumptionUtil.ALL -> detailsViewModel.loadAllRecords()
 
@@ -285,16 +282,15 @@ class DetailsFragment : Fragment(), LifecycleObserver {
             else -> null
         }
 
-        records?.observe(this, Observer {
+        records?.observe(viewLifecycleOwner, Observer {
             myAdapter.submitList(it)
-            MyLog.i("DetailsFragment", "${it.size}")
         })
     }
 
     override fun onPause() {
         super.onPause()
         saveSpinnerPosition()
-        records?.removeObservers(this)
+        records?.removeObservers(viewLifecycleOwner)
     }
 
     private fun saveSpinnerPosition() {
