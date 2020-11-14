@@ -155,6 +155,8 @@ class DetailsFragment : Fragment(), LifecycleObserver {
         }
         binding.searchView.setOnCloseListener {
             records?.removeObservers(this)
+            // 关闭了searchView后又移除了所有观察，所以要重新设置一遍records。（解决了关闭searchView后由于观察被清除导致的 删除记录却没有刷新界面的bug）
+            setSpinnerRecords()
             false
         }
     }
