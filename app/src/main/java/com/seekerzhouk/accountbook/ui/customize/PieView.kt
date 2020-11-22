@@ -100,7 +100,7 @@ class PieView @JvmOverloads constructor(
     private var clickPosition = -1
 
     // 点击监听器
-    private var listener: OnSectorClickListener? = null
+    private lateinit var listener: (Int) -> Unit
 
     // 颜色表，ARGB颜色
     @RequiresApi(Build.VERSION_CODES.M)
@@ -125,8 +125,8 @@ class PieView @JvmOverloads constructor(
             invalidate()
         }
 
-    fun setOnSectorClickListener(l: OnSectorClickListener) {
-        this.listener = l
+    fun setOnSectorClickListener(listener: (Int) ->Unit) {
+        this.listener = listener
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -177,7 +177,7 @@ class PieView @JvmOverloads constructor(
 
     override fun performClick(): Boolean {
         if (clickPosition != -1) {
-            listener?.onCLick(clickPosition)
+            listener(clickPosition)
             clickPosition = -1
         }
         return super.performClick()
@@ -293,7 +293,4 @@ class PieView @JvmOverloads constructor(
         }
     }
 
-    interface OnSectorClickListener {
-        fun onCLick(i: Int)
-    }
 }

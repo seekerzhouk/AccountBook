@@ -80,7 +80,7 @@ class HistogramView @JvmOverloads constructor(
     private var clickPosition = -1
 
     // 点击监听器
-    private var listener: OnHistogramClickListener? = null
+    private lateinit var listener: (Int) -> Unit
 
     // 月份-消费
     var pillarList: List<Pillar> = ArrayList()
@@ -95,8 +95,8 @@ class HistogramView @JvmOverloads constructor(
             invalidate()
         }
 
-    fun setOnHistogramClickListener(l: OnHistogramClickListener) {
-        this.listener = l
+    fun setOnHistogramClickListener(listener: (Int) -> Unit) {
+        this.listener = listener
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -126,7 +126,7 @@ class HistogramView @JvmOverloads constructor(
 
     override fun performClick(): Boolean {
         if (clickPosition != -1) {
-            listener?.onCLick(clickPosition)
+            listener(clickPosition)
             clickPosition = -1
         }
         return super.performClick()
@@ -225,7 +225,4 @@ class HistogramView @JvmOverloads constructor(
         canvas.drawPath(linePath, linePaint)
     }
 
-    interface OnHistogramClickListener {
-        fun onCLick(i: Int)
-    }
 }
