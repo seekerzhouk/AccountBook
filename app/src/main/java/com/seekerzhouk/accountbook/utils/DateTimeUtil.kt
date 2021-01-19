@@ -34,6 +34,20 @@ object DateTimeUtil {
     }
 
     /**
+     * 返回当前小时数
+     */
+    fun getCurrentHour0fDay(): Int{
+        return getCurrentTime().substring(0,2).toInt()
+    }
+
+    /**
+     * 返回当前时间分数
+     */
+    fun getCurrentMinute(): Int{
+        return getCurrentTime().substring(3,5).toInt()
+    }
+
+    /**
      * 返回月份数字
      */
     fun getCurrentMonth(): Int {
@@ -50,7 +64,15 @@ object DateTimeUtil {
     }
 
     /**
-     * 返回年份 yyyy年
+     * 返回年份数字 yyyy
+     */
+    fun getCurrentYearNumber(): Int {
+        val calendar = Calendar.getInstance()
+        return calendar.get(Calendar.YEAR)
+    }
+
+    /**
+     * 返回年份 "yyyy年"
      */
     fun getCurrentYear(): String {
         val calendar = Calendar.getInstance()

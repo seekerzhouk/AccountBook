@@ -105,7 +105,10 @@ class AddFragment : Fragment() {
                 requireContext(),
                 { _, year, month, dayOfMonth ->
                     binding.chosenDate.text = DateTimeUtil.getPickerDate(year, month, dayOfMonth)
-                }, 2020, 11, 0
+                },
+                DateTimeUtil.getCurrentYearNumber(),
+                DateTimeUtil.getCurrentMonth() - 1,
+                DateTimeUtil.getCurrentDayOfMonth()
             ).show()
         }
         binding.chosenTime.text = DateTimeUtil.getCurrentTime()
@@ -114,7 +117,7 @@ class AddFragment : Fragment() {
                 requireContext(),
                 { _, hourOfDay, minute ->
                     binding.chosenTime.text = DateTimeUtil.getPickerTime(hourOfDay, minute)
-                }, 0, 0, true
+                }, DateTimeUtil.getCurrentHour0fDay(), DateTimeUtil.getCurrentMinute(), true
             ).show()
         }
     }
