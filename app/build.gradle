@@ -25,15 +25,10 @@ android {
     // 增加自动签名的内容
     signingConfigs {
         config {
-            // 加载local.properties文件
-            Properties properties = new Properties()
-            InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
-            properties.load(inputStream)
-
-            keyAlias properties.getProperty('keyAlias')
-            keyPassword properties.getProperty('keyPassword')
-            storeFile file(properties.getProperty('storeFile'))
-            storePassword properties.getProperty('storePassword')
+            keyAlias KEY_ALIAS
+            keyPassword KEY_PASSWORD
+            storeFile file(STORE_FILE)
+            storePassword STORE_PASSWORD
         }
     }
     buildTypes {
